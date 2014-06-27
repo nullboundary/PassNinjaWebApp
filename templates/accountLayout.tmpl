@@ -1,0 +1,158 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Passbook pass tool service">
+    <meta name="author" content="cicada">
+    <link rel="shortcut icon" href="img/favicon_ticket.ico">
+    <title>Pass Ninja - Passbook service</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <!--<![endif]-->
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='/assets/css/onepage-scroll.css' rel='stylesheet' type='text/css'>
+    <link href="/assets/css/cicada_pure.css" rel="stylesheet">
+    <link href="/assets/css/passNinja.css" rel="stylesheet">
+    <link href="/assets/css/jquery.colorpickersliders.css" rel="stylesheet">
+  </head>
+
+  <body>
+            <!-- Nav
+        ================================================== -->
+        <nav class="home-menu pure-menu pure-menu-open pure-menu-horizontal">
+          <a href="#" class="pure-menu-heading">
+            <img src="/assets/img/logo_R_B_Light_150.svg" alt="Pass Ninja">
+          </a>
+          <ul>
+            <li><a href="#">Logout</a></li>
+            
+          </ul>
+        </nav>
+    
+        <div class="wrapper">
+          <div class="main">
+            <!-- Page 1 ================== -->
+            <section class="page1">
+              <!-- Fields -->
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+                  <h1>Get Started!</h1>
+                  <h2>Fill out the name of the pass template and organization!</h2>
+                  <form class="pure-form">
+                    <fieldset class="pure-group">
+                      <input type="text" class="pure-input-1" placeholder="Pass Name">
+                      <input type="text" class="pure-input-1" placeholder="Pass Description">
+                    </fieldset>
+                    <fieldset class="pure-group">
+                      <input type="text" class="pure-input-1" placeholder="Organization Name">
+                      <input type="text" class="pure-input-1" placeholder="Organization Description">
+                    </fieldset>
+                  </form>
+                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+              </div>
+            </section>
+             <!-- Page 3 ================== -->
+            <section class="page3">
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+                  <h1>Colors</h1>
+                  <h2>Change background and text colors. </h2>
+                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3 "></div>
+              </div>
+              <!-- Pass Preview -->
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3">
+                  <div class="rgb">
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Page 4 ================== -->
+            <section class="page4">
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+                  <h1>Images</h1>
+                  <h2>Upload your own images! </h2>
+                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+              </div>
+              <!-- Pass Preview -->
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3">
+                  
+                </div>
+              </div>
+            </section>
+             <!-- Page 5 ================== -->
+            <section class="page5">
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+                  <h1>Data</h1>
+                  <h2>Enter your Label and Value Data</h2>
+                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+              </div>
+              <!-- Pass Preview -->
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+                  <div class="fake-content">
+                    
+                      {{template "body"}}
+                    
+                  </div>
+                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3">
+                  
+                </div>
+              </div>
+            </section>
+
+          </div> <!-- / "main" div -->
+        </div> <!-- / "wrapper" div -->
+
+              <!-- Message alert -->
+             
+                  <div class="alert alert-dismissable" style="display: none">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    
+                  </div>
+               
+            </div>
+
+           
+        
+              <!-- JavaScript
+              ================================================== -->
+              <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+              <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
+              <script type="text/javascript" src="/assets/js/jquery.onepage-scroll.js"></script>
+              <script type="text/javascript" src="/assets/js/d3tip.js"></script>
+              <script type="text/javascript" src="/assets/js/tinycolor.js"></script>
+              <script type="text/javascript" src="/assets/js/jquery.colorpickersliders.js"></script>
+              <script type="text/javascript" src="/assets/js/passbuilder.js"></script>
+              
+              
+            </body>
+          </html>
+          {{end}}

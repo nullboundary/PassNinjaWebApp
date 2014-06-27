@@ -15,7 +15,8 @@
 	-webkit-font-smoothing: antialiased;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
-.style10 {
+
+.value-text {
 	fill: 	white;
 	font-family: 	"Helvetica Neue";
 	font-size: 	12px;
@@ -25,7 +26,18 @@
     text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 
 }
-.style11 {
+
+.label-text {
+	fill: 	white;
+	font-family: 	"Helvetica Neue";
+	font-size: 	12px;
+	font-weight: 	200;
+	pointer-events: none;
+	-webkit-font-smoothing: antialiased;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+
+}
+.logo-text {
 	fill: 	white;
 	font-family: 	"Helvetica Neue";
 	font-size: 	20pt;
@@ -34,6 +46,7 @@
 	-webkit-font-smoothing: antialiased;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
+
 .style12 { stroke: 	#b0b6bb; stroke-linecap: 	round; stroke-linejoin: 	round; }
 .style13 { fill: 	black; }
 .style14 { fill: 	red; }
@@ -79,7 +92,7 @@
 	pointer-events: none;
 
 }
-.style5 { 
+.pass-group { 
 	fill: none; 
 }
 .style6 {
@@ -91,14 +104,42 @@
 	stroke-linejoin: round;
 	stroke-width: 	2;
 }
-.style8 { 
+
+/* only select these btn if on img input page */
+.viewing-page-3 .img-btn-rect {
 	fill: #a1fcff; 
 	fill-opacity: 0.0;
 	stroke-width: 1; 
-	stroke-color: #fff; 
+	stroke: #fff; 
 }
-.style9 { 
-	fill: 	white; 
+
+.viewing-page-3 .img-btn-rect:hover {
+	fill: #a1fcff; 
+	fill-opacity: 0.5;
+	cursor: pointer;
+	/*stroke-width: 1px; 
+	stroke-color: #fff;  */
+}
+
+/* only select these btn if on text input page */
+.viewing-page-4 .text-btn-rect {
+	fill: #a1fcff; 
+	fill-opacity: 0.0;
+	stroke-width: 1; 
+	stroke: #fff; 
+}
+
+
+.viewing-page-4 .text-btn-rect:hover {
+	fill: #a1fcff; 
+	fill-opacity: 0.5;
+	cursor: pointer;
+	/*stroke-width: 1px; 
+	stroke-color: #fff;  */
+}
+
+.text-container { 
+/*	fill: 	white;  */
 }
 
 /* Message Alert Box 
@@ -112,7 +153,6 @@
   width: 300px;
   margin-bottom: 0px;
   padding: 8px 35px 8px 14px;
-  margin-bottom: 18px;
   color: #c09853;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   background-color: #fcf8e3;
@@ -120,6 +160,7 @@
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+
 }
 
 .alert-heading {
@@ -169,6 +210,9 @@ border-color: #bce8f1;
   filter: alpha(opacity=40);
   cursor: pointer;
 }
+
+/* Popover tooltip 
+*********************************************/
 
 .d3-tip {
   line-height: 1;
@@ -226,6 +270,8 @@ border-color: #bce8f1;
   left: 100%;
 }
 
+/* Pass transition between scroll pages
+*********************************************/
 .viewing-page-2 .fake-content {
 	transition:all 1s ease; 
     -webkit-transform: translate3d(0, -300%, 0) !important;
