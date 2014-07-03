@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bitbucket.org/cicadaDev/utils"
 	"bytes"
 	"net/smtp"
 	"os"
@@ -103,10 +104,10 @@ func (mail *emailer) create(to string, token string, url string) {
 
 	//parse the template
 	t, err := t.Parse(emailTemplate)
-	check(err)
+	utils.Check(err)
 
 	err = t.Execute(&mail.EmailDoc, context)
-	check(err)
+	utils.Check(err)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,5 +121,5 @@ func (mail *emailer) deliver(userEmail string) {
 	addressPort := mail.Server.Address + ":" + mail.Server.Port // in our case, "smtp.google.com:587"
 
 	err := smtp.SendMail(addressPort, mail.Auth, mail.Server.Username, []string{userEmail}, mail.EmailDoc.Bytes())
-	check(err)
+	utils.Check(err)
 }

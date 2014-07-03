@@ -19,11 +19,16 @@ $(function() {
 	$("#confirmPassword").bind('focus change keyup blur', validatePass);
 
 	//disable the signup button. Leave enabled in html for non js browsers
-	$("#submit").addClass("disabled");
+	$("#sign-up-submit").addClass("disabled");
 
 	//signup submit
 	$("form#signup-form").submit(signup);
 	$("form#login-form").submit(login);
+
+	$("#term-btn").click(printTerms);
+
+	//load terms of service text into modal textarea
+	$('#termsModal').on('show.bs.modal', loadTerms);
 
 });
 
@@ -54,7 +59,7 @@ function signup(event, request) {
 	// Disabled form elements will not be serialized.
 	$inputs.prop("disabled", true);
 
-	// fire off the request to /form.php
+	// fire off the request to /signup
 	request = $.ajax({
 		url: "/signup",
 		type: "POST",
@@ -69,16 +74,12 @@ function signup(event, request) {
 
 
 	// callback handler that will be called on failure
-	request.fail(function(jqXHr, textStatus, errorThrown) {
+	request.fail(function(jqXHR, textStatus, errorThrown) {
 
-		var error = jQuery.parseJSON(jqXHr.responseText); //parse json
+		var error = jQuery.parseJSON(jqXHR.responseText); //parse json
 
 		if (error.code == 409) { //conflict - user already exists
-			$(".emailBlock").removeClass("has-success");
-			$(".emailBlock").removeClass("has-warning");
-			$(".emailBlock").addClass("has-error"); //add error red box
-			$("#email-mark").html('<span class="glyphicon glyphicon-remove email-mark"></span>'); //add x
-			$("#submit").addClass("disabled"); //disable signup button, until user changes email
+			validInputResponse(".emailBlock", "#email-mark", "error");
 			$("#email-check").html(error.error); //fill in response
 		} else { //other error ?
 			$("#submit").addClass("disabled"); //disable signup button, until user changes email
@@ -93,6 +94,41 @@ function signup(event, request) {
 		// reenable the inputs
 		$inputs.prop("disabled", false);
 	});
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function printTerms(event) {
+	console.log("printTerms");
+	event.preventDefault();
+	var printText = $("#terms").val();
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function loadTerms(event) {
+	console.log("loadTerms");
+
+	//save pass data on server for each field update
+	var jqxhr = $.get("/assets/terms.txt")
+		.done(function(data) {
+
+			$("textarea#terms").html(data);
+
+		})
+		.fail(function(jqXHR) {
+
+			var error = jQuery.parseJSON(jqXHR.responseText); //parse json
+			$("textarea#terms").html(error.error());
+
+		})
+		.always(function() {
+
+		});
 }
 
 /***********************************************************
@@ -122,7 +158,7 @@ function login(event, request) {
 	// Disabled form elements will not be serialized.
 	$inputs.prop("disabled", true);
 
-	// fire off the request to /form.php
+	// fire off the request
 	request = $.ajax({
 		url: "/login",
 		type: "POST",
@@ -161,26 +197,19 @@ function login(event, request) {
  
  ***********************************************************/
 function verifyEmail() {
-	console.log("email!!")
 
 	var email = $("#email").val();
 	verifymail.verify(email, function(status, message, suggestion) {
 
 		$("#email-check").html(message);
-		//$("#email-check").html('<div id="check-message"></div>');
-		//$("#check-message").html(message);
 
 		if (status < 0) { //email is bad
-			$("#submit").addClass("disabled"); //disable button
-			$("#email-mark").html('<i class="fa fa-times email-mark has-error"></i>'); //add x
-			$(".emailBlock").removeClass("has-success");
-			$(".emailBlock").removeClass("has-warning");
-			$(".emailBlock").addClass("has-error"); //add error red box
+
+			validInputResponse(".emailBlock", "#email-mark", "error");
+
 		} else { //email is good
-			$(".emailBlock").removeClass("has-error");
-			$(".emailBlock").removeClass("has-warning");
-			$(".emailBlock").addClass("has-success");
-			$("#email-mark").html('<i class="fa fa-check email-mark has-success"></i>');
+
+			validInputResponse(".emailBlock", "#email-mark", "success");
 
 			var password = $("#password").val(); //useful when editing email after error, or after password entered
 			if (password.length > 0) {
@@ -207,33 +236,23 @@ function checkPass() {
 
 	if (result.crack_time < 60) //error to short
 	{
-		$("#submit").addClass("disabled");
-		$(".passwordBlock").removeClass("has-success");
-		$(".passwordBlock").removeClass("has-warning");
-		$(".passwordBlock").addClass("has-error");
-		$("#password-mark").html('<i class="fa fa-times pass-mark has-error"></i>');
+		validInputResponse(".passwordBlock", "#password-mark", "error");
 		strengthPassed = false;
 
 	} else if (result.crack_time < 86400) //less than 24hours = warning
 	{
-		$("#submit").addClass("disabled");
-		$(".passwordBlock").removeClass("has-error");
-		$(".passwordBlock").removeClass("has-success");
-		$(".passwordBlock").addClass("has-warning");
-		$("#password-mark").html('<i class="fa fa-exclamation-triangle pass-mark has-warning"></i>');
+
+		validInputResponse(".passwordBlock", "#password-mark", "warning");
 		strengthPassed = true;
 	} else //good
 	{
-		$("#submit").addClass("disabled");
-		$(".passwordBlock").removeClass("has-error");
-		$(".passwordBlock").removeClass("has-warning");
-		$(".passwordBlock").addClass("has-success");
-		$("#password-mark").html('<i class="fa fa-check pass-mark has-success"></i>');
+
+		validInputResponse(".passwordBlock", "#password-mark", "success");
 		strengthPassed = true;
 
 	}
 
-	validatePass();
+	//validatePass();
 
 }
 
@@ -252,26 +271,42 @@ function validatePass() {
 
 		if (strengthPassed == true) //only allow registeration if password strength passes
 		{
-			$("#submit").removeClass("disabled");
-			$(".verifyBlock").removeClass("has-error");
-			$(".verifyBlock").removeClass("has-warning");
-			$(".verifyBlock").addClass("has-success");
-
+			validInputResponse(".verifyBlock", "#validate-mark", "success");
 		}
-		$("#validate-mark").html('<span class="glyphicon glyphicon-ok verify-mark"></span>');
 
 	} else {
 
 		$("#pass-validate").text("Passwords Don't Match");
+		validInputResponse(".verifyBlock", "#validate-mark", "error");
 
-		$("#submit").addClass("disabled");
+	}
 
-		$(".verifyBlock").removeClass("has-success");
-		$(".verifyBlock").removeClass("has-warning");
-		$(".verifyBlock").addClass("has-error");
+}
 
-		$("#validate-mark").html('<span class="glyphicon glyphicon-remove verify-mark"></span>');
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function validInputResponse(messageBlockId, messageMarkId, status) {
 
+	if (status == "success") {
+		$("#sign-up-submit").removeClass("pure-button-disabled");
+		$(messageBlockId).removeClass("has-error");
+		$(messageBlockId).removeClass("has-warning");
+		$(messageBlockId).addClass("has-success");
+		$(messageMarkId).html('<i class="fa fa-check pass-mark has-success"></i>');
+	} else if (status == "warning") {
+		$("#sign-up-submit").removeClass("pure-button-disabled");
+		$(messageBlockId).removeClass("has-error");
+		$(messageBlockId).removeClass("has-success");
+		$(messageBlockId).addClass("has-warning");
+		$(messageMarkId).html('<i class="fa fa-exclamation-triangle pass-mark has-warning"></i>');
+	} else {
+		$("#sign-up-submit").addClass("pure-button-disabled");
+		$(messageBlockId).removeClass("has-success");
+		$(messageBlockId).removeClass("has-warning");
+		$(messageBlockId).addClass("has-error");
+		$(messageMarkId).html('<i class="fa fa-times pass-mark has-error"></i>');
 	}
 
 }

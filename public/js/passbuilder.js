@@ -8,31 +8,25 @@ $(function() {
 		return "<form class='pure-form'><legend>image</legend><fieldset><input id='popInput'></input><button class='pure-button' id='popBtn'>Ok</button></fieldset></form>";
 	});
 
-	var currentEditTarget;
+	var currentEditTarget; //which text field is being edited
+	var passTemplate; //a json object containing all the pass data for this pass
 
-	$(".rgb").ColorPickerSliders({
-		flat: true,
-		swatches: false,
-		order: {
-			rgb: 1,
-			opacity: 2
-		},
-		labels: {
-			rgbred: 'Red',
-			rgbgreen: 'Green',
-			rgbblue: 'Blue'
-		}
-	});
+	//init all color sliders for page 2
+	configColorSlider(".rgb-label", ".label-text");
+	configColorSlider(".rgb-value", ".value-text");
+	configColorSlider(".rgb-background", ".pass-bg");
 
 	//setup one page scroll
 	$(".main").onepage_scroll({
 		sectionContainer: "section",
-		updateURL: false,
+		updateURL: true,
 		responsiveFallback: false,
 		pagination: true,
 		keyboard: true,
 		direction: "vertical",
-		loop: false
+		loop: false,
+		beforeMove: onBeforeScroll,
+		afterMove: onAfterScroll
 	});
 
 	var svg = d3.select("svg");
@@ -58,31 +52,153 @@ $(function() {
 	//Esc key closes popover
 	$(document).on("keyup", onBodyKeyUp);
 
-	//remove popovers when you scroll to the next step
-	$(".main").onepage_scroll({
-		beforeMove: function(index) {
-			closePopOver();
-		},
-		afterMove: function(index) {
-			if (index == 3) {
-				console.log(index);
-				tip.html(function(d) {
-					return "<form class='pure-form'><legend>image</legend><fieldset><input id='pop-image-input' type='file' accept='image/png'></input><button class='pure-button' id='image-pop-btn'>Upload</button></fieldset></form>";
-				});
-
-			} else if (index == 4) {
-				console.log(index);
-				tip.html(function(d) {
-					return "<form class='pure-form'><legend>title</legend><fieldset><input id='popInput' type='text'></input><button class='pure-button' id='popBtn'>Ok</button></fieldset></form>";
-				});
-			}
-
-
-		}
-	});
 
 
 });
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function onBeforeScroll(index) {
+
+	console.log(index);
+	closePopOver(); //remove popovers when you scroll to the next step
+
+	if (index == 2) { //page 1 is get started
+		console.log(index);
+		getStartedSubmit();
+
+	} else if (index == 3) { //page 2 is colors
+		console.log(index);
+		onColorSave();
+	}
+}
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function onAfterScroll(index) {
+
+	if (index == 3) { //set image popover
+		console.log(index);
+
+		tip.html(function(d) {
+			return "<form class='pure-form'><legend>image</legend><fieldset><input id='pop-image-input' type='file' accept='image/png'></input><button class='pure-button' id='image-pop-btn'>Upload</button></fieldset></form>";
+		});
+
+	} else if (index == 4) { //set text input popover
+		console.log(index);
+		tip.html(function(d) {
+			return "<form class='pure-form'><legend>title</legend><fieldset><input id='popInput' type='text'></input><button class='pure-button' id='popBtn'>Ok</button></fieldset></form>";
+		});
+	}
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function getStartedSubmit() {
+
+	var orgName = $("#org-name").val();
+	var passName = $("#pass-name").val();
+	var passId = orgName + "." + passName;
+	var passType = "coupon";
+
+	url = "/accounts/template/" + passType + "/" + passId;
+
+	console.log(url);
+
+	var jqxhr = $.getJSON(url)
+		.done(function(data) {
+
+			console.log(data);
+			passTemplate = data; //store json pass template object
+			initNewPass();
+
+		})
+		.fail(function(jqXHR) {
+
+			var error = jQuery.parseJSON(jqXHR.responseText); //parse json
+			$("textarea#terms").html(error.error());
+
+		})
+		.always(function() {
+
+		});
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function initNewPass() {
+
+	//passTemplate
+
+	//images
+	$(".pass-template .logo-text").text(passTemplate.images[0].image);
+
+
+	//keydoc
+	$(".pass-template .logo-text").text(passTemplate.keyDoc.logoText);
+
+	$(".pass-template .pass-bg").css("fill", passTemplate.keyDoc.backgroundColor);
+	$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
+	$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
+
+
+}
+
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function configColorSlider(sliderClass, changeClass) {
+
+	$(sliderClass).ColorPickerSliders({
+		flat: true,
+		swatches: false,
+		order: {
+			rgb: 1,
+			preview: 2
+		},
+		onchange: function(container, color) {
+			$(changeClass).css("fill", color.tiny.toRgbString())
+		},
+		labels: {
+			rgbred: 'Red',
+			rgbgreen: 'Green',
+			rgbblue: 'Blue'
+		}
+	});
+}
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function onColorSave() {
+
+	bgColor = $(".pass-bg").css("fill");
+	labelColor = $(".label-text").css("fill");
+	valueColor = $(".value-text").css("fill");
+
+
+
+	var passData = {
+		"id": "company.passTemplate",
+		"keyDoc": {
+			"labelColor": labelColor,
+			"foregroundColor": valueColor,
+			"backgroundColor": bgColor
+		}
+	};
+
+	postUpdate(passData);
+}
+
 /***********************************************************
  
  
@@ -130,26 +246,51 @@ function onImageUpload(event) {
 		//get file object
 		var file = $('#pop-image-input')[0].files[0];
 
-		// create reader
-		var reader = new FileReader();
-		reader.readAsDataURL(file); //data encoded url
 
-		reader.onload = function(e) {
-			//select and change the image of the selected field
-			d3.select("#" + currentEditTarget)
-				.attr('xlink:href', e.target.result);
+		var img;
+		var wURL = window.URL || window.webkitURL;
+		img = new Image();
+		var ratio = 0;
+		img.onload = function() {
 
-			var passData = {
-				id: "company.passTemplate",
-				images: [{
-					image: e.target.result,
-					name: currentEditTarget
-				}]
-			};
+			var ratio = this.width / this.height;
 
-			postUpdate(passData);
+			if (ratio > 1.5 || ratio < 0.67) { //thumbnail = 3/2 or 2/3 ratio
+
+				alertDisplay("error", "Aspect ratio should be 3:2 or 2:3. " + ratio);
+
+			} else { //--------------success
+
+				// create reader
+				var reader = new FileReader();
+				reader.readAsDataURL(file); //data encoded url
+
+				reader.onload = function(e) {
+					//select and change the image of the selected field
+					d3.select("#" + currentEditTarget)
+						.attr('xlink:href', e.target.result);
+
+					var passData = {
+						id: "company.passTemplate",
+						images: [{
+							image: e.target.result,
+							name: currentEditTarget
+						}]
+					};
+
+					postUpdate(passData);
+
+				};
+			}
+
+
 
 		};
+
+		img.src = wURL.createObjectURL(file);
+
+
+
 	}
 
 }
@@ -169,8 +310,10 @@ function checkImage() {
 			return false
 		}
 
-		var fsize = $('#pop-image-input')[0].files[0].size; //get file size
-		var ftype = $('#pop-image-input')[0].files[0].type; // get file type
+		var file = $('#pop-image-input')[0].files[0]; //get file
+		var fsize = file.size; //get file size
+		var ftype = file.type; // get file type
+
 
 		//Allowed file size is less than 1 MB (1048576)
 		if (fsize > 1048576) {
@@ -188,7 +331,10 @@ function checkImage() {
 		return false;
 	}
 }
-
+/***********************************************************
+ 
+ 
+ ***********************************************************/
 function postUpdate(jsonData) {
 
 	//save pass data on server for each field update
@@ -213,33 +359,6 @@ function postUpdate(jsonData) {
  
  
  ***********************************************************/
-function onRectOut(event) {
-
-	d3.select(this)
-		.transition()
-		.duration(125)
-		.attr("stroke", "#fff");
-
-}
-
-/***********************************************************
- 
- 
- ***********************************************************/
-function onRectOver(event) {
-
-	d3.select(this)
-		.style("cursor", "pointer")
-		.transition()
-		.duration(125)
-		.attr("stroke", "red");
-
-}
-
-/***********************************************************
- 
- 
- ***********************************************************/
 function onRectClick(event) {
 
 	//get the id of the text under the button
@@ -248,9 +367,21 @@ function onRectClick(event) {
 	//show the popover
 	tip.attr('class', 'd3-tip animate').show(event)
 
-	//set the input box attributes
-	d3.select("popInput")
-		.attr('type', 'text')
+	//update the legend in popover to display the id of the field
+	d3.select(".d3-tip legend")
+		.text(currentEditTarget);
+
+	//only edit place holder if its a text box, not a file input
+	if (d3.select("#popInput")) {
+
+		var target = d3.select("#" + currentEditTarget).text();
+
+		//set the input box attributes
+		d3.select("#popInput")
+			.attr('placeholder', target);
+	}
+
+
 
 	//don't propagate this event to the new event handler below
 	d3.event.stopPropagation()
@@ -331,4 +462,22 @@ function alertDisplay(alertType, alertMessage) {
 	setTimeout(function() {
 		$(".alert").css('display', 'none');
 	}, alertTimeout);
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function buildPass() {
+
+	var passData = {
+		id: "company.passTemplate",
+		images: [{
+			image: e.target.result,
+			name: currentEditTarget
+		}],
+		"keyDoc": {
+			"logoText": fieldValue
+		}
+	};
 }

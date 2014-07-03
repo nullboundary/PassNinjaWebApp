@@ -1,11 +1,8 @@
 package main
 
 import (
+	"bitbucket.org/cicadaDev/utils"
 	"code.google.com/p/go.crypto/bcrypt"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"github.com/gorilla/sessions"
 	"github.com/zenazn/goji"
@@ -18,7 +15,6 @@ import (
 	"path"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -62,6 +58,7 @@ func main() {
 	//goji.Get("/accounts/*", handleTemplates)
 	goji.Get("/verify", handleVerify)
 	goji.Get("/index.html", handleTemplates)
+	goji.Get("/landing.html", handleTemplates)
 	goji.Get("/register_pure.html", handleTemplates)
 
 	//login pages
@@ -69,13 +66,14 @@ func main() {
 	goji.Handle("/accounts/*", accounts) //handle all things that require login
 	accounts.Use(requireLogin)           //login check middleware
 
-	accounts.Get("/accounts/index.html", handleAccountTemplates)   //login root, view current passes
-	accounts.Get("/accounts/builder.html", handleAccountTemplates) //make a pass
-	accounts.Post("/accounts/save", handleAccountSave)             //save pass data
+	accounts.Get("/accounts/index.html", handleAccountTemplates)                     //login root, view current passes
+	accounts.Get("/accounts/template/:passType/:passId", handleAccountPassStructure) //return a json object of the pass type
+	accounts.Get("/accounts/builder.html", handleAccountTemplates)                   //make a pass
+	accounts.Post("/accounts/save", handleAccountSave)                               //save pass data
 
 	goji.NotFound(handleNotFound)
 
-	goji.Use(addDb)
+	goji.Use(utils.AddDb)
 
 	goji.Serve() //set port via cl - example: app -bind :9000
 }
@@ -133,7 +131,7 @@ func handleVerify(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	var pageContent string
 
-	if ok, err := verifyEmailToken(emailTokenKey, emailToken, emailAddr, emailExpire); !ok {
+	if ok, err := utils.VerifyToken(emailTokenKey, emailToken, emailAddr, emailExpire); !ok {
 
 		if err != nil {
 			log.Printf("%s", err) //base64 decode failed
@@ -178,26 +176,65 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
+func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handleAccountPassStructure")
+
+	var templateID string
+
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
+
+	passType := c.URLParams["passType"]
+	if passType == "coupon" {
+		templateID = "pass.com.apple.devpubs.pawPlanet123"
+	} else {
+		log.Println("Pass type not found")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusBadRequest)
+		return
+	}
+
+	newPass := pass{}
+
+	if !db.FindByID("pass", templateID, &newPass) {
+		log.Println("Pass type not found")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusBadRequest)
+		return
+	}
+
+	passId := c.URLParams["passId"]
+	newPass.Id = "pass.ninja." + passId + ".coupon"
+
+	err = utils.WriteJson(res, newPass)
+	utils.Check(err)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
 func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 	log.Printf("handleAccountSave")
 
-	db, err := getDbType(c)
-	check(err)
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
 
 	newPass := pass{}
-	if err := readJson(req, &newPass); err != nil {
+	if err := utils.ReadJson(req, &newPass); err != nil {
 		log.Printf("read json error: %s", err.Error())
-		jsonErrorResponse(res, fmt.Errorf("Error saving pass"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
 		return
 	}
 
 	if !db.Merge("pass", "id", newPass.Id, newPass) {
 		log.Println("db Merge Error")
-		jsonErrorResponse(res, fmt.Errorf("Error saving pass"), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("A conflict has occured updating the pass."), http.StatusInternalServerError)
 		return
 	}
 
-	jsonErrorResponse(res, fmt.Errorf("none"), http.StatusOK) //save is successful!
+	utils.JsonErrorResponse(res, fmt.Errorf("none"), http.StatusOK) //save is successful!
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -208,8 +245,8 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	db, err := getDbType(c)
-	check(err)
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
 
 	log.Println("handleSignup")
 	user := userModel{}
@@ -219,7 +256,7 @@ func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	if ok := sanitizeEmail(email); !ok {
 		log.Printf("Invalid email address %s", email)
-		jsonErrorResponse(res, fmt.Errorf("Invalid email"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email"), http.StatusBadRequest)
 		return
 	}
 
@@ -234,12 +271,12 @@ func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	if ok := db.Add("users", user); !ok {
 		log.Println("Add User Error")
-		jsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
+		utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
 		return
 	}
 
 	expiration := strconv.FormatInt(user.Created.AddDate(0, 0, 1).Unix(), 10) //token expires in 24 hours
-	emailtoken := generateEmailToken(emailTokenKey, user.Email, expiration)   //get token from base64 hmac
+	emailtoken := utils.GenerateToken(emailTokenKey, user.Email, expiration)  //get token from base64 hmac
 
 	url := createRawURL(emailtoken, user.Email, expiration) //generate verification url
 
@@ -259,19 +296,19 @@ func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	db, err := getDbType(c)
-	check(err)
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
 
 	log.Println("handleLogin")
 
 	user := userModel{}
 
-	email, password := req.FormValue("login-email"), req.FormValue("login-password") //TODO: Sanitize forms
+	email, password := req.FormValue("email"), req.FormValue("password") //TODO: Sanitize forms
 
 	//check email with regex
 	if ok := sanitizeEmail(email); !ok {
-		log.Printf("Invalid email address %s", email)
-		jsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
+		log.Printf("malformed email address %s", email)
+		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
 		return
 	}
 
@@ -286,7 +323,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	defer clearPassMemory([]byte(password))
 	if err != nil || bcrypt.CompareHashAndPassword(user.Password, []byte(password)) != nil {
 		log.Println("Password doesn't match")
-		jsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
+		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
 		return
 	}
 
@@ -301,7 +338,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	//err = session.Save(req, res)
 	if err != nil {
 		log.Printf("session save error: %s", err.Error())
-		jsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
 		return
 	}
 
@@ -342,7 +379,7 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 		}
 
 		if session.IsNew { //there is no set session, require login
-			http.Redirect(w, r, "/", http.StatusUnauthorized)
+			http.Redirect(w, r, "/index.html", http.StatusUnauthorized)
 			return
 		}
 
@@ -356,41 +393,6 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 
 	return http.HandlerFunc(fn)
 
-	/*
-		user := &userModel{}
-
-		session, _ := store.Get(r, "session-name")
-
-		//no session id
-		if s.Get("userId") == nil {
-			http.Redirect(res, req, "/login.html", http.StatusUnauthorized)
-			return
-		}
-
-		row, err := r.Table("users").
-			Get(s.Get("userId")).
-			RunRow(DBconn)
-		if err != nil {
-			log.Printf("Error Finding by ID: %s", err)
-			http.Error(res, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		//session userId wasn't found in DB
-		if row.IsNil() {
-			http.Redirect(res, req, "/login.html", http.StatusUnauthorized)
-			return
-		}
-
-		err = row.Scan(&user)
-		if err != nil {
-			log.Printf(err.Error())
-			http.Error(res, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		c.Map(user)
-	*/
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -428,75 +430,12 @@ func initSession(r *http.Request) *sessions.Session {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	addDb Middleware
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func addDb(c *web.C, h http.Handler) http.Handler {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-
-		if c.Env == nil {
-			c.Env = make(map[string]interface{})
-		}
-
-		if _, ok := c.Env["db"]; !ok { //test is the db is already added
-
-			rt := NewReThink()
-			rt.url = os.Getenv("PASS_APP_DB_URL")
-			rt.port = os.Getenv("PASS_APP_DB_PORT")
-			rt.dbName = os.Getenv("PASS_APP_DB_NAME")
-
-			s := Storer(rt) //abstract cb to a Storer
-			s.Conn()
-
-			c.Env["db"] = s //add db
-		}
-
-		h.ServeHTTP(w, r)
-	}
-	return http.HandlerFunc(handler)
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	getDbType
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func getDbType(c web.C) (Storer, error) {
-
-	if v, ok := c.Env["db"]; ok {
-
-		if db, ok := v.(Storer); ok {
-
-			return db, nil //all good
-
-		} else {
-			err := fmt.Errorf("value could not convert to type Storer")
-			return nil, err
-		}
-
-	} else {
-		err := fmt.Errorf("value for key db, not found")
-		return nil, err
-	}
-
-}
-
 func (u *userModel) setPassword(password string) {
 
 	//bcrypt password
 	defer clearPassMemory([]byte(password))
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12) //cost ~400ms on mac-air
-	check(err)
+	utils.Check(err)
 	u.Password = hashedPassword
 
 }
@@ -543,134 +482,6 @@ func createRawURL(token string, userEmail string, expires string) string {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func jsonErrorResponse(res http.ResponseWriter, err error, status int) {
-
-	res.WriteHeader(status)
-
-	type errorMap struct {
-		ErrorStatus int    `json:"code"`
-		Error       string `json:"error"`
-	}
-
-	errorStruct := &errorMap{}
-
-	errorStruct.Error = err.Error()
-	errorStruct.ErrorStatus = status
-
-	if err := writeJson(res, errorStruct); err != nil {
-		log.Printf("json write Error: %s", err.Error())
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func readJson(req *http.Request, data interface{}) error {
-
-	if err := json.NewDecoder(req.Body).Decode(&data); err != nil {
-		return fmt.Errorf("jsonRead Error: %v", err)
-	}
-
-	return nil
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func writeJson(res http.ResponseWriter, dataOut interface{}) error {
-
-	res.Header().Set("Content-Type", "application/json")
-	res.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	res.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
-	res.Header().Set("Access-Control-Allow-Credentials", "true")
-
-	//TODO: Implement pretty printing. //err = json.MarshalIndent(result, "", "  ")
-
-	if err := json.NewEncoder(res).Encode(dataOut); err != nil { //encode the result struct to json and output on response writer
-		return fmt.Errorf("jsonWrite Error: %v", err)
-	}
-
-	return nil
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func generateEmailToken(key string, seeds ...string) string {
-
-	tokenSeed := strings.Join(seeds, "|")
-	hmac := calcHMAC(tokenSeed, key)
-	return base64.URLEncoding.EncodeToString(hmac)
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-// verifyToken returns true if messageMAC is a valid HMAC tag for message.
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func verifyEmailToken(key string, authToken string, seeds ...string) (bool, error) {
-
-	log.Println(authToken)
-
-	decodedMac, err := base64.URLEncoding.DecodeString(authToken)
-	if err != nil {
-		return false, fmt.Errorf("base64 Decode Error: %s", err)
-	}
-	tokenSeed := strings.Join(seeds, "|")
-	return verifyHMAC(tokenSeed, decodedMac, key), nil
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func calcHMAC(message string, key string) []byte {
-
-	mac := hmac.New(sha256.New, []byte(key))
-	n, err := mac.Write([]byte(message))
-	if n != len(message) || err != nil {
-		panic(err)
-	}
-	return mac.Sum(nil)
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func verifyHMAC(message string, macOfMessage []byte, key string) bool {
-
-	mac := hmac.New(sha256.New, []byte(key))
-	n, err := mac.Write([]byte(message))
-	if n != len(message) || err != nil {
-		panic(err)
-	}
-	expectedMAC := mac.Sum(nil)
-	return hmac.Equal(macOfMessage, expectedMAC)
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
 func createFromTemplate(res http.ResponseWriter, layout string, file string) error {
 
 	fp := path.Join("templates", file)
@@ -690,18 +501,26 @@ func createFromTemplate(res http.ResponseWriter, layout string, file string) err
 	}
 
 	templates, err := template.ParseFiles(lp, fp)
-	check(err)
+	utils.Check(err)
 
 	templates.ExecuteTemplate(res, "layout", nil)
 
 	return nil
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
 func sanitizeEmail(email string) bool {
 
 	//http://www.w3.org/TR/html5/forms.html#valid-e-mail-address-list
 	emailRegex := "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
 	r := regexp.MustCompile(emailRegex)
+
+	log.Println(email)
 
 	return r.MatchString(email)
 
