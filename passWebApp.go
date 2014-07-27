@@ -5,6 +5,7 @@ import (
 	"code.google.com/p/go.crypto/bcrypt"
 	"fmt"
 	"github.com/gorilla/sessions"
+	"github.com/lidashuang/goji_gzip"
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
 	"html/template"
@@ -50,6 +51,7 @@ var emailTokenKey = "something-secret" //key for email verification hmac
 func main() {
 
 	//println(runtime.Version())
+	goji.Use(gzip.GzipHandler) //gzip everything
 
 	goji.Post("/signup", handleSignUp)
 	goji.Post("/login", handleLogin)
@@ -76,6 +78,9 @@ func main() {
 	goji.Use(utils.AddDb)
 
 	goji.Serve() //set port via cl - example: app -bind :9000
+
+	//goji.ListenAndServeTLS(":10443", "cert.pem", "key.pem", nil)
+
 }
 
 //////////////////////////////////////////////////////////////////////////
