@@ -48,8 +48,11 @@ $(function() {
 	// click rect
 	svg.selectAll("rect").on("click", onRectClick);
 
-	//Click Popover Ok 
-	$(document).on("click", "#popBtn", onPopoverSubmit);
+	//Click Text Popover Ok 
+	$(document).on("click", "#text-pop-btn", onTextSubmit);
+
+	//Click Text Popover Ok 
+	$(document).on("click", "#bar-pop-btn", onBarcodeSubmit);
 
 	//Click Image Popover Upload
 	$(document).on("click", "#image-pop-btn", onImageUpload);
@@ -161,22 +164,7 @@ function initNewPass() {
 
 	passType = "coupon";
 
-	//images
-	for (var index = 0; index < passTemplate.images.length; ++index) {
-
-		//$(".pass-template ." + passTemplate.images[index].name).text(passTemplate.images[index].image);
-	}
-
-	//Primary Fields
-	/*
-	if (typeof passTemplate.keyDoc[passType].primaryFields !== "undefined") {
-
-		for (var index = 0; index < passTemplate.keyDoc[passType].primaryFields.length; ++index) {
-			$(".pass-template #primaryFieldLabel").text(valueOrDefault(passTemplate.keyDoc[passType].primaryFields[index].label));
-			$(".pass-template #primaryFieldValue").text(passTemplate.keyDoc[passType].primaryFields[index].value);
-		}
-	}
-	*/
+	setPassImages();
 
 	setPassFields(passTemplate.keyDoc[passType].primaryFields, "primary");
 	setPassFields(passTemplate.keyDoc[passType].headerFields, "header"); //set header fields
@@ -186,7 +174,13 @@ function initNewPass() {
 	//keydoc top level
 	$(".pass-template .logo-text").text(passTemplate.keyDoc.logoText);
 
-	$(".pass-template .pass-bg").css("stop-color", passTemplate.keyDoc.backgroundColor);
+	//set bg gradiant color
+	var bgColor = tinycolor(passTemplate.keyDoc.backgroundColor);
+	$(".pass-bg-lite").css("stop-color", bgColor.brighten(20).toRgbString());
+	$(".pass-bg").css("stop-color", passTemplate.keyDoc.backgroundColor);
+	$(".pass-bg-dark").css("stop-color", bgColor.darken(20).toRgbString());
+
+	//set text color
 	$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
 	$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
 
@@ -224,21 +218,9 @@ function setPassFields(fieldArray, fieldType) {
 
 			var groupLoc = 'translate(0,0)';
 			var textX = 0; //the relative position of the text inside the group
-			var textY = 12;
+			var textY = 0;
 
-			//remove group if it already exists
-			var textGroup = d3.select("g#" + fieldType + idIndex);
-			if (!textGroup.empty()) {
-
-				var groupTransform = textGroup.attr('transform');
-				groupLoc = groupTransform.split(" ");
-
-				textGroup.remove();
-				console.log("g#" + fieldType + idIndex);
-				console.log(groupLoc);
-			}
-
-
+			groupLoc = removeTextGroup(fieldType, idIndex);
 
 			//Add pass group
 			var passGroup = d3.select("g.pass-group")
@@ -249,23 +231,30 @@ function setPassFields(fieldArray, fieldType) {
 
 			//Add Label
 			var textLabel = passGroup
-				.insert('text', groupId + ' rect.text-btn-rect')
+				.insert('text', groupId + 'rect.text-btn-rect')
 				//.insert('text', 'rect.aux1')
-				.attr('x', textX)
-				.attr('y', textY)
 				.attr('id', labelId)
 				.classed(JSON.parse('{ "label-text": true,"' + fieldPKType + '": true }')) //add classes label-text and fieldType
 				.text(valueOrDefault(fieldArray[index].label)) //set label text
 				.attr('text-anchor', pKValueToSVG(fieldArray[index].textAlignment)); //horizontal align
 
+			//Set Label Height
+			var labelFontSize = parseInt(textLabel.style('font-size'));
+			textLabel.attr('x', textX)
+				.attr('y', labelFontSize);
+
+
 			//Add Value 
 			var textValue = d3.select(groupId)
-				.insert('text', groupId + ' rect.text-btn-rect')
-				.attr('x', textX)
-				.attr('y', textY + textY + 2) //label line height + space of 2
+				.insert('text', groupId + 'rect.text-btn-rect')
 				.attr('id', valueId)
 				.classed(JSON.parse('{ "value-text": true,"' + fieldPKType + '": true }'))
 				.attr('text-anchor', pKValueToSVG(fieldArray[index].textAlignment)); //horizontal align
+
+			//Set Value Height
+			var valueFontSize = parseInt(textValue.style('font-size'));
+			textValue.attr('x', textX)
+				.attr('y', labelFontSize + valueFontSize + 2);
 
 			setFormatValueField(textValue, fieldArray[index]);
 
@@ -285,6 +274,91 @@ function setPassFields(fieldArray, fieldType) {
 
 		}
 	}
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function setPassImages() {
+
+	//- if image is not in the passTemplate data 
+
+	//- remove image from the svg template
+	//- leave the group rectangle
+
+	//- if image does exist in passTemplate data
+	//- replace or add image to svg template
+
+	var imageTypes = ["logo", "icon", "strip", "background", "footer", "thumbnail"];
+
+	//diff contains what was in imageTypes[] that is not in passTemplate.images[]
+	var diff = $(imageTypes).not(passTemplate.images).get();
+
+	//remove all images from svg if they are not part of the pass data
+	for (var i = 0; i < diff.length; ++i) {
+		var imageSelection = d3.select("g.img-btn-group #" + diff[i]);
+		if (!imageSelection.empty()) { //remove it if its in the svg
+			imageSelection.remove();
+		}
+	}
+
+	//add or replace images that exist in data
+	for (var index = 0; index < passTemplate.images.length; ++index) {
+
+		var imageSelection = d3.select("g.img-btn-group #" + passTemplate.images[index].name);
+
+		if (imageSelection.empty()) { //add image
+
+			var imageGroup = d3.select("g.img-btn-group#" + passTemplate.images[index].name + "-group")
+
+			if (!imageGroup.empty()) {
+
+				var rectWidth = imageGroup.select('rect.img-btn-rect').attr('width');
+				var rectHeight = imageGroup.select('rect.img-btn-rect').attr('height');
+				var rectX = imageGroup.select('rect.img-btn-rect').attr('x');
+				var rectY = imageGroup.select('rect.img-btn-rect').attr('y');
+
+				imageGroup
+					.insert('image', 'rect.img-btn-rect')
+					.attr('id', passTemplate.images[index].name)
+					.attr('xlink:href', passTemplate.images[index].image)
+					.attr('width', rectWidth)
+					.attr('height', rectHeight)
+					.attr('x', rectX)
+					.attr('y', rectY);
+
+			} else {
+				//TODO: some cases group doesn't exist! (eg thumbnail)
+			}
+
+		} else { //replace image
+			imageSelection.attr('src', passTemplate.images[index].image);
+		}
+	}
+}
+
+/***********************************************************
+ 	get the existing text group location, then remove it.
+ 
+ ***********************************************************/
+function removeTextGroup(fieldType, idIndex) {
+
+	//remove group if it already exists
+	var textGroup = d3.select("g#" + fieldType + idIndex);
+	var groupLoc = 'translate(0,0)';
+
+	if (!textGroup.empty()) {
+
+		//get the existing group location
+		groupLoc = textGroup.attr('transform');
+		textGroup.remove(); //remove the group
+
+		console.log("g#" + fieldType + idIndex);
+		console.log(groupLoc);
+	}
+
+	return groupLoc;
 }
 
 
@@ -414,6 +488,8 @@ function pkFieldType(fieldType) {
 
 }
 
+
+
 /***********************************************************
  
  
@@ -483,7 +559,7 @@ function onColorSave() {
  
  
  ***********************************************************/
-function onPopoverSubmit(e) {
+function onTextSubmit(e) {
 
 	e.preventDefault();
 	var btn = $(this);
@@ -503,34 +579,10 @@ function onPopoverSubmit(e) {
 	var groupType = targetGroupId.slice(0, -1); //get the group type
 	var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
 
-	//passTemplate.keyDoc.coupon[currentEditTarget].push(fieldData);
-
 	passTemplate.keyDoc.coupon[currentEditTarget][groupIndex] = fieldData
-
 	setPassFields(passTemplate.keyDoc.coupon[currentEditTarget], groupType);
-	//}
-
-	//$("tspan.label-text." + currentEditTarget).text(fieldLabel);
-	//$("tspan.value-text." + currentEditTarget).text(fieldValue);
-
-	//console.log($("tspan.label-text." + currentEditTarget));
-
-	//d3.select("." + currentEditTarget + " .label-text")
-	//	.text(fieldLabel);
-
-	//d3.select("." + currentEditTarget + " .value-text")
-	//	.text(fieldLabel);
-
-	//d3.select("." + currentEditTarget + "#auxLabel1")
-	//	.text(fieldLabel);
-	//select and change the text of the selected field
-	//d3.select("#" + currentEditTarget)
-	//.attr("class", "title")
-	//.text(fieldValue);
 
 	console.log(currentEditTarget);
-
-	//setPassFields(passTemplate.keyDoc.coupon.auxiliaryFields, "#auxLabel", "#auxValue"); //set auxiliary fields 
 
 	/*
 	var passData = {
@@ -548,6 +600,30 @@ function onPopoverSubmit(e) {
  
  
  ***********************************************************/
+function onBarcodeSubmit(event) {
+
+	console.log("onBarcode");
+	event.preventDefault();
+
+	//get input box values
+	var barData = $(".d3-tip #popData").val();
+	var barEncode = $(".d3-tip #popEncode").val();
+	var barAlt = $(".d3-tip #popAlt").val();
+
+	//remove popover
+	closePopOver();
+
+	passTemplate.keyDoc.barcode.message = barData;
+	passTemplate.keyDoc.barcode.messageEncoding = barEncode;
+	passTemplate.keyDoc.barcode.altText = barAlt;
+
+
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
 function onImageUpload(event) {
 
 	console.log("onUpload");
@@ -559,7 +635,7 @@ function onImageUpload(event) {
 	if (checkImage()) {
 
 		//get file object
-		var file = $('#pop-image-input')[0].files[0];
+		var file = $('.d3-tip #pop-image-input')[0].files[0];
 
 
 		var img;
@@ -568,11 +644,11 @@ function onImageUpload(event) {
 		var ratio = 0;
 		img.onload = function() {
 
-			var ratio = this.width / this.height;
+			var errorMessage = checkImageSize(currentEditTarget, this.width, this.height);
 
-			if (ratio > 1.5 || ratio < 0.67) { //thumbnail = 3/2 or 2/3 ratio
+			if (errorMessage != "") {
 
-				alertDisplay("error", "Aspect ratio should be 3:2 or 2:3. " + ratio);
+				alertDisplay("error", errorMessage);
 
 			} else { //--------------success
 
@@ -582,9 +658,9 @@ function onImageUpload(event) {
 
 				reader.onload = function(e) {
 					//select and change the image of the selected field
-					d3.select("#" + currentEditTarget)
-						.attr('xlink:href', e.target.result);
-
+					//d3.select("#" + currentEditTarget)
+					//	.attr('xlink:href', e.target.result);
+					/*
 					var passData = {
 						id: "company.passTemplate",
 						images: [{
@@ -592,8 +668,29 @@ function onImageUpload(event) {
 							name: currentEditTarget
 						}]
 					};
+					*/
+					var isReplace = false;
+					for (var i = 0; i < passTemplate.images.length; i++) {
+						if (passTemplate.images[i].name == currentEditTarget) {
 
-					postUpdate(passData);
+							passTemplate.images[i].image = e.target.result;
+							isReplace = true;
+						}
+					}
+
+					//if the image is not found, add a new image to the array
+					if (!isReplace) {
+
+						var imageData = {
+							image: e.target.result,
+							name: currentEditTarget
+						};
+
+						passTemplate.images.push(imageData);
+					}
+
+					setPassImages();
+					//postUpdate(passData);
 
 				};
 			}
@@ -619,13 +716,13 @@ function checkImage() {
 	//check whether browser fully supports all File API
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
 
-		if (!$('#pop-image-input').val()) //check empty input filed
+		if (!$('.d3-tip #pop-image-input').val()) //check empty input field
 		{
 			alertDisplay("error", 'no image selected');
 			return false
 		}
 
-		var file = $('#pop-image-input')[0].files[0]; //get file
+		var file = $('.d3-tip #pop-image-input')[0].files[0]; //get file
 		var fsize = file.size; //get file size
 		var ftype = file.type; // get file type
 
@@ -645,6 +742,71 @@ function checkImage() {
 		alertDisplay("error", 'Please upgrade your browser!');
 		return false;
 	}
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function checkImageSize(imageName, imageWidth, imageHeight) {
+
+	var ratio = imageWidth / imageHeight;
+
+	switch (imageName) {
+		case "logo":
+
+			if (imageWidth > 320 || imageHeight > 100) {
+				return "Logo image should be 320px x 100px or less ";
+			} else {
+				return ""
+			}
+
+		case "icon":
+
+			if (imageWidth > 152 || imageHeight > 152) {
+				return "Icon image should be 152px x 152px or less ";
+			} else {
+				return ""
+			}
+
+		case "strip": //TODO: the are some variations based on passtype
+
+			if (imageWidth > 640 || imageHeight > 246) {
+				return "Strip image should be 640 x 246 or less ";
+			} else {
+				return ""
+			}
+
+		case "background":
+
+			if (imageWidth > 360 || imageHeight > 440) {
+				return "Background image should be 360px x 440px or less ";
+			} else {
+				return ""
+			}
+
+		case "footer":
+
+			if (imageWidth > 572 || imageHeight > 30) {
+				return "Footer image should be 572px x 30px or less ";
+			} else {
+				return ""
+			}
+
+		case "thumbnail":
+
+			if (imageWidth > 180 || imageHeight > 180) {
+				return "Thumbnail image should be 180px x 180px or less ";
+			} else if (ratio > 1.5 || ratio < 0.67) { //thumbnail = 3/2 or 2/3 ratio
+				return "Thumbnail aspect ratio should be 3:2 or 2:3. " + ratio;
+			} else {
+				return ""
+			}
+
+		default:
+			return "Image file name invalid for pass type";
+	}
+
 }
 /***********************************************************
  
@@ -682,7 +844,7 @@ function onRectClick(event) {
 	var selectClassType = d3.select(this).attr("class");
 
 	console.log(currentEditTarget);
-	console.log(targetGroupId);
+	//console.log(targetGroupId);
 	console.log(selectClassType);
 
 
@@ -710,6 +872,10 @@ function onRectClick(event) {
 		//IMAGE INPUT
 	} else if (selectClassType == "img-btn-rect") {
 
+		tip.html(function(d) {
+			return d3.select('#tip-image').html(); //loads html div from page
+		});
+
 		//set fieldset image ratio warning
 		d3.select(".d3-tip fieldset")
 			.append("div")
@@ -722,6 +888,16 @@ function onRectClick(event) {
 		//update the legend in popover to display the id of the field
 		d3.select(".d3-tip legend")
 			.text(currentEditTarget + ".png Image");
+
+		//BARCODE
+	} else if (selectClassType == "bar-btn-rect") {
+
+		tip.html(function(d) {
+			return d3.select('#tip-bar').html(); //loads html div from page
+		});
+
+		//show the popover
+		tip.attr('class', 'd3-tip animate').show(event);
 
 	}
 
