@@ -101,11 +101,11 @@ type passKeys struct {
 	//Provide exactly one key—the key that corresponds with the pass’s type. The value of this key is a dictionary containing the keys in “Pass Structure Dictionary Keys.”
 	//////////////////////////////////////////////////////////////////////////
 
-	BoardingPass passStructure `json:"boardingPass,omitempty" gorethink:"boardingPass"` //Information specific to a boarding pass
-	Coupon       passStructure `json:"coupon,omitempty" gorethink:"coupon"`             //Information specific to a coupon.
-	EventTicket  passStructure `json:"eventTicket,omitempty gorethink:"eventTicket"`
-	Generic      passStructure `json:"generic,omitempty" gorethink:"generic"`
-	StoreCard    passStructure `json:"storeCard,omitempty" gorethink:"storeCard"`
+	BoardingPass passStructure `json:"boardingPass,omitempty" gorethink:"boardingPass,omitempty"` //Information specific to a boarding pass
+	Coupon       passStructure `json:"coupon,omitempty" gorethink:"coupon,omitempty"`             //Information specific to a coupon.
+	EventTicket  passStructure `json:"eventTicket,omitempty" gorethink:"eventTicket,omitempty"`
+	Generic      passStructure `json:"generic,omitempty" gorethink:"generic,omitempty"`
+	StoreCard    passStructure `json:"storeCard,omitempty" gorethink:"storeCard,omitempty"`
 
 	//////////////////////////////////////////////////////////////////////////
 	// Visual Appearance Keys

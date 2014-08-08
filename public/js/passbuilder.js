@@ -8,13 +8,13 @@ $(function() {
 	var currentEditTarget; //which text field is being edited
 	var targetGroupId;
 	var passTemplate; //a json object containing all the pass data for this pass
-
-
+	var passType = "coupon";
 
 	//set a default tip
 	tip = d3.tip().attr('class', 'd3-tip').offset([-8, 0]).html(function(d) {
 		return d3.select('#tip-image').html();
 	});
+
 
 	//init all color sliders for page 2
 	configColorSlider(".rgb-label", ".label-text");
@@ -38,7 +38,7 @@ $(function() {
 	//.attr('width', w)
 	//.attr('height', h);
 
-	svg.call(tip);
+	//svg.call(tip);
 
 	//hover rect
 	//svg.selectAll("rect")
@@ -56,6 +56,12 @@ $(function() {
 
 	//Click Image Popover Upload
 	$(document).on("click", "#image-pop-btn", onImageUpload);
+
+	//Select PassType
+	$(document).on("click", ".pass-thumb-select", onSelectType);
+
+	//Click Next Page Button
+	$(document).on("click", "#next-button", onNextPage);
 
 	//Esc key closes popover
 	$(document).on("keyup", onBodyKeyUp);
@@ -75,12 +81,11 @@ function onBeforeScroll(index) {
 		pageBeforeIndex = index;
 		console.log("before " + index);
 		closePopOver(); //remove popovers when you scroll to the next step
-
-		if (index == 2) { //page 1 is get started
+		if (index == 3) { //page 2 is get started
 
 			getStartedSubmit();
 
-		} else if (index == 3) { //page 2 is colors
+		} else if (index == 4) { //page 3 is colors
 
 			onColorSave();
 		}
@@ -96,14 +101,26 @@ function onAfterScroll(index) {
 		pageAfterIndex = index;
 		console.log("after " + index);
 
-		if (index == 3) { //set image popover
+		if (index == 3) {
+
+			//update color sliders to match keydoc template
+			var colorValue = $(".label-text").css("fill");
+			$(".rgb-label").trigger("colorpickersliders.updateColor", colorValue);
+
+			colorValue = $(".value-text").css("fill");
+			$(".rgb-value").trigger("colorpickersliders.updateColor", colorValue);
+
+			colorValue = $(".pass-bg").css("stop-color");
+			$(".rgb-background").trigger("colorpickersliders.updateColor", colorValue);
+
+		} else if (index == 4) { //set image popover
 
 
 			tip.html(function(d) {
 				return d3.select('#tip-image').html(); //loads html div from page
 			});
 
-		} else if (index == 4) { //set text input popover
+		} else if (index == 5) { //set text input popover
 
 			tip.html(function(d) {
 				return d3.select('#tip-text').html(); //loads html div from page
@@ -126,43 +143,25 @@ function getStartedSubmit() {
 	var passDesc = $("#pass-desc").val();
 
 	var passId = orgStr + "." + passName;
-	var passType = "coupon"; //TODO: make selectable
 
-	var url = "/accounts/template/" + passType + "/" + passId;
-	var uri = encodeURI(url);
-	console.log(uri);
 
-	var jqxhr = $.getJSON(uri)
-		.done(function(data) {
+	passTemplate.id = "pass.ninja." + passId + "." + passType;
+	passTemplate.keyDoc.description = passDesc;
+	passTemplate.keyDoc.organizationName = orgName;
 
-			console.log(data);
-			passTemplate = data; //store json pass template object
-			passTemplate.keyDoc.description = passDesc;
-			passTemplate.keyDoc.organizationName = orgName;
+	//initNewPass();
 
-			initNewPass();
 
-		})
-		.fail(function(jqXHR) {
-
-			var error = jQuery.parseJSON(jqXHR.responseText); //parse json
-			$("textarea#terms").html(error.error());
-
-		})
-		.always(function() {
-
-		});
 }
 
 /***********************************************************
- 
+ 	Build a new SVG pass representation from the data
  
  ***********************************************************/
 function initNewPass() {
 
 	//passTemplate
-
-	passType = "coupon";
+	console.log("passType " + passType);
 
 	setPassImages();
 
@@ -176,13 +175,21 @@ function initNewPass() {
 
 	//set bg gradiant color
 	var bgColor = tinycolor(passTemplate.keyDoc.backgroundColor);
+
+	d3.select(".pass-bg-lite").style("stop-color", bgColor.brighten(20).toRgbString());
+	d3.select(".pass-bg").style("stop-color", passTemplate.keyDoc.backgroundColor);
+	d3.select(".pass-bg-dark").style("stop-color", bgColor.darken(20).toRgbString());
+	/*
 	$(".pass-bg-lite").css("stop-color", bgColor.brighten(20).toRgbString());
 	$(".pass-bg").css("stop-color", passTemplate.keyDoc.backgroundColor);
 	$(".pass-bg-dark").css("stop-color", bgColor.darken(20).toRgbString());
+	*/
 
 	//set text color
-	$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
-	$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
+	d3.select(".pass-template .value-text").style("fill", passTemplate.keyDoc.foregroundColor);
+	d3.select(".pass-template .value-text").style("fill", passTemplate.keyDoc.labelColor);
+	//$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
+	//$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
 
 
 
@@ -207,56 +214,40 @@ function setPassFields(fieldArray, fieldType) {
 	//if field array exists or not
 	if (typeof fieldArray !== "undefined") {
 
+		var fieldPKType = pkFieldType(fieldType); //auxiliaryFields
+
 		for (var index = 0; index < fieldArray.length; ++index) {
 
 			var idIndex = index + 1; //id count starts at 1. 
-			var groupId = 'g#' + fieldType + idIndex; //g#aux1
-			var labelId = fieldType + 'Label' + idIndex; //auxLabel1
-			var valueId = fieldType + 'Value' + idIndex; //auxValue1
-			var fieldPKType = pkFieldType(fieldType); //auxiliaryFields
 
-
-			var groupLoc = 'translate(0,0)';
-			var textX = 0; //the relative position of the text inside the group
-			var textY = 0;
-
-			groupLoc = removeTextGroup(fieldType, idIndex);
+			//remove groups that already exist - get old group x&Y loc
+			var groupLoc = removeTextGroup(fieldType, idIndex);
 
 			//Add pass group
 			var passGroup = d3.select("g.pass-group")
 				.append('g')
-				.attr('transform', groupLoc + 'scale(1)')
+				.attr('transform', groupLoc)
 				.attr('class', 'text-btn-group')
 				.attr('id', fieldType + idIndex);
 
-			//Add Label
-			var textLabel = passGroup
-				.insert('text', groupId + 'rect.text-btn-rect')
-				//.insert('text', 'rect.aux1')
-				.attr('id', labelId)
-				.classed(JSON.parse('{ "label-text": true,"' + fieldPKType + '": true }')) //add classes label-text and fieldType
-				.text(valueOrDefault(fieldArray[index].label)) //set label text
-				.attr('text-anchor', pKValueToSVG(fieldArray[index].textAlignment)); //horizontal align
+			if (fieldType == "primary") { //primary fields have value then label
 
-			//Set Label Height
-			var labelFontSize = parseInt(textLabel.style('font-size'));
-			textLabel.attr('x', textX)
-				.attr('y', labelFontSize);
+				//Add Value Element
+				var valueElem = addText("value", passGroup, fieldType, fieldArray, index);
+				//Add Label Element
+				var labelElem = addText("label", passGroup, fieldType, fieldArray, index);
 
+			} else { //all other fields are label then value
 
-			//Add Value 
-			var textValue = d3.select(groupId)
-				.insert('text', groupId + 'rect.text-btn-rect')
-				.attr('id', valueId)
-				.classed(JSON.parse('{ "value-text": true,"' + fieldPKType + '": true }'))
-				.attr('text-anchor', pKValueToSVG(fieldArray[index].textAlignment)); //horizontal align
+				//Add Label Element
+				var labelElem = addText("label", passGroup, fieldType, fieldArray, index);
+				//Add Value Element
+				var valueElem = addText("value", passGroup, fieldType, fieldArray, index);
 
-			//Set Value Height
-			var valueFontSize = parseInt(textValue.style('font-size'));
-			textValue.attr('x', textX)
-				.attr('y', labelFontSize + valueFontSize + 2);
+			}
 
-			setFormatValueField(textValue, fieldArray[index]);
+			labelElem.text(valueOrDefault(fieldArray[index].label)) //set label text
+			setFormatValueField(valueElem, fieldArray[index]); //set value text
 
 			//get group bounding box size
 			var el = document.getElementById(fieldType + idIndex);
@@ -264,16 +255,137 @@ function setPassFields(fieldArray, fieldType) {
 
 			console.log(rectBBox.width + " " + rectBBox.height)
 
+			var labelWidth = setTextSize(labelElem, passGroup, fieldArray.length);
+			var valueWidth = setTextSize(valueElem, passGroup, fieldArray.length);
+
+			var rectWidth; //rect width is assigned to whichever is wider
+			if (labelWidth >= valueWidth) {
+				rectWidth = labelWidth;
+			} else {
+				rectWidth = valueWidth;
+			}
+
 			//make rect for hovering - size of group element
-			passGroup.append('rect')
+			var rect = passGroup.append('rect')
 				.attr('class', 'text-btn-rect')
 				.attr('data-target', fieldPKType)
-				.attr('width', rectBBox.width + textX)
+				.attr('width', rectWidth)
 				.attr('height', rectBBox.height)
 				.on("click", onRectClick); //add event to new rect
 
 		}
+
 	}
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function addText(textType, passGroup, fieldType, fieldArray, fieldIndex) {
+
+	var idIndex = fieldIndex + 1; //id count starts at 1. 
+	var groupId = 'g#' + fieldType + idIndex; //g#aux1
+	var textId = fieldType + "-" + textType + idIndex; //aux-label1
+	var fieldPKType = pkFieldType(fieldType); //auxiliaryFields
+	var textX = 0; //the relative position of the text inside the group
+	var textY = 0;
+
+	//Add Text Element
+	var textElem = passGroup
+		.insert('text', groupId + 'rect.text-btn-rect')
+		.attr('id', textId)
+		.classed(JSON.parse('{ "' + textType + '-text": true,"' + fieldPKType + '": true }')) //add classes label-text and fieldType
+		.attr('text-anchor', pKValueToSVG(fieldArray[fieldIndex].textAlignment)); //horizontal align
+
+	//Set Text Element X & Y
+	var elemFontSize = parseInt(textElem.style('font-size'));
+	var firstElemId = d3.select(groupId + ' text').attr('id'); //get the first textElem in the group
+
+	if (firstElemId == textId) { //this is the first text element (usually label)
+
+		textElem.attr('x', textX)
+			.attr('y', elemFontSize);
+
+	} else { //this is the second text element (usually value)
+
+		var firstLineSize = parseInt(d3.select(groupId + ' text').style('font-size'));
+		textElem.attr('x', textX)
+			.attr('y', elemFontSize + firstLineSize + elemFontSize);
+	}
+
+	return textElem;
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function setTextSize(element, passGroup, numOfField) {
+
+	console.log(element.attr('id'));
+	var translate = d3.transform(passGroup.attr("transform")).translate;
+	var textMargin = translate[0] * 2; //TODO fix 
+
+	if (numOfField > 1) { //re-adjust the margin for multi-field values
+		textMargin = 17;
+	}
+
+	var maxWidth = (315 / numOfField) - textMargin;
+	var currentFontSize = parseInt(element.style('font-size'));
+	var textLength = 0;
+	var groupBBox = passGroup.node().getBoundingClientRect();
+	var textWidth = element.node().getComputedTextLength();
+
+	if (textWidth >= maxWidth) {
+		console.log("maxField:" + maxWidth + " box too big: " + textWidth);
+		element.style('font-size', function(d) {
+			console.log(maxWidth / this.getComputedTextLength() * currentFontSize);
+			return (maxWidth / this.getComputedTextLength() * currentFontSize) + "px";
+		});
+
+		textLength = element.node().getComputedTextLength();
+		console.log("textLength " + textLength);
+
+	} else { //Not bigger then maxWidth
+		element.style('font-size', null);
+		textLength = textWidth;
+	}
+
+	return textLength;
+
+}
+
+function maxFieldWidth(element) {
+	/*
+	var elemClass = element.attr('class').split(" ");
+	var fieldType = elemClass[1]; //primaryFields
+
+	switch (fieldType) {
+		case undefined:
+
+			return 315;
+
+		case "primaryFields":
+
+			return 315; //passwidth
+
+		case "headerFields":
+
+			passTemplate.
+			return "auxiliaryFields";
+
+		case "secondaryFields":
+			return "end";
+
+		case "auxiliaryFields":
+
+			return "inherit";
+
+		default:
+			def;
+	}
+	*/
 }
 
 /***********************************************************
@@ -303,37 +415,39 @@ function setPassImages() {
 		}
 	}
 
-	//add or replace images that exist in data
-	for (var index = 0; index < passTemplate.images.length; ++index) {
+	if (passTemplate.images != null) {
+		//add or replace images that exist in data
+		for (var index = 0; index < passTemplate.images.length; ++index) {
 
-		var imageSelection = d3.select("g.img-btn-group #" + passTemplate.images[index].name);
+			var imageSelection = d3.select("g.img-btn-group #" + passTemplate.images[index].name);
 
-		if (imageSelection.empty()) { //add image
+			if (imageSelection.empty()) { //add image
 
-			var imageGroup = d3.select("g.img-btn-group#" + passTemplate.images[index].name + "-group")
+				var imageGroup = d3.select("g.img-btn-group#" + passTemplate.images[index].name + "-group")
 
-			if (!imageGroup.empty()) {
+				if (!imageGroup.empty()) {
 
-				var rectWidth = imageGroup.select('rect.img-btn-rect').attr('width');
-				var rectHeight = imageGroup.select('rect.img-btn-rect').attr('height');
-				var rectX = imageGroup.select('rect.img-btn-rect').attr('x');
-				var rectY = imageGroup.select('rect.img-btn-rect').attr('y');
+					var rectWidth = imageGroup.select('rect.img-btn-rect').attr('width');
+					var rectHeight = imageGroup.select('rect.img-btn-rect').attr('height');
+					var rectX = imageGroup.select('rect.img-btn-rect').attr('x');
+					var rectY = imageGroup.select('rect.img-btn-rect').attr('y');
 
-				imageGroup
-					.insert('image', 'rect.img-btn-rect')
-					.attr('id', passTemplate.images[index].name)
-					.attr('xlink:href', passTemplate.images[index].image)
-					.attr('width', rectWidth)
-					.attr('height', rectHeight)
-					.attr('x', rectX)
-					.attr('y', rectY);
+					imageGroup
+						.insert('image', 'rect.img-btn-rect')
+						.attr('id', passTemplate.images[index].name)
+						.attr('xlink:href', passTemplate.images[index].image)
+						.attr('width', rectWidth)
+						.attr('height', rectHeight)
+						.attr('x', rectX)
+						.attr('y', rectY);
 
-			} else {
-				//TODO: some cases group doesn't exist! (eg thumbnail)
+				} else {
+					//TODO: some cases group doesn't exist! (eg thumbnail)
+				}
+
+			} else { //replace image
+				imageSelection.attr('src', passTemplate.images[index].image);
 			}
-
-		} else { //replace image
-			imageSelection.attr('src', passTemplate.images[index].image);
 		}
 	}
 }
@@ -507,9 +621,6 @@ function configColorSlider(sliderClass, changeClass) {
 			preview: 2
 		},
 		onchange: function(container, color) {
-			//console.log(color);
-			//console.log(tinycolor);
-
 
 			if (changeClass == ".pass-bg") { //adjust values gradiant in pass background
 
@@ -517,11 +628,9 @@ function configColorSlider(sliderClass, changeClass) {
 				$(changeClass).css("stop-color", color.tiny.toRgbString());
 				$(".pass-bg-dark").css("stop-color", color.tiny.darken(15).toRgbString());
 
-			} else {
+			} else { //adjust values of all the other classes
 				$(changeClass).css("fill", color.tiny.toRgbString());
 			}
-
-
 
 		},
 		labels: {
@@ -541,10 +650,12 @@ function onColorSave() {
 	labelColor = $(".label-text").css("fill");
 	valueColor = $(".value-text").css("fill");
 
-
+	//set colors in keyDoc
+	passTemplate.keyDoc.foregroundColor = valueColor;
+	passTemplate.keyDoc.labelColor = labelColor;
 
 	var passData = {
-		"id": "company.passTemplate",
+		"id": passTemplate.id,
 		"keyDoc": {
 			"labelColor": labelColor,
 			"foregroundColor": valueColor,
@@ -576,11 +687,15 @@ function onTextSubmit(e) {
 		"value": fieldValue
 	};
 
-	var groupType = targetGroupId.slice(0, -1); //get the group type
+	var groupType = targetGroupId.slice(0, -1); //get the group type: aux
 	var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
 
-	passTemplate.keyDoc.coupon[currentEditTarget][groupIndex] = fieldData
-	setPassFields(passTemplate.keyDoc.coupon[currentEditTarget], groupType);
+	passTemplate.keyDoc[passType][currentEditTarget][groupIndex] = fieldData //set value into keyDoc 
+	setPassFields(passTemplate.keyDoc[passType][currentEditTarget], groupType);
+
+	//set text color
+	$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
+	$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
 
 	console.log(currentEditTarget);
 
@@ -657,18 +772,7 @@ function onImageUpload(event) {
 				reader.readAsDataURL(file); //data encoded url
 
 				reader.onload = function(e) {
-					//select and change the image of the selected field
-					//d3.select("#" + currentEditTarget)
-					//	.attr('xlink:href', e.target.result);
-					/*
-					var passData = {
-						id: "company.passTemplate",
-						images: [{
-							image: e.target.result,
-							name: currentEditTarget
-						}]
-					};
-					*/
+
 					var isReplace = false;
 					for (var i = 0; i < passTemplate.images.length; i++) {
 						if (passTemplate.images[i].name == currentEditTarget) {
@@ -700,8 +804,6 @@ function onImageUpload(event) {
 		};
 
 		img.src = wURL.createObjectURL(file);
-
-
 
 	}
 
@@ -851,16 +953,16 @@ function onRectClick(event) {
 	//TEXT INPUT - only edit place holder if its a text box, not a image file input
 	if (selectClassType == "text-btn-rect") {
 
-		var target = d3.select(".label-text." + currentEditTarget).text();
-		console.log(target);
+		var targetLabel = d3.select("g#" + targetGroupId + " .label-text." + currentEditTarget).text();
+		console.log(targetLabel);
 		//set the input box attributes for the label
 		d3.select("#popLabel")
-			.attr('value', target);
+			.attr('value', targetLabel);
 
-		var target = d3.select(".value-text." + currentEditTarget).text();
+		var targetValue = d3.select("g#" + targetGroupId + " .value-text." + currentEditTarget).text();
 		//set the input box attributes for the value
 		d3.select("#popValue")
-			.attr('value', target);
+			.attr('value', targetValue);
 
 		//show the popover
 		tip.attr('class', 'd3-tip animate').show(event);
@@ -902,12 +1004,74 @@ function onRectClick(event) {
 	}
 
 
-
 	//don't propagate this event to the new event handler below
 	d3.event.stopPropagation()
 
 	//assign a new event handler to handle when you click outside the popover. 
 	$(document).on("click", "body", onBodyClick);
+
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function onNextPage(event) {
+	$(".main").moveDown();
+}
+
+function onSelectType(event) {
+
+	console.log("selectpass");
+
+	var id = $(event.target).attr('id');
+	console.log(id);
+	passType = id;
+
+	var url = "/accounts/template/" + passType;
+	var uri = encodeURI(url);
+	console.log(uri);
+
+	var jqxhr = $.getJSON(uri)
+		.done(function(data) {
+
+			console.log(data);
+			passTemplate = data; //store json pass template object
+			loadSVG(passType);
+			$("a.next").show(); //show next arrow
+
+		})
+		.fail(function(jqXHR) {
+
+			var error = jQuery.parseJSON(jqXHR.responseText); //parse json
+			alertDisplay("error", error.error());
+
+		})
+		.always(function() {
+
+		});
+}
+
+/***********************************************************
+ 
+ 
+ ***********************************************************/
+function loadSVG(passType) {
+	console.log("loadSVG");
+
+	var url = "/assets/svg/" + passType + ".svg";
+	var uri = encodeURI(url);
+	console.log(uri);
+
+	//load svg xml + place into document
+	d3.xml(uri, function(xml) {
+
+		d3.select("div.fake-content").node().appendChild(xml.documentElement);
+		var svg = d3.select("svg");
+		svg.call(tip);
+		initNewPass(); //setup template pass
+
+	});
 
 }
 
@@ -982,22 +1146,4 @@ function alertDisplay(alertType, alertMessage) {
 	setTimeout(function() {
 		$(".alert").css('display', 'none');
 	}, alertTimeout);
-}
-
-/***********************************************************
- 
- 
- ***********************************************************/
-function buildPass() {
-
-	var passData = {
-		id: "company.passTemplate",
-		images: [{
-			image: e.target.result,
-			name: currentEditTarget
-		}],
-		"keyDoc": {
-			"logoText": fieldValue
-		}
-	};
 }

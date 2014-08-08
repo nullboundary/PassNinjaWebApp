@@ -68,10 +68,10 @@ func main() {
 	goji.Handle("/accounts/*", accounts) //handle all things that require login
 	accounts.Use(requireLogin)           //login check middleware
 
-	accounts.Get("/accounts/index.html", handleAccountTemplates)                     //login root, view current passes
-	accounts.Get("/accounts/template/:passType/:passId", handleAccountPassStructure) //return a json object of the pass type
-	accounts.Get("/accounts/builder.html", handleAccountTemplates)                   //make a pass
-	accounts.Post("/accounts/save", handleAccountSave)                               //save pass data
+	accounts.Get("/accounts/index.html", handleAccountTemplates)             //login root, view current passes
+	accounts.Get("/accounts/template/:passType", handleAccountPassStructure) //return a json object of the pass type
+	accounts.Get("/accounts/builder.html", handleAccountTemplates)           //make a pass
+	accounts.Post("/accounts/save", handleAccountSave)                       //save pass data
 
 	goji.NotFound(handleNotFound)
 
@@ -190,9 +190,19 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 	utils.Check(err)
 
 	passType := c.URLParams["passType"]
-	if passType == "coupon" {
-		templateID = "pass.com.apple.devpubs.pawPlanet123"
-	} else {
+
+	switch passType {
+	case "boardingPass":
+		templateID = "pass.ninja.pass.template.boardingpass" //TODO spelling mistake in DB
+	case "coupon":
+		templateID = "pass.ninja.pass.template.coupon"
+	case "eventTicket":
+		templateID = "pass.ninja.pass.template.eventTicket"
+	case "storeCard":
+		templateID = "pass.ninja.pass.template.storeCard"
+	case "generic":
+		templateID = "pass.ninja.pass.template.generic"
+	default:
 		log.Println("Pass type not found")
 		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusBadRequest)
 		return
@@ -200,14 +210,14 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 
 	newPass := pass{}
 
-	if !db.FindByID("pass", templateID, &newPass) {
+	if !db.FindByID("passTemplate", templateID, &newPass) {
 		log.Println("Pass type not found")
 		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusBadRequest)
 		return
 	}
 
-	passId := c.URLParams["passId"]
-	newPass.Id = "pass.ninja." + passId + ".coupon"
+	//passId := c.URLParams["passId"]
+	//newPass.Id = "pass.ninja." + passId + "." + passType
 
 	err = utils.WriteJson(res, newPass)
 	utils.Check(err)

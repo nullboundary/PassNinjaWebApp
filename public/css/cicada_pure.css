@@ -1,5 +1,8 @@
-/* ATTN: This is mobile first CSS - to update 786px and up screen width use the media query near the bottom of the document! */
-/* Global Styles
+/* ATTN: This is mobile first CSS - to update 786px and up screen width 
+use the media query near the bottom of the document! */
+
+/********************************************/
+/* Global Styles 
 *********************************************/
 body {
 font-family: 'Roboto','Helvetica Neue', sans-serif;
@@ -10,6 +13,8 @@ position: relative; */
 margin: 0;
 height: 100%;
 -webkit-font-smoothing: antialiased;
+-moz-font-smoothing: antialiased;
+font-smoothing: antialiased;
 }
 
 html, button, input, select, textarea,
@@ -17,18 +22,17 @@ html, button, input, select, textarea,
 /* Set your content font stack here: */
 font-family: 'Roboto','Helvetica Neue', sans-serif;
 }
-
-/*
-* -- MENU STYLES --
-* I want to customize how my .pure-menu looks at the top of the page
-*/
+/********************************************/
+/* Menu Styles
+*********************************************/
+/* I want to customize how my .pure-menu looks at the top of the page */
 .home-menu {
 /*  padding: 0.5em;
 text-align: center;
 box-shadow: 0 1px 1px rgba(0,0,0, 0.10); */
 }
 .home-menu.pure-menu-open {
-/* background: #2d3e50; */
+background: #2C3E50; */
 }
 .pure-menu.pure-menu-open.pure-menu-fixed {
 /* Fixed menus normally have a border at the bottom.
@@ -45,16 +49,16 @@ font-size: 120%; */
 /* color: white; */
 }
 .home-menu a {
-/* color: #6FBEF3; */
+/*color: #C0392B; */
 }
 .home-menu li a:hover,
 .home-menu li a:focus {
-/*  background: none;
+background: none;
 border: none;
-color: #AECFE5; */
+color: #C0392B; 
 }
-
-/* Scroll wrapper
+/********************************************/
+/* Scroll Wrapper 
 *********************************************/
 .wrapper {
 height: 100% !important;
@@ -72,7 +76,7 @@ text-align: center;
 }
 h1 {
 font-family: 'Helvetica Neue', sans-serif;
-margin-top: 70px;
+margin-top: 50px;
 color: #000;
 margin-bottom: 5px;
 font-size: 70px;
@@ -96,45 +100,91 @@ h2 {
 color: #6D461D;
 font-weight: 100;
 margin-top: 0;
-margin-bottom: 10px;
+margin-bottom: 40px;
 }
-
-/* Main
+/********************************************/
+/* Main Styles
 *********************************************/
 .main {
 margin: 0;
-
 }
 .page1 {
 background: #7F8C8D;
 }
-.page1 .form-horizontal {
-/* margin-left: 120px;
-margin-right: 120px; */
-}
+
 .page2 {
 background: #E2E4E7;
 }
+
+/********************************************/
+/* Pass Type Selection Grid CSS
+*********************************************/
+
+/* Passtype Selection Grid */
+.Passtype_grid {
+  margin: 0px;
+  padding: 10px;
+  background: #7F8C8D;
+  border: 1px solid #000;
+  text-align: center;
+}
+/* Responsive Image Control in Passtype_grid */
+.pure-img-responsive {
+max-width: 70%;
+height: auto;
+}
+
+.passtype_lable {
+text-align: center;
+margin: 0;
+padding: 0;
+text-align: center;
+color: #6D461D;
+}
+
+
 .page3 {
 background: #95A5A6;
 }
+.page4 {
+background: #7F8C8D;
+}
 
-/* btn
+
+/********************************************/
+/* Pricing Tables
+
+.pricing-tables {
+margin-bottom: 3.125em;
+text-align: center;
+border: 1px solid #ddd;
+margin: 0 0.5em 2em;
+padding: 0 0 3em;
+}
+.pricing-table-free .pricing-table-header {
+background: #519251;
+}
+.pricing-table-header {
+background: #111;
+color: #fff;
+}
+.pricing-table-list {
+list-style-type: none;
+margin: 0;
+padding: 0;
+text-align: center;
+}
 *********************************************/
-.btn {
+
+/* btn ????
+*********************************************/
+.button-large {
 border-radius: 3px;
 }
 
-/* btn
-*********************************************/
-.vcenter {
-display: inline-block;
-vertical-align: middle;
-float: none;
-}
 
-/* Pass chooser
-*********************************************/
+/* Pass Chooser
+*********************************************
 div.clear
 {
 clear: both;
@@ -183,8 +233,10 @@ left: 0;
 top: 0;
 visibility:hidden;
 }
+*/
 
-/* Message Alert Box
+/********************************************/
+/* Message Alert Box Styles
 *********************************************/
 .alert {
 position: fixed;
@@ -281,7 +333,7 @@ cursor: pointer;
 .help-block {
 	font-family: 'Roboto','Helvetica Neue', sans-serif;
 	font-size: 0.9em;
-	
+
 }
 
 .has-error {
@@ -296,7 +348,7 @@ cursor: pointer;
 	color: orange;
 }
 
-
+/********************************************/
 /* On tablets and other medium-sized devices
 *********************************************/
 @media (min-width: 48em) {
@@ -312,3 +364,4 @@ text-align: left;
 float: right;
 padding-top: 10px;
 }
+
