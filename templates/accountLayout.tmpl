@@ -4,11 +4,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Passbook pass tool service">
-    <meta name="author" content="cicada">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pass Ninja</title>
+    <meta name="description" content="Passbook Builder">
+    <meta name="keywords" content="passbook, pass, pass ninja, wallet, ibeacon, mobile pass, coupon">
+    <meta name="author" content="Pass Ninja">
     <link rel="shortcut icon" href="/assets/img/favicon_ticket.ico">
-    <title>Pass Ninja - Passbook service</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
@@ -26,22 +29,68 @@
   </head>
 
   <body>
-            <!-- Nav
-        ================================================== -->
-        <nav class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
-          <a href="#" class="pure-menu-heading">
-            <img src="/assets/img/logo_R_B_Light_150.svg" alt="Pass Ninja"></img>
+        <!-- ============================================================ -->
+        <!-- Nav bar
+        ================================================================= -->
+        <nav class="home-menu pure-menu pure-menu-open pure-menu-horizontal">
+          <a href="#" class="pure-menu-heading" id="header">
+            <img src="/assets/img/logo.svg" alt="Pass Ninja"></img>
           </a>
           <ul>
-            <li><a href="#">Logout</a></li>
-            
+            <li><form method="post" action="/logout"><button type="submit">Logout</button></form></li>
           </ul>
         </nav>
-    
+       <!-- ============================================================ -->
+        <!-- Contents (below Nav bar)
+        ================================================================= -->
         <div class="wrapper">
           <div class="main">
             <!-- Page 1 ================== -->
             <section class="page1">
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+                  <h1>Pass Type</h1>
+                  <h2>Select the type of pass you want to create! </h2>
+                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3 "></div>
+              </div>
+              <!-- Thumbnail Grid of Pass Type Selection -->
+              <div class="Passtype_grid pure-g">
+                <div class="pure-u-1 pure-u-md-1-5">
+                  <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/assets/img/boarding_01_thumb.png" alt="Boarding Pass" width="226" height="290"></img>
+                  <ul class="passtype_lable">
+                    <li><h4>Boarding Pass</h4></li>
+                  </ul>
+                </div>
+                <div class="pure-u-1 pure-u-md-1-5">
+                  <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/assets/img/coupon_03_thumb.png" alt="Coupon" width="226" height="290"></img>
+                  <ul class="passtype_lable">
+                    <li><h4>Coupon</h4></li>
+                  </ul>
+                </div>
+                <div class="pure-u-1 pure-u-md-1-5">
+                  <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_strip_thumb.png" alt="Event Ticket" width="226" height="290"></img>
+                  <ul class="passtype_lable">
+                    <li><h4>Event Ticket</h4></li>
+                  </ul>
+                </div>
+                <div class="pure-u-1 pure-u-md-1-5">
+                  <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/assets/img/store_01_thumb.png" alt="Store Card" width="226" height="290"></img>
+                  <ul class="passtype_lable">
+                    <li><h4>Store Card</h4></li>
+                  </ul>
+                </div>
+                <div class="pure-u-1 pure-u-md-1-5">
+                  <img id="generic" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_fullbg_thumb.png" alt="Generic" width="226" height="290"></img>
+                  <ul class="passtype_lable">
+                    <li><h4>Generic</h4></li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <!-- Page 2 ================== -->
+            <section class="page2">
               <!-- Fields -->
               <div class="pure-g">
                 <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
@@ -74,34 +123,31 @@
               </div>
               <!-- Pass Preview -->
               <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-5"></div>
+                <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-5">
+                  <legend>Labels</legend>
+                      <div class="rgb-label"></div>
+                </div>
                 <div class="pure-u-1 pure-u-md-3-5 pure-u-lg-2-5"></div>
                 <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-5">
-                  
-                  <!--<input type="text" class="rgb-label label-color-input" data-color-format="rgb">-->                  
-                  
-                  <h3>Labels</h3>
-                  <div class="rgb-label"></div>
-                 
-                  <h3>Values</h3>
-                  <div class="rgb-value"></div>
+                  <div id="color-select">
+                    
+                      <legend>Values</legend>
+                      <div class="rgb-value"></div>
 
-                  <h3>Background</h3>
-                  <div class="rgb-background"></div>
-
+                      <legend>Background</legend>
+                      <div class="rgb-background"></div>
+                  </div>
                 </div>
-                 <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-5">
-                 </div>
+                 <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-5"></div>
               </div>
             </section>
-
             <!-- Page 4 ================== -->
             <section class="page4">
               <div class="pure-g">
                 <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
                 <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
-                  <h1>Images</h1>
-                  <h2>Upload your own images! </h2>
+                  <h1>Images &amp; Barcode</h1>
+                  <h2>Change Images, and set the barcode type</h2>
                 </div>
                 <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
               </div>
@@ -109,9 +155,7 @@
               <div class="pure-g">
                 <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
                 <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3"></div>
-                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3">
-                  
-                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
               </div>
             </section>
              <!-- Page 5 ================== -->
@@ -127,11 +171,28 @@
               <!-- Pass Preview -->
               <div class="pure-g">
                 <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+              </div>
+            </section>
+             <!-- Page 6 ================== -->
+            <section class="page6">
+
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+                <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+                  <h1>Flip Side</h1>
+                  <h2>Enter your data for the back of the pass</h2>
+                </div>
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+              </div>
+              <!-- Pass Preview -->
+              <div class="pure-g">
+                <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
                 <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
                   <div class="fake-content">
                     
-                      {{template "body"}}
-                    
+                  
                   </div>
                 </div>
                 <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3">
@@ -144,10 +205,61 @@
         </div> <!-- / "wrapper" div -->
 
               <!-- Message alert -->
-             
                   <div class="alert alert-dismissable" style="display: none">
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     
+                  </div>
+
+               <!-- Next Page Button -->
+                      <a class="next" href="#">
+                        <button type="button" class="pure-button btn" id="next-button">
+                          <i class="fa fa-angle-down"></i> 
+                        </button>
+                      </a>    
+
+              <!-- Image Popover -->
+                  <div id='tip-image' style='display:none'>
+                    <form id='pop-image' class='pure-form'>
+                      <legend><h2>image</h2></legend>
+                      <fieldset>
+                        <input id='pop-image-input' type='file' accept='image/png'></input>
+                        <button class='pure-button' id='image-pop-btn'>Upload</button>
+                      </fieldset>
+                    </form>
+                  </div>
+
+                  <!-- Barcode Popover -->
+                  <div id='tip-bar' style='display:none'>
+                    <form id='pop-bar' class='pure-form pure-form-stacked'>
+                      <legend><h2>Barcode</h2></legend>
+                      <fieldset>
+                        <label for='popData'>Barcode Message</label>
+                        <input id='popData' type='text'></input>
+                        <label for='popEncode'>Message Encoding</label>
+                        <input id='popEncode' type='text' value='iso-8859-1'></input>
+                        <label for='popAlt'>Alternative Text</label>
+                        <input id='popAlt' type='text'></input>
+                        <label for='bar-format-qr-btn'>Barcode Format</label>
+                        <button class='pure-button' id='bar-format-qr-btn'>QR</button>
+                        <button class='pure-button' id='bar-format-pdf-btn'>PDF417</button>
+                        <button class='pure-button' id='bar-format-azt-btn'>Aztec</button>
+                        <button class='pure-button' id='bar-pop-btn'>Ok</button>
+                      </fieldset>
+                    </form>
+                  </div>
+
+              <!-- Text Popover -->
+                  <div id='tip-text' style='display:none'>
+                    <form id='pop-text' class='pure-form pure-form-stacked'>
+                      <legend>title</legend>
+                      <fieldset>
+                        <label for='popLabel'>Label</label>
+                        <input id='popLabel' type='text'></input>
+                        <label for='popValue'>Value</label>
+                        <input id='popValue' type='text'></input>
+                        <button class='pure-button' id='text-pop-btn'>Ok</button>
+                      </fieldset>
+                    </form>
                   </div>
                
             </div>

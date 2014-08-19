@@ -1,0 +1,91 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Passbook pass tool service">
+    <meta name="author" content="cicada">
+    <link rel="shortcut icon" href="img/favicon_ticket.ico">
+    <title>Pass Ninja - Passbook service</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <!--<![endif]-->
+    <link rel="stylesheet" href="/assets/css/modal.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+      <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+      <link href="/assets/css/cicada_pure.css" rel="stylesheet">
+      <link href="/assets/css/passNinja.css" rel="stylesheet">
+    </head>
+    <body>
+      <!-- Nav
+      ================================================== -->
+      <nav class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
+        <a href="#" class="pure-menu-heading" id="header">
+          <img src="/assets/img/logo.svg" alt="Pass Ninja"></img>
+        </a>
+        <ul>
+          <li><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
+        </ul>
+      </nav>
+      
+      
+      {{template "body"}}
+      <!-- Modal Login Form -->
+      <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <legend>Login</legend>
+            </div>
+            <div class="modal-body">
+              <div class="pure-g">
+                
+                <div class="pure-u-3-5">
+                  <form class="pure-form pure-form-stacked" action="/login" method="POST" id="login-form">
+                    
+                    <fieldset class="pure-group">
+                      <label for="email">Email</label>
+                      <input id="email" type="email" name="email" placeholder="Email" required>
+                    </fieldset>
+                    <fieldset class="pure-group">
+                      <label for="password">Password</label>
+                      <input id="password" type="password" name="password" placeholder="Password" required>
+                    </fieldset>
+                    
+                  </div>
+                  <div class="pure-u-2-5">
+                    <div class="emailBlock">
+                      <span class="help-block " id="email-check"></span>
+                    </div>
+                    <div class="passwordBlock">
+                      &nbsp;
+                      <span class="help-block" id="pass-check"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="login-submit" class="pure-button pure-button-primary">Login</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- JavaScript
+      ================================================== -->
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="/assets/js/zxcvbn-async.js"></script>
+      <script type="text/javascript" src="/assets/js/verimail.min.js"></script>
+      <script type="text/javascript" src="/assets/js/register.js"></script>
+      
+      
+    </body>
+  </html>
+  {{end}}

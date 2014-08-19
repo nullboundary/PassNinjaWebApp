@@ -1,0 +1,159 @@
+<svg id="eventTicket" class="pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
+<style type="text/css">
+<![CDATA[
+	.st0{fill:url(#SVGID_1_);stroke:#EC008C;stroke-miterlimit:10;}
+	.st1{fill:url(#SVGID_2_);stroke:#EC008C;stroke-miterlimit:10;}
+	.st2{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	.st3{font-family:'Helvetica-Bold';}
+	.st4{letter-spacing:-1.01;}
+	.st5{clip-path:url(#SVGID_6_);}
+	.st6{clip-path:url(#SVGID_8_);}
+	.st7{fill:#2E3192;}
+	.st8{fill:#FFFFFF;}
+	.st9{font-family:'Helvetica-Light';}
+	.st10{font-family:'TimesNewRomanPS-BoldMT';}
+	.st11{font-family:'Helvetica';}
+	svg#eventTicket .label-text{font-size:11px; font-family:'Helvetica-Bold';}
+	svg#eventTicket .value-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg#eventTicket .logo-text{font-size:18px;}
+	.st15{font-size:20px;}
+	svg#eventTicket .primaryFields.value-text{font-size:21px;}
+	/*{font-size:40;}*/
+	.st18{fill:#441217;}
+]]>
+</style>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="0" y1="-4.882812e-04" x2="0" y2="-4.882812e-04">
+	<stop class="pass-bg-lite" offset="0" style="stop-color:#7C76B7"/>
+	<stop class="pass-bg" offset="0.5" style="stop-color:#6561AB"/>
+	<stop class="pass-bg-dark" offset="1" style="stop-color:#483F99"/>
+</linearGradient>
+<line class="st0" x1="0" y1="0" x2="0" y2="0"/>
+<!--<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="125.6665" y1="-4.882812e-04" x2="126" y2="-4.882812e-04">
+	<stop  offset="0" style="stop-color:#7C76B7"/>
+	<stop  offset="0.5" style="stop-color:#6561AB"/>
+	<stop  offset="1" style="stop-color:#483F99"/>
+</linearGradient>-->
+<line class="st1" x1="126" y1="0" x2="125.67" y2="0"/>
+<g>
+	<defs>
+		<path id="SVGID_3_" d="M188.49,0c0,11.47-14.39,20.76-32.18,20.76l0.32,0c-16.66,0-30.14-9.29-30.14-20.76l0.01,0H0.5l0.67,401
+			H0.5h315L314.83,0l0.67,0L188.49,0"/>
+	</defs>
+	<clipPath id="SVGID_4_">
+		<use xlink:href="#SVGID_3_"  style="overflow:visible;"/>
+	</clipPath>
+	<g style="clip-path:url(#SVGID_4_);">
+		
+			<image style="overflow:visible;" width="315" height="401" xlink:href="../../../../../../Desktop/passbook_Web/event/background.png"  transform="matrix(1 0 0 1 -1.464844e-03 4.882812e-04)">
+		</image>
+	</g>
+</g>
+
+
+<g class="pass-group">
+	<g id="logo1" class="text-btn-group" transform="translate(86.666,38.668)">
+		<text class="logo-text value-text">Angry Velocity</text>
+	</g>
+	<g id="header1" class="text-btn-group" transform="translate(265,24.335)">
+		<text class="label-text">PRICE</text>
+		<text class="value-text">$35</text>
+	</g>
+	<g id="primary1" class="text-btn-group" transform="translate(16.6055,84.002)">
+		<text class="label-text">LIVE CONCERT</text>
+		<text class="value-text">Angry Velocity</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="second1" class="text-btn-group" transform="translate(15.542,149.3354)">
+		<text class="label-text">DATE/TIME</text>
+		<text class="value-text">Tue Jul 29, 2014 7:30 PM</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux1" class="text-btn-group" transform="translate(15.2725,205.6689)">
+		<text class="label-text">SECTION</text>
+		<text class="value-text">9</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux2" class="text-btn-group" transform="translate(110.6055,205.6689)">
+		<text class="label-text">ROW</text>
+		<text class="value-text">H</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux3" class="text-btn-group" transform="translate(176.334,205.6689)">
+		<text class="label-text">SEAT</text>
+		<text class="value-text">11</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux4" class="text-btn-group" transform="translate(242.334,205.6689)">
+		<text class="label-text">LOCATION</text>
+		<text class="value-text">City Park</text>
+		<rect class="text-btn-rect"/>
+	</g>
+</g>
+
+
+<!--
+<text transform="matrix(1 0 0 1 265 24.335)" class="st18 st3 st12">PRICE</text>
+<text transform="matrix(1 0 0 1 265.667 45.3345)" class="st7 st9 st15">$35</text>
+<text transform="matrix(1 0 0 1 86.666 38.668)"><tspan x="0" y="0" class="st7 st3 st14">Angry </tspan><tspan x="57.01" y="0" class="st7 st3 st14">V</tspan><tspan x="68.03" y="0" class="st7 st3 st14">elocity</tspan></text>
+<text transform="matrix(1 0 0 1 242.334 205.668)"><tspan x="0" y="0" class="st18 st3 st12">LOC</tspan><tspan x="23.22" y="0" class="st18 st3 st12">A</tspan><tspan x="30.35" y="0" class="st18 st3 st12">TION</tspan></text>
+<text transform="matrix(1 0 0 1 235.334 227.002)" class="st7 st9 st13">City Park</text>
+<text transform="matrix(1 0 0 1 16 171.002)" class="st7 st9 st13">Tue Jul 29, 2014 7:30 PM</text>
+-->
+<g>
+	<defs>
+		<rect id="SVGID_5_" x="38" y="308" width="240" height="70"/>
+	</defs>
+	<clipPath id="SVGID_6_">
+		<use xlink:href="#SVGID_5_"  style="overflow:visible;"/>
+	</clipPath>
+	<g class="st5">
+		<defs>
+			<rect id="SVGID_7_" x="-2" y="1" width="318" height="401"/>
+		</defs>
+		<clipPath id="SVGID_8_">
+			<use xlink:href="#SVGID_7_"  style="overflow:visible;"/>
+		</clipPath>
+		<g class="st6">
+			<defs>
+				<rect id="SVGID_9_" x="38" y="308" width="240" height="70"/>
+			</defs>
+			<clipPath id="SVGID_10_">
+				<use xlink:href="#SVGID_9_"  style="overflow:visible;"/>
+			</clipPath>
+			<g transform="matrix(1 0 0 1 -3.814697e-06 0)" style="clip-path:url(#SVGID_10_);">
+				
+					<image style="overflow:visible;" width="321" height="77" xlink:href="1574B96FBE23573D.jpg"  transform="matrix(0.7477 0 0 0.9091 38 308)">
+				</image>
+			</g>
+		</g>
+	</g>
+</g>
+<g>
+	<text transform="matrix(1 0 0 1 76.8574 358)" class="st11 st17">SAMPLE</text>
+</g>
+<!--
+<text transform="matrix(1 0 0 1 15.2725 205.6689)" class="st18 st3 st12">SEACTION</text>
+<text transform="matrix(1 0 0 1 110.6055 206.002)" class="st18 st3 st12">ROW</text>
+<text transform="matrix(1 0 0 1 110.6055 227.002)" class="st7 st9 st13">H</text>
+<text transform="matrix(1 0 0 1 16.6055 84.002)" class="st18 st3 st12">LIVE CONCERT</text>
+<text transform="matrix(1 0 0 1 15.542 149.3354)"><tspan x="0" y="0" class="st18 st3 st12">D</tspan><tspan x="7.94" y="0" class="st18 st3 st12">A</tspan><tspan x="15.08" y="0" class="st18 st3 st12">TE/TIME</tspan></text>
+<text transform="matrix(0.9886 0 0 1 15.9971 108.335)"><tspan x="0" y="0" class="st7 st11 st16">Angry </tspan><tspan x="60.69" y="0" class="st7 st11 st16 st4">V</tspan><tspan x="73.55" y="0" class="st7 st11 st16">elocity</tspan></text>
+<text transform="matrix(1 0 0 1 16.6055 226.002)" class="st7 st9 st13">9</text>
+<text transform="matrix(1 0 0 1 176.334 205.668)"><tspan x="0" y="0" class="st18 st3 st12">SE</tspan><tspan x="14.67" y="0" class="st18 st3 st12">A</tspan><tspan x="21.81" y="0" class="st18 st3 st12">T</tspan></text>
+<text transform="matrix(1 0 0 1 175.334 228.002)" class="st7 st9 st13">11</text>
+-->
+<image style="overflow:visible;" width="72" height="92" xlink:href="../../../../../../Desktop/passbook_Web/event/tumbnail.png"  transform="matrix(1.0231 0 0 1.0435 225.3398 75.0137)">
+</image>
+<image style="overflow:visible;" width="124" height="118" xlink:href="../../../../../../Desktop/passbook_Web/event/logo.png"  transform="matrix(0.3341 0 0 0.3341 16.0229 12.5068)">
+</image>
+<g>
+	<rect x="10" y="378.88" class="st2" width="11.5" height="14.5"/>
+	<line class="st2" x1="15.75" y1="373.28" x2="15.75" y2="386.62"/>
+	<line class="st2" x1="13.25" y1="376.88" x2="15.75" y2="373.28"/>
+	<line class="st2" x1="15.75" y1="373.28" x2="18" y2="376.88"/>
+</g>
+<g>
+	<circle class="st2" cx="299" cy="385" r="7.08"/>
+	<text transform="matrix(1 0 0 1 297.4238 388.5771)" class="st8 st10 st12">i</text>
+</g>
+</svg>

@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/cicadaDev/utils"
 	"code.google.com/p/go.crypto/bcrypt"
 	"fmt"
+	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/lidashuang/goji_gzip"
 	"github.com/zenazn/goji"
@@ -36,11 +37,30 @@ type userModel struct {
 	PassList      []string  `form:"_" gorethink:"passList,omitempty"`                //A list of the pass Ids this users has made
 }
 
-var authKey = []byte("somesecret")      // Cookie Authorization Key
-var encKey = []byte("someothersecret1") //Cookie Encryption Key - 16,24,32 bytes required!
-var store = sessions.NewCookieStore(authKey, encKey)
+var (
+	sessionStore    *sessions.CookieStore
+	sessionAuthKey  []byte = make([]byte, 64)
+	sessionCryptKey []byte = make([]byte, 32)
+	emailTokenKey   []byte = make([]byte, 32)
+)
 
-var emailTokenKey = "something-secret" //key for email verification hmac
+//var emailTokenKey = "something-secret" //key for email verification hmac
+
+func init() {
+	sessionAuthKey = securecookie.GenerateRandomKey(64)
+	sessionCryptKey = securecookie.GenerateRandomKey(32)
+	emailTokenKey = securecookie.GenerateRandomKey(32) //key for email verification hmac
+
+	sessionStore = sessions.NewCookieStore(sessionAuthKey, sessionCryptKey)
+	sessionStore.Options = &sessions.Options{
+		Path:     "/accounts",
+		MaxAge:   86400 * 2,
+		HttpOnly: true,
+		//Secure:   true,
+		//Domain: http://pass.ninja
+	}
+
+}
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -55,12 +75,12 @@ func main() {
 
 	goji.Post("/signup", handleSignUp)
 	goji.Post("/login", handleLogin)
+	goji.Post("/logout", handleLogout)
 
 	goji.Get("/assets/*", handleStatic)
-	//goji.Get("/accounts/*", handleTemplates)
 	goji.Get("/verify", handleVerify)
 	goji.Get("/index.html", handleTemplates)
-	goji.Get("/landing.html", handleTemplates)
+	//goji.Get("/landing.html", handleTemplates)
 	goji.Get("/register_pure.html", handleTemplates)
 
 	//login pages
@@ -347,18 +367,14 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	// Set session values.
 	session.Values["email"] = user.Email
 	session.Values["page"] = "view"
-	// Save it.
 
-	err = store.Save(req, res, session)
-	//err = session.Save(req, res)
+	// Save it.
+	err = session.Save(req, res)
 	if err != nil {
 		log.Printf("session save error: %s", err.Error())
 		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Println("Session after login:")
-	fmt.Println(session)
 
 	http.Redirect(res, req, "/accounts/index.html", http.StatusOK)
 	return
@@ -367,12 +383,40 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
 //////////////////////////////////////////////////////////////////////////
 //
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func handleLogout(res http.ResponseWriter, req *http.Request) {
+
+	session, err := sessionStore.Get(req, "PassNinjaLogin")
+	if err != nil {
+		log.Printf("login session error: %s", err)
+		return
+	}
+
+	// Set session values to nothing.
+	session.Values["email"] = ""
+	session.Values["page"] = ""
+
+	err = session.Save(req, res)
+	if err != nil {
+		log.Printf("session save error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(res, req, "/index.html", 302)
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
 // NotFound is a 404 handler.
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleNotFound(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "Umm... have you tried turning it off and on again?", 404) //TODO: add 404 error message
+func handleNotFound(res http.ResponseWriter, req *http.Request) {
+	http.Error(res, "Umm... have you tried turning it off and on again?", 404) //TODO: add 404 error message
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -383,27 +427,36 @@ func handleNotFound(w http.ResponseWriter, r *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func requireLogin(c *web.C, h http.Handler) http.Handler {
 
-	log.Println("requireLogin")
-
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
-		session, err := store.Get(r, "PassNinjaLogin")
+		log.Println("requireLogin ")
+
+		session, err := sessionStore.Get(r, "PassNinjaLogin")
 		if err != nil {
 			log.Printf("login session error: %s", err)
-			return
+			http.Redirect(w, r, "../index.html", http.StatusFound) //encrypt token not matching!
 		}
 
-		if session.IsNew { //there is no set session, require login
-			http.Redirect(w, r, "/index.html", http.StatusUnauthorized)
-			return
+		if val, ok := session.Values["email"].(string); ok { // if val is a string
+
+			switch val {
+			case "":
+
+				http.Redirect(w, r, "../index.html", http.StatusFound)
+
+			default: //load the page
+
+				log.Println(session.Values["email"])
+				log.Println(r.URL.String())
+
+				h.ServeHTTP(w, r)
+			}
+		} else {
+
+			// if val is not a string type
+			http.Redirect(w, r, "../index.html", http.StatusFound)
 		}
 
-		userEmail := session.Values["email"]
-
-		log.Println(userEmail)
-		log.Println(r.URL.String())
-
-		h.ServeHTTP(w, r)
 	}
 
 	return http.HandlerFunc(fn)
@@ -418,7 +471,7 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 //////////////////////////////////////////////////////////////////////////
 func initSession(r *http.Request) *sessions.Session {
 
-	session, err := store.Get(r, "PassNinjaLogin") // Don't ignore the error in real code
+	session, err := sessionStore.Get(r, "PassNinjaLogin") // Don't ignore the error in real code
 	if err != nil {
 		log.Printf("session error: %s", err.Error())
 	}
@@ -426,13 +479,15 @@ func initSession(r *http.Request) *sessions.Session {
 	if session.IsNew { //Set some cookie options
 		log.Println("new Session!")
 
-		session.Options = &sessions.Options{
-			Path:     "/accounts",
-			MaxAge:   86400 * 2,
-			HttpOnly: true,
-			//Secure:   true,
-		}
-
+		/*
+			session.Options = &sessions.Options{
+				Path:     "/accounts",
+				MaxAge:   86400 * 2,
+				HttpOnly: true,
+				//Secure:   true,
+				//Domain: http://pass.ninja
+			}
+		*/
 		//session.Options.Domain = "pass.ninja"
 
 	}
