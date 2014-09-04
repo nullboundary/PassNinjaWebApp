@@ -155,18 +155,18 @@
 	</g>
 -->
 	<g class="img-btn-group" id="logo-group">
-		<image id="logo" style="overflow:visible;" width="36.36" height="32.7" x="15" y="11.2881" xlink:href="/assets/img/coupon/logo.png"></image>
+		<image id="logo" style="overflow:visible;" width="36.36" height="32.7" x="15" y="11.2881" xlink:href="/assets/svg/img/coupon/logo.png"></image>
 		<rect data-target="logo" width="36.36" height="32.7" x="15" y="11.2881" class="img-btn-rect"/>
 	</g>
 	
-	<g class="img-btn-group" id="barcode-group">
-		<image id="barcode" style="overflow:visible;" width="322" height="91" xlink:href="/assets/img/coupon/barcode.jpg" transform="translate(35,304.2979) scale(0.766)"></image>
+	<g class="barcode-btn-group" id="barcode-group">
+		<image id="barcode" style="overflow:visible;" width="322" height="91" xlink:href="/assets/svg/img/coupon/barcode.jpg" transform="translate(35,304.2979) scale(0.766)"></image>
 		<text x="87.4985" y="354.9995" class="font-norm barcode">SAMPLE</text>
 		<rect data-target="barcode" width="322" height="91" transform="translate(35,304.2979) scale(0.766)" class="bar-btn-rect"/>
 	</g>
 
 	<g class="img-btn-group" id="strip-group">
-		<image id="strip" style="overflow:visible;" width="320" height="123" xlink:href="/assets/img/coupon/strip.png" transform="scale(0.9859,1)" x="0" y="65"></image>
+		<image id="strip" style="overflow:visible;" width="320" height="123" xlink:href="/assets/svg/img/coupon/strip.png" transform="scale(0.9859,1)" x="0" y="65"></image>
 		<rect data-target="strip" transform="scale(0.9859,1)" x="0" y="65" width="320" height="123" class="img-btn-rect"/>
 	</g>
 
@@ -179,9 +179,9 @@
 		<text class="value-text">In-store</text>
 	</g>
 
-	<g id="primary1" class="text-btn-group" transform="translate(17.499,95)">
-		<text transform="scale(1.0733,1)" x="17.499" y="95" class="font-lite value-text">40% OFF</text>
-		<text transform="scale(1.0733,1)" x="17.499" y="132" class="font-lite label-text">All Summer Sandals</text>
+	<g id="primary1" class="text-btn-group" transform="translate(17.499,75)">
+		<text transform="scale(1.0733,1)" x="17.499" y="0" class="font-lite value-text">40% OFF</text>
+		<text transform="scale(1.0733,1)" x="17.499" y="20" class="font-lite label-text">All Summer Sandals</text>
 		<rect transform="scale(0.9859,1)" x="0" y="0" width="320" height="123" class="text-btn-rect"/>
 	</g>
 

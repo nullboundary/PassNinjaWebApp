@@ -47,6 +47,13 @@
 		//Click Text Popover Ok 
 		$(document).on("click", "#text-pop-btn", onTextSubmit);
 
+		//don't submit form for popover tip selection buttons
+		$(document).on("click", ".select-button", function(e) {
+			e.preventDefault();
+			//var btn = $(this);
+			//if (btn.val())
+		});
+
 		//Click Text Popover Ok 
 		$(document).on("click", "#bar-pop-btn", onBarcodeSubmit);
 
@@ -99,14 +106,14 @@
 
 			if (index == 3) { //color adjust page
 
-			} else if (index == 4) { //set image popover
+			} else if (index == 6) { //set image popover
 
 
 				tip.html(function(d) {
 					return d3.select('#tip-image').html(); //loads html div from page
 				});
 
-			} else if (index == 5) { //set text input popover
+			} else if (index == 8) { //set text input popover
 
 				tip.html(function(d) {
 					return d3.select('#tip-text').html(); //loads html div from page
@@ -216,6 +223,14 @@
 					//Add Label Element
 					var labelElem = addText("label", passGroup, fieldType, fieldArray, index);
 
+				} else if (passType == "storeCard" && fieldType == "primary") {
+					//TODO: This seems stupid, must be a better way to make this exception for 2 types of passes. 
+
+					//Add Value Element
+					var valueElem = addText("value", passGroup, fieldType, fieldArray, index);
+					//Add Label Element
+					var labelElem = addText("label", passGroup, fieldType, fieldArray, index);
+
 				} else { //all other fields are label then value
 
 					//Add Label Element
@@ -290,7 +305,7 @@
 
 			var firstLineSize = parseInt(d3.select(groupId + ' text').style('font-size'));
 			textElem.attr('x', textX)
-				.attr('y', (firstLineSize * 2) + elemFontSize);
+				.attr('y', (firstLineSize + 10) + elemFontSize);
 		}
 
 		return textElem;
@@ -461,6 +476,27 @@
  	***********************************************************/
 	function setFormatValueField(fieldElement, fieldGroup) {
 
+		if (fieldGroup.dateStyle != undefined) {
+			//format and set date if value is a date example: 2013-04-24T10:00-05:00
+			var dateFormat = pKDateTojsDate(fieldGroup.dateStyle);
+			fdate = new Date(fieldGroup.value);
+			fieldElement.text(dateFormat(fdate)); //set value text as date
+		} else if (fieldGroup.timeStyle != undefined) {
+			//format and set date if value is a date example: 2013-04-24T10:00-05:00
+			var timeFormat = pKTimeTojsTime(fieldGroup.timeStyle);
+			fdate = new Date(fieldGroup.value);
+			fieldElement.text(timeFormat(fdate)); //set value text as time
+		} else if (fieldGroup.numberStyle != undefined) {
+			var numberFormat = pKNumberToJs(fieldGroup.numberStyle);
+			fieldElement.text(numberFormat(fieldGroup.value)); //set value text as number
+		} else if (fieldGroup.currencyCode != undefined) {
+			//TODO: create a currency lookup and formatting function
+			fieldElement.text("$" + fieldGroup.value); //set value text as currency
+		} else {
+			fieldElement.text(fieldGroup.value); //set value text as plain text
+		}
+
+		/*
 		//format and set date if value is a date example: 2013-04-24T10:00-05:00
 		var dateFormat = pKDateTojsDate(fieldGroup.dateStyle);
 		//format and set date if value is a date example: 2013-04-24T10:00-05:00
@@ -475,20 +511,43 @@
 		} else {
 			fieldElement.text(fieldGroup.value); //set value text as plain text
 		}
-
+*/
 		//align text in field
 		//fieldElement.style('text-anchor', pKValueToCSS(fieldGroup.textAlignment));
 
 	}
 
+	/***********************************************************
+ 	convert apple PK constant to js number format
+ 
+ 	***********************************************************/
+	function pKNumberToJs(val) {
+
+		switch (val) {
+			case undefined:
+				return d3.format("");;
+			case "None":
+				return d3.format("");;
+			case "PKNumberStyleDecimal":
+				return d3.format(".4r"); //13.00
+			case "PKNumberStylePercent":
+				return d3.format("%"); //multiply by 100 and suffix with "%"
+			case "PKNumberStyleScientific":
+				return d3.format(".3n"); //1.33e+5
+			case "PKNumberStyleSpellOut":
+				return d3.format("%A, %B %e, %Y AD");
+			default:
+				return d3.format("");;
+		}
+
+	}
 
 
 	/***********************************************************
  	convert apple PK constant to css
  
  	***********************************************************/
-	function pKValueToSVG(val, def) {
-		if (def == undefined) def = "inherit";
+	function pKValueToSVG(val) {
 
 		switch (val) {
 			case undefined:
@@ -502,24 +561,21 @@
 			case "PKTextAlignmentNatural":
 				return "inherit";
 			default:
-				def;
+				return "inherit";
 		}
-
 
 	}
 	/***********************************************************
  	convert apple PK constant to js date
  
  	***********************************************************/
-	function pKDateTojsDate(val, def) {
-
-		if (def == undefined) def = "";
+	function pKDateTojsDate(val) {
 
 		switch (val) {
 			case undefined:
-				return "";
+				return d3.time.format("");
 			case "PKDateStyleNone":
-				return "";
+				return d3.time.format("");
 			case "PKDateStyleShort":
 				return d3.time.format("%_m/%e/%y");
 			case "PKDateStyleMedium":
@@ -529,7 +585,7 @@
 			case "PKDateStyleFull":
 				return d3.time.format("%A, %B %e, %Y AD");
 			default:
-				def;
+				return d3.time.format("");
 		}
 
 	}
@@ -537,15 +593,13 @@
  	convert apple PK constant to js time
  
  	***********************************************************/
-	function pKTimeTojsTime(val, def) {
-
-		if (def == undefined) def = "";
+	function pKTimeTojsTime(val) {
 
 		switch (val) {
 			case undefined:
-				return "";
+				return d3.time.format("");
 			case "PKDateStyleNone":
-				return "";
+				return d3.time.format("");
 			case "PKDateStyleShort":
 				return d3.time.format("%_I:%M %p");
 			case "PKDateStyleMedium":
@@ -555,7 +609,7 @@
 			case "PKDateStyleFull":
 				return d3.time.format("%_I:%M:%S %p %Z");
 			default:
-				def;
+				return d3.time.format("");
 		}
 
 	}
@@ -1002,6 +1056,13 @@
 		var id = $(event.target).attr('id');
 		console.log(id);
 		passType = id;
+
+		var svgObj = d3.select("svg");
+		if (!svgObj.empty()) {
+			console.log("clear pass");
+			passTemplate = null; //clear data
+			d3.select("svg").remove();
+		}
 
 		var url = "/accounts/template/" + passType;
 		var uri = encodeURI(url);
