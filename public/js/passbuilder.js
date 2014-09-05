@@ -17,11 +17,6 @@
 			targetGroupId,
 			passTemplate; //a json object containing all the pass data for this pass
 
-		//set a default tip
-		tip = d3.tip().attr('class', 'd3-tip').offset([-8, 0]).html(function(d) {
-			return d3.select('#tip-image').html();
-		});
-
 
 		//init all color sliders for page 2
 		configColorSlider(".rgb-label", ".label-text");
@@ -41,12 +36,6 @@
 			afterMove: onAfterScroll
 		});
 
-		// click rect
-		svg.selectAll("rect").on("click", onRectClick);
-
-		//Click Text Popover Ok 
-		$(document).on("click", "#text-pop-btn", onTextSubmit);
-
 		//don't submit form for popover tip selection buttons
 		$(document).on("click", ".select-button", function(e) {
 			e.preventDefault();
@@ -57,17 +46,14 @@
 		//Click Text Popover Ok 
 		$(document).on("click", "#bar-pop-btn", onBarcodeSubmit);
 
-		//Click Image Popover Upload
-		$(document).on("click", "#image-pop-btn", onImageUpload);
-
 		//Select PassType
 		$(document).on("click", ".pass-thumb-select", onSelectType);
 
 		//Click Next Page Button
 		$(document).on("click", "#next-button", onNextPage);
 
-		//Esc key closes popover
-		$(document).on("keyup", onBodyKeyUp);
+		d3.select('select#barcode-format')
+			.on('input', onBarcodeSelect);
 
 
 
@@ -83,7 +69,6 @@
 
 			pageBeforeIndex = index;
 			console.log("before " + index);
-			closePopOver(); //remove popovers when you scroll to the next step
 			if (index == 3) { //page 2 is get started
 
 				getStartedSubmit();
@@ -109,15 +94,8 @@
 			} else if (index == 6) { //set image popover
 
 
-				tip.html(function(d) {
-					return d3.select('#tip-image').html(); //loads html div from page
-				});
-
 			} else if (index == 8) { //set text input popover
 
-				tip.html(function(d) {
-					return d3.select('#tip-text').html(); //loads html div from page
-				});
 			}
 
 		}
@@ -265,7 +243,7 @@
 					.attr('data-target', fieldPKType)
 					.attr('width', rectWidth)
 					.attr('height', rectBBox.height)
-					.on("click", onRectClick); //add event to new rect
+					.on("click", onTextRectClick); //add event to new rect
 
 			}
 
@@ -401,7 +379,7 @@
 		//diff contains what was in imageTypes[] that is not in passTemplate.images[]
 		var diff = $(imageTypes).not(passTemplate.images).get();
 
-		//remove all images from svg if they are not part of the pass data
+		//remove all images from svg if they are part of the pass data
 		for (var i = 0; i < diff.length; ++i) {
 			var imageSelection = d3.select("g.img-btn-group #" + diff[i]);
 			if (!imageSelection.empty()) { //remove it if its in the svg
@@ -413,13 +391,15 @@
 			//add or replace images that exist in data
 			for (var index = 0; index < passTemplate.images.length; ++index) {
 
+				//select the image id. Example: g.img-btn-group #logo  
 				var imageSelection = d3.select("g.img-btn-group #" + passTemplate.images[index].name);
 
-				if (imageSelection.empty()) { //add image
+				if (imageSelection.empty()) { //if group has no image, add image. svg images were removed above!
 
+					//select th imageGroup specific to that image. Example: g.img-btn-group#logo-group
 					var imageGroup = d3.select("g.img-btn-group#" + passTemplate.images[index].name + "-group")
 
-					if (!imageGroup.empty()) {
+					if (!imageGroup.empty()) { //image group exists
 
 						var rectWidth = imageGroup.select('rect.img-btn-rect').attr('width');
 						var rectHeight = imageGroup.select('rect.img-btn-rect').attr('height');
@@ -435,13 +415,20 @@
 							.attr('x', rectX)
 							.attr('y', rectY);
 
+						imageGroup.select('rect.img-btn-rect').on("click", onImageRectClick); //add event to rect
+
 					} else {
 						//TODO: some cases group doesn't exist! (eg thumbnail)
 					}
 
 				} else { //replace image
-					imageSelection.attr('src', passTemplate.images[index].image);
+
+					//this doesn't seem to happen, not sure when it should?
+					imageSelection.attr('xlink:href', passTemplate.images[index].image);
+					d3.select(imageSelection.parentNode + ' rect.img-btn-rect').on("click", onImageRectClick);
 				}
+
+
 			}
 		}
 	}
@@ -477,41 +464,34 @@
 	function setFormatValueField(fieldElement, fieldGroup) {
 
 		if (fieldGroup.dateStyle != undefined) {
+
 			//format and set date if value is a date example: 2013-04-24T10:00-05:00
 			var dateFormat = pKDateTojsDate(fieldGroup.dateStyle);
 			fdate = new Date(fieldGroup.value);
 			fieldElement.text(dateFormat(fdate)); //set value text as date
+
 		} else if (fieldGroup.timeStyle != undefined) {
+
 			//format and set date if value is a date example: 2013-04-24T10:00-05:00
 			var timeFormat = pKTimeTojsTime(fieldGroup.timeStyle);
 			fdate = new Date(fieldGroup.value);
 			fieldElement.text(timeFormat(fdate)); //set value text as time
+
 		} else if (fieldGroup.numberStyle != undefined) {
+
 			var numberFormat = pKNumberToJs(fieldGroup.numberStyle);
 			fieldElement.text(numberFormat(fieldGroup.value)); //set value text as number
+
 		} else if (fieldGroup.currencyCode != undefined) {
+
 			//TODO: create a currency lookup and formatting function
 			fieldElement.text("$" + fieldGroup.value); //set value text as currency
+
 		} else {
+
 			fieldElement.text(fieldGroup.value); //set value text as plain text
 		}
 
-		/*
-		//format and set date if value is a date example: 2013-04-24T10:00-05:00
-		var dateFormat = pKDateTojsDate(fieldGroup.dateStyle);
-		//format and set date if value is a date example: 2013-04-24T10:00-05:00
-		var timeFormat = pKTimeTojsTime(fieldGroup.timeStyle);
-
-		if (dateFormat != "") {
-			fdate = new Date(fieldGroup.value);
-			fieldElement.text(dateFormat(fdate)); //set value text as date
-		} else if (timeFormat != "") {
-			fdate = new Date(fieldGroup.value);
-			fieldElement.text(timeFormat(fdate)); //set value text as time
-		} else {
-			fieldElement.text(fieldGroup.value); //set value text as plain text
-		}
-*/
 		//align text in field
 		//fieldElement.style('text-anchor', pKValueToCSS(fieldGroup.textAlignment));
 
@@ -688,6 +668,7 @@
 		passTemplate.keyDoc.labelColor = labelColor;
 		passTemplate.keyDoc.backgroundColor = bgColor;
 
+		/*
 		var passData = {
 			"id": passTemplate.id,
 			"keyDoc": {
@@ -698,21 +679,20 @@
 		};
 
 		postUpdate(passData);
+		*/
 	}
 
 	/***********************************************************
  
  
  	***********************************************************/
-	function onTextSubmit(e) {
+	function onTextSubmit() {
 
-		e.preventDefault();
-		var btn = $(this);
-		var fieldLabel = $(".d3-tip #popLabel").val(); //get input box value
-		var fieldValue = $(".d3-tip #popValue").val();
+		//e.preventDefault();
+		//var btn = $(this);
 
-		//remove popover
-		closePopOver();
+		var fieldLabel = $("input#popLabel").val(); //get input box value
+		var fieldValue = $("input#popValue").val();
 
 		var keyValue = fieldLabel + groupType + groupIndex //dateaux1 (must be unique per pass)
 
@@ -740,18 +720,15 @@
  
  
  	***********************************************************/
-	function onBarcodeSubmit(event) {
+	function onBarcodeSubmit() {
 
 		console.log("onBarcode");
-		event.preventDefault();
+		d3.event.preventDefault();
 
 		//get input box values
-		var barData = $(".d3-tip #popData").val();
-		var barEncode = $(".d3-tip #popEncode").val();
-		var barAlt = $(".d3-tip #popAlt").val();
-
-		//remove popover
-		closePopOver();
+		var barData = $("#popData").val();
+		var barEncode = $("#popEncode").val();
+		var barAlt = $("#popAlt").val();
 
 		passTemplate.keyDoc.barcode.message = barData;
 		passTemplate.keyDoc.barcode.messageEncoding = barEncode;
@@ -764,18 +741,15 @@
  
  
  	***********************************************************/
-	function onImageUpload(event) {
+	function onImageUpload() {
 
 		console.log("onUpload");
-		event.preventDefault();
-
-		//remove popover
-		closePopOver();
+		d3.event.preventDefault();
 
 		if (checkImage()) {
 
 			//get file object
-			var file = $('.d3-tip #pop-image-input')[0].files[0];
+			var file = $('#pop-image-input')[0].files[0];
 
 
 			var img;
@@ -843,13 +817,13 @@
 		//check whether browser fully supports all File API
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
 
-			if (!$('.d3-tip #pop-image-input').val()) //check empty input field
+			if (!$('#pop-image-input').val()) //check empty input field
 			{
 				alertDisplay("error", 'no image selected');
 				return false
 			}
 
-			var file = $('.d3-tip #pop-image-input')[0].files[0]; //get file
+			var file = $('#pop-image-input')[0].files[0]; //get file
 			var fsize = file.size; //get file size
 			var ftype = file.type; // get file type
 
@@ -958,82 +932,107 @@
 
 			});
 	}
-
 	/***********************************************************
  
  
  	***********************************************************/
-	function onRectClick(event) {
+	function onTextRectClick() {
 
 		//get the id of the text under the button
 		currentEditTarget = d3.select(this).attr("data-target");
 		targetGroupId = d3.select(this.parentNode).attr("id");
 		var selectClassType = d3.select(this).attr("class");
 
-		console.log(currentEditTarget);
-		//console.log(targetGroupId);
-		console.log(selectClassType);
+
+		//update the legend in popover to display the id of the field
+		d3.select("form#pop-text legend")
+			.text(currentEditTarget);
+
+		var targetLabel = d3.select("g#" + targetGroupId + " .label-text." + currentEditTarget).text();
+		console.log(targetLabel);
+		//set the input box attributes for the label
+		d3.select("#popLabel")
+			.on("input", null) //clear the event
+		.property('value', targetLabel)
+			.attr('disabled', null)
+			.on("input", onTextSubmit); //add input event
+
+		var targetValue = d3.select("g#" + targetGroupId + " .value-text." + currentEditTarget).text();
+		//set the input box attributes for the value
+		d3.select("#popValue")
+			.on("input", null)
+			.property('value', targetValue)
+			.attr('disabled', null)
+			.on("input", onTextSubmit); //add input event
 
 
-		//TEXT INPUT - only edit place holder if its a text box, not a image file input
-		if (selectClassType == "text-btn-rect") {
+		//add events for selecting value format selector options
+		var valueSelect = d3.select("select#value-format")
+			.on("input", null)
+			.attr('disabled', null)
+			.on("input", function() {
 
-			var targetLabel = d3.select("g#" + targetGroupId + " .label-text." + currentEditTarget).text();
-			console.log(targetLabel);
-			//set the input box attributes for the label
-			d3.select("#popLabel")
-				.attr('value', targetLabel);
+				//add/remove a second selector as needed
+				if (this.value == "Number") {
 
-			var targetValue = d3.select("g#" + targetGroupId + " .value-text." + currentEditTarget).text();
-			//set the input box attributes for the value
-			d3.select("#popValue")
-				.attr('value', targetValue);
+					d3.select("#timeDate-format").style("display", "none");
+					d3.select("#number-format").style("display", "inline");
 
-			//show the popover
-			tip.attr('class', 'd3-tip animate').show(event);
+				} else if (this.value == "Time" || this.value == "Date") {
 
-			//update the legend in popover to display the id of the field
-			d3.select(".d3-tip legend")
-				.text(currentEditTarget);
+					d3.select("#number-format").style("display", "none");
+					d3.select("#timeDate-format").style("display", "inline");
 
-			//IMAGE INPUT
-		} else if (selectClassType == "img-btn-rect") {
+				} else {
 
-			tip.html(function(d) {
-				return d3.select('#tip-image').html(); //loads html div from page
+					d3.select("#timeDate-format").style("display", "none");
+					d3.select("#number-format").style("display", "none");
+				}
+
 			});
+	}
+	/***********************************************************
+ 
+ 
+ 	***********************************************************/
+	function onImageRectClick() {
 
-			//set fieldset image ratio warning
-			d3.select(".d3-tip fieldset")
-				.append("div")
-				.style("color", "red")
-				.text("Image type must be png with an aspect ratio of 3/2");
+		currentEditTarget = d3.select(this).attr("data-target");
 
-			//show the popover
-			tip.attr('class', 'd3-tip animate').show(event);
+		//update the legend in popover to display the id of the field
+		d3.select("form#pop-image legend")
+			.text(currentEditTarget + ".png Image");
 
-			//update the legend in popover to display the id of the field
-			d3.select(".d3-tip legend")
-				.text(currentEditTarget + ".png Image");
+		d3.select("#pop-image-input")
+			.attr('disabled', null);
 
-			//BARCODE
-		} else if (selectClassType == "bar-btn-rect") {
+		d3.select("button#image-pop-btn")
+			.on("click", null)
+			.attr('disabled', null)
+			.on("click", onImageUpload);
 
-			tip.html(function(d) {
-				return d3.select('#tip-bar').html(); //loads html div from page
-			});
+	}
 
-			//show the popover
-			tip.attr('class', 'd3-tip animate').show(event);
+	/***********************************************************
+ 
+ 
+ 	***********************************************************/
+	function onBarcodeSelect() {
 
+		switch (this.value) {
+			case "PDF417":
+				break;
+			case "Aztec":
+				break;
+			case "QR":
+				break;
+			case "No Barcode":
+
+				d3.select("g#barcode-group").style("display", "none");
+
+			default:
+				break;
 		}
-
-
-		//don't propagate this event to the new event handler below
-		d3.event.stopPropagation()
-
-		//assign a new event handler to handle when you click outside the popover. 
-		$(document).on("click", "body", onBodyClick);
 
 	}
 
@@ -1103,58 +1102,11 @@
 		d3.xml(uri, function(xml) {
 
 			d3.select("div.fake-content").node().appendChild(xml.documentElement);
-			var svg = d3.select("svg");
-			svg.call(tip);
 			initNewPass(); //setup template pass
 
 		});
 
 	}
-
-	/***********************************************************
- 
- 
- 	***********************************************************/
-	function onBodyClick(event) {
-
-		if (event.isDefaultPrevented())
-			return;
-
-		var target = $(event.target);
-		if (target.parents(".d3-tip").length)
-			return;
-
-		//remove click on body event since the popover is gone
-		closePopOver();
-
-	}
-	/***********************************************************
- 
- 
- 	***********************************************************/
-	function onBodyKeyUp(event) {
-
-		if (event.isDefaultPrevented())
-			return;
-
-		if (event.keyCode != 27) // esc
-			return;
-
-		closePopOver();
-		event.preventDefault();
-
-	}
-
-	/***********************************************************
- 
- 
- 	***********************************************************/
-	function closePopOver() {
-		console.log("closePopOver");
-		$(document).off("click", "body", onBodyClick);
-		tip.hide();
-	}
-
 	/***********************************************************
  
  
