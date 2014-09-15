@@ -103,6 +103,7 @@
 
 		//Set Text Element X & Y
 		var elemFontSize = parseInt(textElem.style('font-size'));
+		console.log(groupId);
 		var firstElemId = d3.select(groupId + ' text').attr('id'); //get the first textElem in the group
 
 		if (firstElemId == textId) { //this is the first text element (usually label)
@@ -210,8 +211,18 @@
 
 		} else if (fieldGroup.currencyCode != undefined) {
 
-			//TODO: create a currency lookup and formatting function
-			fieldElement.text("$" + fieldGroup.value); //set value text as currency
+			props = {
+				style: "currency",
+				currency: fieldGroup.currencyCode
+			};
+
+			var fieldNumber = Number(fieldGroup.value);
+			//display output            
+			var currencyValue = fieldNumber.toLocaleString("en", props);
+			console.log("---------->" + currencyValue);
+
+			fieldElement.text(currencyValue); //set value text as currency
+
 
 		} else {
 
@@ -337,6 +348,8 @@
 	function pkFieldType(fieldType) {
 
 		switch (fieldType) {
+			case undefined:
+				return "";
 			case "aux":
 				return "auxiliaryFields";
 			case "second":
@@ -361,6 +374,8 @@
 		//get the id of the text under the button
 		currentEditTarget = d3.select(this).attr("data-target");
 		targetGroupId = d3.select(this.parentNode).attr("id");
+		var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
+
 		var selectClassType = d3.select(this).attr("class");
 
 
@@ -368,7 +383,8 @@
 		d3.select("form#pop-text legend")
 			.text(currentEditTarget);
 
-		var targetLabel = d3.select("g#" + targetGroupId + " .label-text." + currentEditTarget).text();
+		//var targetLabel = d3.select("g#" + targetGroupId + " .label-text." + currentEditTarget).text();
+		var targetLabel = passTemplate.keyDoc[passType][currentEditTarget][groupIndex].label;
 		console.log(targetLabel);
 		//set the input box attributes for the label
 		d3.select("#popLabel")
@@ -377,14 +393,14 @@
 			.attr('disabled', null)
 			.on("input", onTextSubmit); //add input event
 
-		var targetValue = d3.select("g#" + targetGroupId + " .value-text." + currentEditTarget).text();
+		var targetValue = passTemplate.keyDoc[passType][currentEditTarget][groupIndex].value;
+		//var targetValue = d3.select("g#" + targetGroupId + " .value-text." + currentEditTarget).text();
 		//set the input box attributes for the value
-		d3.select("#popValue")
+		var inputValue = d3.select("#popValue")
 			.on("input", null)
 			.property('value', targetValue)
 			.attr('disabled', null)
 			.on("input", onTextSubmit); //add input event
-
 
 		//add events for selecting value format selector options
 		var valueSelect = d3.select("select#value-format")
@@ -395,9 +411,11 @@
 				//destroy since we might be switching from other option
 				$('#popValue').datetimepicker('destroy');
 
+
 				//add/remove a second selector as needed
 				if (this.value == "Number") {
 
+					d3.select("#currency").style("display", "none");
 					d3.select("#timeDate-format").style("display", "none");
 					d3.select("#number-format")
 						.style("display", "inline")
@@ -408,6 +426,7 @@
 
 				} else if (this.value == "Time") {
 
+					d3.select("#currency").style("display", "none");
 					d3.select("#number-format").style("display", "none");
 					d3.select("#timeDate-format")
 						.style("display", "inline")
@@ -435,38 +454,65 @@
 						onChangeDateTime: onTextSubmit,
 					});
 
+					d3.select("#currency").style("display", "none");
 					d3.select("#number-format").style("display", "none");
 					d3.select("#timeDate-format").style("display", "inline");
+
+				} else if (this.value == "Currency") {
+
+					d3.select("#number-format").style("display", "none");
+					d3.select("#timeDate-format").style("display", "none");
+
+					var url = "/assets/data/currency.html";
+					var uri = encodeURI(url);
+					console.log(uri);
+
+					//load svg xml + place into document
+					d3.html(uri, function(html) {
+
+						d3.select("div#format-control").node().appendChild(html);
+
+						d3.select("#currency")
+							.style("display", "inline")
+							.on("input", onCurrencySubmit);
+
+					});
+
+
 
 				} else {
 
 					d3.select("#timeDate-format").style("display", "none");
 					d3.select("#number-format").style("display", "none");
+					d3.select("#currency").style("display", "none");
 				}
 
 			});
 	}
+
 
 	/***********************************************************
  
  	Handler
 
  	***********************************************************/
-	function onTextSubmit() {
+	function onTextSubmit(fieldData) {
 
-		//e.preventDefault();
-		//var btn = $(this);
+		if (fieldData == undefined) {
 
-		var fieldLabel = $("input#popLabel").val(); //get input box value
-		var fieldValue = $("input#popValue").val();
+			var fieldValue = $("input#popValue").val();
+			var fieldLabel = $("input#popLabel").val(); //get input box label
+			var keyValue = targetGroupId;
 
-		var keyValue = fieldLabel + groupType + groupIndex //dateaux1 (must be unique per pass)
+			var fieldData = {
+				"key": keyValue,
+				"label": fieldLabel,
+				"value": fieldValue
+			};
 
-		var fieldData = {
-			"key": keyValue,
-			"label": fieldLabel,
-			"value": fieldValue
-		};
+		}
+
+		console.log(fieldData);
 
 		var groupType = targetGroupId.slice(0, -1); //get the group type: aux
 		var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
@@ -479,6 +525,40 @@
 		$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
 
 		console.log(currentEditTarget);
+
+	}
+
+	/***********************************************************
+ 
+ 	Handler
+
+ 	***********************************************************/
+	function onCurrencySubmit() {
+
+		var fieldValue = Number($("input#popValue").val());
+		var currencyCode = $("select#currency").val();
+		var fieldLabel = $("input#popLabel").val(); //get input box label
+
+		var keyValue = targetGroupId;
+		//console.log(currencyCode);
+
+		//props = {
+		//	style: "currency",
+		//	currency: currencyCode
+		//};
+
+		//display output            
+		//var currencyText = fieldValue.toLocaleString("en", props);
+		//console.log(currencyText);
+
+		var fieldData = {
+			"key": keyValue,
+			"currencyCode": currencyCode,
+			"label": fieldLabel,
+			"value": fieldValue
+		};
+
+		onTextSubmit(fieldData);
 
 	}
 
