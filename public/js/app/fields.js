@@ -1,5 +1,14 @@
 (function(passFields, $, undefined) {
 
+	var editGroup = {
+		'svgId': "", //svg id of group
+		'svgType': "", //svg group type: second
+		'svgNum': "", //svg group num: 1
+		'dataType': "", //keydoc field type: secondaryField
+		'dataIndex': "" //keydoc array index value
+	};
+
+
 	/***********************************************************
  	add text elements and set values and labels for each field
  
@@ -15,6 +24,9 @@
 
 				var idIndex = index + 1; //id count starts at 1. 
 
+				var originalRect = getRectBBox(fieldType, idIndex); //Sometimes null, but then not needed.
+				console.log("--->Orect " + originalRect.width + " " + originalRect.height)
+
 				//remove groups that already exist - get old group x&Y loc
 				var groupLoc = removeTextGroup(fieldType, idIndex);
 
@@ -28,24 +40,24 @@
 				if (passType == "coupon" && fieldType == "primary") { //primary fields have value then label
 
 					//Add Value Element
-					var valueElem = addText("value", passGroup, fieldType, fieldArray, index);
+					var valueElem = addTextElem("value", passGroup, fieldType, fieldArray, index);
 					//Add Label Element
-					var labelElem = addText("label", passGroup, fieldType, fieldArray, index);
+					var labelElem = addTextElem("label", passGroup, fieldType, fieldArray, index);
 
 				} else if (passType == "storeCard" && fieldType == "primary") {
 					//TODO: This seems stupid, must be a better way to make this exception for 2 types of passes. 
 
 					//Add Value Element
-					var valueElem = addText("value", passGroup, fieldType, fieldArray, index);
+					var valueElem = addTextElem("value", passGroup, fieldType, fieldArray, index);
 					//Add Label Element
-					var labelElem = addText("label", passGroup, fieldType, fieldArray, index);
+					var labelElem = addTextElem("label", passGroup, fieldType, fieldArray, index);
 
 				} else { //all other fields are label then value
 
 					//Add Label Element
-					var labelElem = addText("label", passGroup, fieldType, fieldArray, index);
+					var labelElem = addTextElem("label", passGroup, fieldType, fieldArray, index);
 					//Add Value Element
-					var valueElem = addText("value", passGroup, fieldType, fieldArray, index);
+					var valueElem = addTextElem("value", passGroup, fieldType, fieldArray, index);
 
 				}
 
@@ -61,19 +73,27 @@
 				var labelWidth = setTextSize(labelElem, passGroup, fieldArray.length);
 				var valueWidth = setTextSize(valueElem, passGroup, fieldArray.length);
 
-				var rectWidth; //rect width is assigned to whichever is wider
+				var rectWidth, rectHeight; //rect width is assigned to whichever is wider
 				if (labelWidth >= valueWidth) {
 					rectWidth = labelWidth;
 				} else {
 					rectWidth = valueWidth;
 				}
+				rectHeight = rectBBox.height;
+
+				//no text but a rect, set an empty box
+				if (rectWidth == 0 || rectHeight == 0) {
+					rectWidth = originalRect.width;
+					rectHeight = originalRect.height;
+				}
+
 
 				//make rect for hovering - size of group element
 				var rect = passGroup.append('rect')
 					.attr('class', 'text-btn-rect')
 					.attr('data-target', fieldPKType)
 					.attr('width', rectWidth)
-					.attr('height', rectBBox.height)
+					.attr('height', rectHeight)
 					.on("click", onTextRectClick); //add event to new rect
 
 			}
@@ -85,7 +105,7 @@
  
  
  	***********************************************************/
-	function addText(textType, passGroup, fieldType, fieldArray, fieldIndex) {
+	function addTextElem(textType, passGroup, fieldType, fieldArray, fieldIndex) {
 
 		var idIndex = fieldIndex + 1; //id count starts at 1. 
 		var groupId = 'g#' + fieldType + idIndex; //g#aux1
@@ -176,7 +196,7 @@
 			groupLoc = textGroup.attr('transform');
 			textGroup.remove(); //remove the group
 
-			console.log("g#" + fieldType + idIndex);
+			console.log("remove: g#" + fieldType + idIndex);
 			console.log(groupLoc);
 		}
 
@@ -231,6 +251,32 @@
 
 		//align text in field
 		//fieldElement.style('text-anchor', pKValueToCSS(fieldGroup.textAlignment));
+
+	}
+
+	/***********************************************************
+ 	 Get the rectangle bbox before the text update. Sometimes null	
+ 
+ 	***********************************************************/
+	function getRectBBox(fieldType, idIndex) {
+
+		var width = 0;
+		var height = 0;
+		var rect = d3.select("g#" + fieldType + idIndex + " rect");
+		if (!rect.empty()) {
+
+			width = Number(rect.attr('width'));
+			height = Number(rect.attr('height'));
+
+		}
+
+		var bBox = {
+			"width": width,
+			"height": height
+		};
+
+		return bBox;
+
 
 	}
 
@@ -366,35 +412,25 @@
 
 	/***********************************************************
  
- 	Handler
+ 
+	***********************************************************/
+	function configTextInputs() {
 
- 	***********************************************************/
-	function onTextRectClick() {
-
-		//get the id of the text under the button
-		currentEditTarget = d3.select(this).attr("data-target");
-		targetGroupId = d3.select(this.parentNode).attr("id");
-		var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
-
-		var selectClassType = d3.select(this).attr("class");
-
+		//set to "" if label/value is undefined
+		var targetLabel = valueOrDefault(passTemplate.keyDoc[passType][editGroup.dataType][editGroup.dataIndex].label);
+		var targetValue = valueOrDefault(passTemplate.keyDoc[passType][editGroup.dataType][editGroup.dataIndex].value);
 
 		//update the legend in popover to display the id of the field
 		d3.select("form#pop-text legend")
-			.text(currentEditTarget);
+			.text(editGroup.dataType);
 
-		//var targetLabel = d3.select("g#" + targetGroupId + " .label-text." + currentEditTarget).text();
-		var targetLabel = passTemplate.keyDoc[passType][currentEditTarget][groupIndex].label;
-		console.log(targetLabel);
 		//set the input box attributes for the label
-		d3.select("#popLabel")
+		var inputLabel = d3.select("#popLabel")
 			.on("input", null) //clear the event
-		.property('value', targetLabel)
+			.property('value', targetLabel)
 			.attr('disabled', null)
 			.on("input", onTextSubmit); //add input event
 
-		var targetValue = passTemplate.keyDoc[passType][currentEditTarget][groupIndex].value;
-		//var targetValue = d3.select("g#" + targetGroupId + " .value-text." + currentEditTarget).text();
 		//set the input box attributes for the value
 		var inputValue = d3.select("#popValue")
 			.on("input", null)
@@ -402,92 +438,360 @@
 			.attr('disabled', null)
 			.on("input", onTextSubmit); //add input event
 
+	}
+
+	/***********************************************************
+ 
+ 
+	***********************************************************/
+	function configSelectInputs() {
+
 		//add events for selecting value format selector options
 		var valueSelect = d3.select("select#value-format")
 			.on("input", null)
 			.attr('disabled', null)
-			.on("input", function() {
+			.on("input", onValueFormat);
 
-				//destroy since we might be switching from other option
-				$('#popValue').datetimepicker('destroy');
+		//add handler for delete field button
+		var delButton = d3.select("button#btn-del-field")
+			.attr('disabled', null)
+			.on("click", onDelField);
 
+		//add handler for delete field button
+		var delButton = d3.select("button#btn-add-field")
+			.attr('disabled', null)
+			.on("click", onAddField);
 
-				//add/remove a second selector as needed
-				if (this.value == "Number") {
+	}
 
-					d3.select("#currency").style("display", "none");
-					d3.select("#timeDate-format").style("display", "none");
-					d3.select("#number-format")
-						.style("display", "inline")
-						.on("input", function() {
+	/***********************************************************
+ 
+ 	
 
+ 	***********************************************************/
+	function setEditGroup(selection) {
 
-						});
+		console.log(selection);
 
-				} else if (this.value == "Time") {
+		//get the svg id and type of the text under the button
+		var svgGroupId = d3.select(selection.parentNode).attr("id");
+		var svgGroupType = svgGroupId.slice(0, -1); //get the group type: aux
+		var svgGroupNum = Number(svgGroupId.slice(-1));
 
-					d3.select("#currency").style("display", "none");
-					d3.select("#number-format").style("display", "none");
-					d3.select("#timeDate-format")
-						.style("display", "inline")
-						.on("input", function() {
-							//this.value 
+		//get the field type and index for the keydoc
+		var datafieldType = d3.select(selection).attr("data-target");
+		var dataGroupIndex = Number(svgGroupId.slice(-1)) - 1; //get the group index value, & subtract 1
 
-						});
-
-					//setup time picker
-					$('#popValue').datetimepicker({
-						datepicker: false,
-						format: 'g:i A',
-						formatTimeScroller: 'g:i A' /*uppercase AM/PM now*/ ,
-						step: 15,
-						onChangeDateTime: onTextSubmit,
-					});
-
-				} else if (this.value == "Date") {
-
-					//setup date picker
-					$('#popValue').datetimepicker({
-						timepicker: false,
-						mask: true,
-						format: 'Y/m/d',
-						onChangeDateTime: onTextSubmit,
-					});
-
-					d3.select("#currency").style("display", "none");
-					d3.select("#number-format").style("display", "none");
-					d3.select("#timeDate-format").style("display", "inline");
-
-				} else if (this.value == "Currency") {
-
-					d3.select("#number-format").style("display", "none");
-					d3.select("#timeDate-format").style("display", "none");
-
-					var url = "/assets/data/currency.html";
-					var uri = encodeURI(url);
-					console.log(uri);
-
-					//load svg xml + place into document
-					d3.html(uri, function(html) {
-
-						d3.select("div#format-control").node().appendChild(html);
-
-						d3.select("#currency")
-							.style("display", "inline")
-							.on("input", onCurrencySubmit);
-
-					});
+		editGroup = {
+			'svgId': svgGroupId, //svg id of group
+			'svgType': svgGroupType, //svg group type: second
+			'svgNum': svgGroupNum, //svg group num: 1
+			'dataType': datafieldType, //field type: secondaryField
+			'dataIndex': dataGroupIndex //keydoc array index value
+		};
 
 
+	}
 
-				} else {
+	/***********************************************************
+ 
+ 	Handler
 
-					d3.select("#timeDate-format").style("display", "none");
-					d3.select("#number-format").style("display", "none");
-					d3.select("#currency").style("display", "none");
-				}
+ 	***********************************************************/
+	function onTextRectClick() {
+
+		//set the group id of the text under the rectangle
+		setEditGroup(this);
+
+		//currentEditTarget = d3.select(this).attr("data-target");
+		//targetGroupId = d3.select(this.parentNode).attr("id");
+		//var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
+
+		//set and clear select highlight style with "select class"
+		d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
+		d3.select(this).attr("class", "text-btn-rect select");
+
+		//setup text and attach handlers for text input controls
+		configTextInputs();
+		//enable and attach handlers for select and buttons
+		configSelectInputs();
+
+	}
+
+	/***********************************************************
+ 
+ 	Handler
+
+ 	***********************************************************/
+	function onDelField() {
+
+		d3.event.preventDefault();
+
+		//get array length before removal of data field
+		var arrayLength = passTemplate.keyDoc[passType][editGroup.dataType].length;
+		//remove this field data from the keyDoc
+		passTemplate.keyDoc[passType][editGroup.dataType].splice(editGroup.dataIndex, 1);
+
+		//hide last field on svg
+		var idLastField = editGroup.svgType + arrayLength; //get the index of the last field on the pass 
+		if (arrayLength <= 1) { //keep the last rect for adding the field type back.
+			d3.select("#" + idLastField + " text.label-text").style("display", "none"); //label
+			d3.select("#" + idLastField + " text.value-text").style("display", "none"); //value
+		} else {
+			//hide this value, but keep it in the svg markup for adding
+			d3.select("#" + idLastField).style("display", "none");
+		}
+
+		var groupNum = editGroup.svgNum;
+		if (editGroup.svgNum > passTemplate.keyDoc[passType][editGroup.dataType].length) {
+			groupNum = passTemplate.keyDoc[passType][editGroup.dataType].length;
+		}
+
+		var previousField = editGroup.svgType + groupNum;
+		console.log("prevField=" + previousField);
+		setEditGroup(d3.select('g#' + previousField + ' rect')[0][0]);
+
+		//reset legend after delete
+		d3.select("form#pop-text legend")
+			.text(editGroup.dataType);
+
+		//disable setting control
+		//d3.select("#popLabel").attr('disabled', true).property('value', "");
+		//d3.select("#popValue").attr('disabled', true).property('value', "");
+		//d3.select("select#value-format").attr('disabled', true);
+		//d3.select("button#btn-del-field").attr('disabled', true);
+
+		//passTemplate.keyDoc[passType][currentEditTarget][groupArrayIndex] = fieldData //set value into keyDoc 
+
+		//update text
+		setPassFields(passTemplate.keyDoc[passType][editGroup.dataType], editGroup.svgType);
+
+		configTextInputs();
+
+		//set text color, or the field text won't show up
+		$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
+		$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
+
+		//set and clear select highlight style with "select class"
+		d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
+		d3.select('g#' + editGroup.svgId + ' rect').attr("class", "text-btn-rect select");
+
+
+
+	}
+
+	/***********************************************************
+ 
+ 	Handler
+
+ 	***********************************************************/
+	function onAddField() {
+
+		d3.event.preventDefault(); //prevent form submit
+
+
+		var newSvgGroupIndex = editGroup.svgNum + 1; //increment 1
+		var keyValue = editGroup.svgType + newSvgGroupIndex; //example: aux4
+		console.log("addField:Keyvalue=" + keyValue);
+
+		//set select group to the new rectangle
+		setEditGroup(d3.select('g#' + keyValue + ' rect')[0][0]); //http://bost.ocks.org/mike/selection/#subclass
+
+		//1 add empty data to keydoc (with filler text?)
+		var fieldData = {
+			"key": keyValue,
+			"label": "LABEL", //placeholder text for a new field
+			"value": "value"
+		};
+
+		//update the text for the "new" svg group
+		//onTextSubmit(fieldData);
+
+		passTemplate.keyDoc[passType][editGroup.dataType].splice(editGroup.dataIndex, 0, fieldData);
+
+		//passTemplate.keyDoc[passType][editGroup.dataType][editGroup.dataIndex] = fieldData //set value into keyDoc 
+		setPassFields(passTemplate.keyDoc[passType][editGroup.dataType], editGroup.svgType);
+
+		//set and clear select highlight style with "select class"
+		d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
+		d3.select('g#' + editGroup.svgId + ' rect').attr("class", "text-btn-rect select");
+
+		//set text color
+		$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
+		$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
+
+		//display the group
+		d3.select("#" + keyValue + " text.label-text").style("display", "inline"); //label
+		d3.select("#" + keyValue + " text.value-text").style("display", "inline"); //value
+		d3.select("#" + keyValue).style("display", "inline");
+
+		//configure controls
+
+		//reset legend
+		d3.select("form#pop-text legend")
+			.text(editGroup.dataType);
+
+		//enable and clear setting control
+		d3.select("#popLabel").attr('disabled', null).property('value', fieldData.label);
+		d3.select("#popValue").attr('disabled', null).property('value', fieldData.value);
+		//d3.select("select#value-format").attr('disabled', null);
+		//d3.select("button#btn-del-field").attr('disabled', null);
+		//set and clear select highlight style with "select class"
+		//d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
+		//d3.select('g#' + keyValue + ' rect').attr("class", "text-btn-rect select");
+
+
+		/*
+		//currentEditTarget = d3.select(this).attr("data-target");
+		console.log("-->AddField " + editGroup.svgGroupId);
+		var svgGroupNumber = Number(editGroup.svgGroupId.slice(-1)) + 1; //get the group index value, & add 1
+		//var groupType = targetGroupId.slice(0, -1); //get the group type: aux
+
+		targetGroupId = groupType + groupNumber;
+		var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
+
+		var arrayLength = passTemplate.keyDoc[passType][editGroup.dataType].length + 1;
+
+		//get the index of the last field on the pass before removal of a field 
+		var idLastField = groupType + arrayLength;
+
+		if (arrayLength <= 1) { //keep the last rect for adding the field type back.
+			d3.select("#" + idLastField + " text.label-text").style("display", "inline"); //label
+			d3.select("#" + idLastField + " text.value-text").style("display", "inline"); //value
+		} else {
+			//hide this value, but keep it in the svg markup for adding
+			d3.select("#" + idLastField).style("display", "inline");
+		}
+
+		//set text on svg to none
+		d3.select("#" + idLastField + " text.label-text").text(""); //label
+		d3.select("#" + idLastField + " text.value-text").text(""); //value
+
+		//reset legend
+		d3.select("form#pop-text legend")
+			.text(currentEditTarget);
+
+		//disable setting control
+		d3.select("#popLabel").attr('disabled', null).property('value', "");
+		d3.select("#popValue").attr('disabled', null).property('value', "");
+		d3.select("select#value-format").attr('disabled', null);
+		d3.select("button#btn-del-field").attr('disabled', null);
+
+		var keyValue = targetGroupId;
+		var fieldData = {
+			"key": keyValue,
+			"label": "",
+			"value": ""
+		};
+
+		onTextSubmit(fieldData);
+
+		//setup text and attach handlers for text input controls
+		configTextInputs(groupIndex);
+		//setup text and attach handlers for text input controls
+		//configInputControls(groupNumber - 1);
+		configSelectInputs();
+
+		//passTemplate.keyDoc[passType][currentEditTarget][groupArrayIndex] = fieldData //set value into keyDoc 
+		//setPassFields(passTemplate.keyDoc[passType][currentEditTarget], groupType);
+
+		//set text color, or the field text won't show up
+		$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
+		$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
+*/
+	}
+
+	/***********************************************************
+ 
+ 	Handler
+
+ 	***********************************************************/
+	function onValueFormat() {
+
+		var valueSelect = d3.select("select#value-format");
+
+		var selectOption = valueSelect.value
+
+		//destroy since we might be switching from other option
+		$('#popValue').datetimepicker('destroy');
+
+
+		//add/remove a second selector as needed
+		if (selectOption == "Number") {
+
+			d3.select("#currency").style("display", "none");
+			d3.select("#timeDate-format").style("display", "none");
+			d3.select("#number-format")
+				.style("display", "inline")
+				.on("input", function() {
+
+
+				});
+
+		} else if (selectOption == "Time") {
+
+			d3.select("#currency").style("display", "none");
+			d3.select("#number-format").style("display", "none");
+			d3.select("#timeDate-format")
+				.style("display", "inline")
+				.on("input", function() {
+					//this.value 
+
+				});
+
+			//setup time picker
+			$('#popValue').datetimepicker({
+				datepicker: false,
+				format: 'g:i A',
+				formatTimeScroller: 'g:i A' /*uppercase AM/PM now*/ ,
+				step: 15,
+				onChangeDateTime: onTextSubmit,
+			});
+
+		} else if (selectOption == "Date") {
+
+			//setup date picker
+			$('#popValue').datetimepicker({
+				timepicker: false,
+				mask: true,
+				format: 'Y/m/d',
+				onChangeDateTime: onTextSubmit,
+			});
+
+			d3.select("#currency").style("display", "none");
+			d3.select("#number-format").style("display", "none");
+			d3.select("#timeDate-format").style("display", "inline");
+
+		} else if (selectOption == "Currency") {
+
+			d3.select("#number-format").style("display", "none");
+			d3.select("#timeDate-format").style("display", "none");
+
+			var url = "/assets/data/currency.html";
+			var uri = encodeURI(url);
+			console.log(uri);
+
+			//load svg xml + place into document
+			d3.html(uri, function(html) {
+
+				d3.select("div#format-control").node().appendChild(html);
+
+				d3.select("#currency")
+					.style("display", "inline")
+					.on("input", onCurrencySubmit);
 
 			});
+
+
+
+		} else {
+
+			d3.select("#timeDate-format").style("display", "none");
+			d3.select("#number-format").style("display", "none");
+			d3.select("#currency").style("display", "none");
+		}
+
+
 	}
 
 
@@ -502,7 +806,7 @@
 
 			var fieldValue = $("input#popValue").val();
 			var fieldLabel = $("input#popLabel").val(); //get input box label
-			var keyValue = targetGroupId;
+			var keyValue = editGroup.svgId;
 
 			var fieldData = {
 				"key": keyValue,
@@ -514,17 +818,21 @@
 
 		console.log(fieldData);
 
-		var groupType = targetGroupId.slice(0, -1); //get the group type: aux
-		var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
+		//var groupType = targetGroupId.slice(0, -1); //get the group type: aux
+		//var groupIndex = targetGroupId.slice(-1) - 1; //get the group index value, & subtract 1
 
-		passTemplate.keyDoc[passType][currentEditTarget][groupIndex] = fieldData //set value into keyDoc 
-		setPassFields(passTemplate.keyDoc[passType][currentEditTarget], groupType);
+		passTemplate.keyDoc[passType][editGroup.dataType][editGroup.dataIndex] = fieldData //set value into keyDoc 
+		setPassFields(passTemplate.keyDoc[passType][editGroup.dataType], editGroup.svgType);
+
+		//set and clear select highlight style with "select class"
+		d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
+		d3.select('g#' + editGroup.svgId + ' rect').attr("class", "text-btn-rect select");
 
 		//set text color
 		$(".pass-template .value-text").css("fill", passTemplate.keyDoc.foregroundColor);
 		$(".pass-template .label-text").css("fill", passTemplate.keyDoc.labelColor);
 
-		console.log(currentEditTarget);
+		console.log(editGroup.dataType);
 
 	}
 
@@ -539,7 +847,7 @@
 		var currencyCode = $("select#currency").val();
 		var fieldLabel = $("input#popLabel").val(); //get input box label
 
-		var keyValue = targetGroupId;
+		var keyValue = editGroup.svgId;
 		//console.log(currencyCode);
 
 		//props = {

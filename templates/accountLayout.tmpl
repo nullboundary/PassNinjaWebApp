@@ -265,6 +265,10 @@
                     <form id='pop-text' class='pure-form pure-form-aligned'>
                       <legend>No field selected</legend>
                       <fieldset>
+                         <div class="pure-control-group">
+                          <button class='pure-button' id='btn-del-field' disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
+                          <button class='pure-button' id='btn-add-field' disabled><i class="fa fa-plus-circle"></i> New Field</button>
+                        </div>
                         <div class="pure-control-group">
                           <label for='popLabel'>Field Label</label>
                           <input id='popLabel' type='text' disabled></input>
@@ -295,8 +299,8 @@
                             <option>Scientific</option>
                             <option>Spell Out</option>
                           </select>
-
                         </div>
+                       
                       </fieldset>
                     </form>
                   </div>

@@ -184,6 +184,9 @@
 
 		currentEditTarget = d3.select(this).attr("data-target");
 
+		d3.selectAll("rect").attr("class", "img-btn-rect");
+		d3.select(this).attr("class", "img-btn-rect select");
+
 		//update the legend in popover to display the id of the field
 		d3.select("form#pop-image legend")
 			.text(currentEditTarget + ".png Image");
