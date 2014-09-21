@@ -87,6 +87,11 @@
 					rectHeight = originalRect.height;
 				}
 
+				var padding = 4;
+				var radius = 3;
+				rectWidth = rectWidth + padding;
+				rectHeight = rectHeight + padding;
+
 
 				//make rect for hovering - size of group element
 				var rect = passGroup.append('rect')
@@ -94,6 +99,12 @@
 					.attr('data-target', fieldPKType)
 					.attr('width', rectWidth)
 					.attr('height', rectHeight)
+					.attr('x', -(padding / 2))
+					.attr('y', -(padding / 2))
+					.attr('rx', radius)
+					.attr('ry', radius)
+					.attr('shape-rendering', 'crispEdges')
+					//.attr('stroke-dasharray', "1,2") //dashed line. 1 pixel - 2 pixel space
 					.on("click", onTextRectClick); //add event to new rect
 
 			}
@@ -121,7 +132,7 @@
 			.classed(JSON.parse('{ "' + textType + '-text": true,"' + fieldPKType + '": true }')) //add classes label-text and fieldType
 			.attr('text-anchor', pKValueToSVG(fieldArray[fieldIndex].textAlignment)); //horizontal align
 
-		//Set Text Element X & Y
+		//Set Text Element X & Y -- Text 0,0 is lower right corner!
 		var elemFontSize = parseInt(textElem.style('font-size'));
 		console.log(groupId);
 		var firstElemId = d3.select(groupId + ' text').attr('id'); //get the first textElem in the group
@@ -135,7 +146,7 @@
 
 			var firstLineSize = parseInt(d3.select(groupId + ' text').style('font-size'));
 			textElem.attr('x', textX)
-				.attr('y', (firstLineSize + 10) + elemFontSize);
+				.attr('y', (firstLineSize + 3) + elemFontSize);
 		}
 
 		return textElem;
@@ -421,7 +432,7 @@
 		var targetValue = valueOrDefault(passTemplate.keyDoc[passType][editGroup.dataType][editGroup.dataIndex].value);
 
 		//update the legend in popover to display the id of the field
-		d3.select("form#pop-text legend")
+		d3.select("div#legend-header")
 			.text(editGroup.dataType);
 
 		//set the input box attributes for the label
@@ -552,7 +563,7 @@
 		setEditGroup(d3.select('g#' + previousField + ' rect')[0][0]);
 
 		//reset legend after delete
-		d3.select("form#pop-text legend")
+		d3.select("div#legend-header")
 			.text(editGroup.dataType);
 
 		//disable setting control
@@ -628,7 +639,7 @@
 		//configure controls
 
 		//reset legend
-		d3.select("form#pop-text legend")
+		d3.select("div#legend-header")
 			.text(editGroup.dataType);
 
 		//enable and clear setting control

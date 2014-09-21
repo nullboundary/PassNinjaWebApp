@@ -1,6 +1,22 @@
 
 <svg id="coupon" class="pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="315px" height="401px" viewBox="0 0 315 401" xml:space="preserve">
+	 <style type="text/css">
+<![CDATA[
+	svg .font-bold{font-family:'Helvetica-Bold'; pointer-events: none;}
+	svg#coupon .bg-grad{fill:url(#SVGID_1_);}
+	svg .font-lite{font-family:'Helvetica-Light'; pointer-events: none;}
+	svg .font-norm{font-family:'Helvetica'; pointer-events: none;-webkit-font-smoothing: antialiased;text-shadow: 1px 1px 1px rgba(0,0,0,0.004);}
+	svg#coupon .auxiliaryFields.value-text{font-size:14px;}
+	svg#coupon .auxiliaryFields.label-text{font-size:12px;}
+	svg#coupon .headerFields.value-text{font-size:14px;}
+	svg#coupon .headerFields.label-text{font-size:12px;}
+	svg#coupon .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
+	svg#coupon .barcode{font-size:36px;}
+	svg#coupon .primaryFields.label-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg#coupon .primaryFields.value-text{font-size:52px; font-family:'Helvetica-Light';}
+]]>
+</style>
 <g id="Layer_1">
 	<g>
 		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="157.998" y1="-0.062" x2="157.998" y2="399.062">
@@ -128,41 +144,15 @@
 </g>
 <g id="Layer_3" class="pass-group">
 	
-	<!--
-	<g id="header1" class="text-btn-group"> 
-		<text x="72.4985" y="35" class="st2 st9 st12 value-text headerFields">Cinderella’s</text>
-		<rect data-target="headerFields" x="72.4985" y="25" width="113.4" height="41.4"/> 
-	</g>	
-
-	<g id="header2" class="text-btn-group">
-		<text x="261.4985" y="23" class="st5 st3 st10 label-text headerFields">OFFER</text>
-		<text x="245.1646" y="44" class="st6 st7 st11 value-text headerFields">In-store</text>
-		<rect data-target="headerFields" x="261.4985" y="13" width="113.4" height="41.4"/> 
-	</g>
-
-	<g id="aux1" class="text-btn-group">
-		<text x="18.4985" y="208" class="st5 st3 st10 label-text auxiliaryFields">VALID THRU </text>
-		<text x="18.4985" y="227" class="st6 st7 st11 value-text auxiliaryFields">07/31/2014</text>
-		<rect data-target="auxiliaryFields" x="18.4985" y="195" width="113.4" height="41.4"/> 
-	</g>	
-	
-	<g id="aux2" class="text-btn-group">
-		<text id="auxLabel2" x="205.4985" y="208" class="st5 st3 st10 label-text auxiliaryFields">COUPON #</text>
-		
-		<text id="auxValue2" x="205.4985" y="227" class="st6 st7 st11 value-text auxiliaryFields">SAN070131</text>
-		
-		<rect data-target="auxiliaryFields" x="202" y="195" width="113.4" height="41.4"/> 
-	</g>
--->
 	<g class="img-btn-group" id="logo-group">
 		<image id="logo" style="overflow:visible;" width="36.36" height="32.7" x="15" y="11.2881" xlink:href="/assets/svg/img/coupon/logo.png"></image>
 		<rect data-target="logo" width="36.36" height="32.7" x="15" y="11.2881" class="img-btn-rect"/>
 	</g>
 	
 	<g class="barcode-btn-group" id="barcode-group">
-		<image id="barcode" style="overflow:visible;" width="322" height="91" xlink:href="/assets/svg/img/coupon/barcode.jpg" transform="translate(35,304.2979) scale(0.766)"></image>
-		<text x="87.4985" y="354.9995" class="font-norm barcode">SAMPLE</text>
-		<rect data-target="barcode" width="322" height="91" transform="translate(35,304.2979) scale(0.766)" class="bar-btn-rect"/>
+		<rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect"/>
+		<image id="barcode" style="overflow:visible;" xlink:href="/assets/svg/img/coupon/barcode.jpg"></image>
+		<text class="font-norm barcode">SAMPLE</text>
 	</g>
 
 	<g class="img-btn-group" id="strip-group">
@@ -200,7 +190,5 @@
 		<text class="value-text">0131</text>
 	</g>
 
-
-	
 </g>
 </svg>

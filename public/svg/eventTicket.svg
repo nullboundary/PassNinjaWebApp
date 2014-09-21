@@ -85,66 +85,12 @@
 	</g>
 </g>
 
-
-<!--
-<text transform="matrix(1 0 0 1 265 24.335)" class="st18 st3 st12">PRICE</text>
-<text transform="matrix(1 0 0 1 265.667 45.3345)" class="st7 st9 st15">$35</text>
-<text transform="matrix(1 0 0 1 86.666 38.668)"><tspan x="0" y="0" class="st7 st3 st14">Angry </tspan><tspan x="57.01" y="0" class="st7 st3 st14">V</tspan><tspan x="68.03" y="0" class="st7 st3 st14">elocity</tspan></text>
-<text transform="matrix(1 0 0 1 242.334 205.668)"><tspan x="0" y="0" class="st18 st3 st12">LOC</tspan><tspan x="23.22" y="0" class="st18 st3 st12">A</tspan><tspan x="30.35" y="0" class="st18 st3 st12">TION</tspan></text>
-<text transform="matrix(1 0 0 1 235.334 227.002)" class="st7 st9 st13">City Park</text>
-<text transform="matrix(1 0 0 1 16 171.002)" class="st7 st9 st13">Tue Jul 29, 2014 7:30 PM</text>
--->
-
 <g class="barcode-btn-group" id="barcode-group">
-		<image id="barcode" style="overflow:visible;" width="322" height="91" xlink:href="/assets/svg/img/eventTicket/barcode.jpg" transform="translate(35,304.2979) scale(0.766)"></image>
-		<text x="87.4985" y="354.9995" class="font-norm barcode">SAMPLE</text>
-		<rect data-target="barcode" width="322" height="91" transform="translate(35,304.2979) scale(0.766)" class="bar-btn-rect"/>
+		<rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect"/>
+		<image id="barcode" style="overflow:visible;" width="322" height="91" xlink:href="/assets/svg/img/eventTicket/barcode.jpg"></image>
+		<text class="font-norm barcode">SAMPLE</text>
 </g>
-<!--
-<g>
-	<defs>
-		<rect id="SVGID_5_" x="38" y="308" width="240" height="70"/>
-	</defs>
-	<clipPath id="SVGID_6_">
-		<use xlink:href="#SVGID_5_"  style="overflow:visible;"/>
-	</clipPath>
-	<g class="st5">
-		<defs>
-			<rect id="SVGID_7_" x="-2" y="1" width="318" height="401"/>
-		</defs>
-		<clipPath id="SVGID_8_">
-			<use xlink:href="#SVGID_7_"  style="overflow:visible;"/>
-		</clipPath>
-		<g class="st6">
-			<defs>
-				<rect id="SVGID_9_" x="38" y="308" width="240" height="70"/>
-			</defs>
-			<clipPath id="SVGID_10_">
-				<use xlink:href="#SVGID_9_"  style="overflow:visible;"/>
-			</clipPath>
-			<g transform="matrix(1 0 0 1 -3.814697e-06 0)" style="clip-path:url(#SVGID_10_);">
-				
-					<image style="overflow:visible;" width="321" height="77" xlink:href="/assets/svg/img/eventTicket/barcode.jpg"  transform="matrix(0.7477 0 0 0.9091 38 308)">
-				</image>
-			</g>
-		</g>
-	</g>
-</g>
-<g>
-	<text transform="matrix(1 0 0 1 76.8574 358)" class="st11 st17">SAMPLE</text>
-</g>
--->
-<!--
-<text transform="matrix(1 0 0 1 15.2725 205.6689)" class="st18 st3 st12">SEACTION</text>
-<text transform="matrix(1 0 0 1 110.6055 206.002)" class="st18 st3 st12">ROW</text>
-<text transform="matrix(1 0 0 1 110.6055 227.002)" class="st7 st9 st13">H</text>
-<text transform="matrix(1 0 0 1 16.6055 84.002)" class="st18 st3 st12">LIVE CONCERT</text>
-<text transform="matrix(1 0 0 1 15.542 149.3354)"><tspan x="0" y="0" class="st18 st3 st12">D</tspan><tspan x="7.94" y="0" class="st18 st3 st12">A</tspan><tspan x="15.08" y="0" class="st18 st3 st12">TE/TIME</tspan></text>
-<text transform="matrix(0.9886 0 0 1 15.9971 108.335)"><tspan x="0" y="0" class="st7 st11 st16">Angry </tspan><tspan x="60.69" y="0" class="st7 st11 st16 st4">V</tspan><tspan x="73.55" y="0" class="st7 st11 st16">elocity</tspan></text>
-<text transform="matrix(1 0 0 1 16.6055 226.002)" class="st7 st9 st13">9</text>
-<text transform="matrix(1 0 0 1 176.334 205.668)"><tspan x="0" y="0" class="st18 st3 st12">SE</tspan><tspan x="14.67" y="0" class="st18 st3 st12">A</tspan><tspan x="21.81" y="0" class="st18 st3 st12">T</tspan></text>
-<text transform="matrix(1 0 0 1 175.334 228.002)" class="st7 st9 st13">11</text>
--->
+
 <image style="overflow:visible;" width="72" height="92" xlink:href="/assets/svg/img/eventTicket/tumbnail.png"  transform="matrix(1.0231 0 0 1.0435 225.3398 75.0137)">
 </image>
 <image style="overflow:visible;" width="124" height="118" xlink:href="/assets/svg/img/eventTicket/logo.png"  transform="matrix(0.3341 0 0 0.3341 16.0229 12.5068)">

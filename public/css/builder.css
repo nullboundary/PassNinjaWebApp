@@ -149,6 +149,13 @@ a {
   cursor: pointer;
 }
 
+/* select style */ 
+.viewing-page-6 .img-btn-group rect.select {
+  fill: #a1fcff; 
+  fill-opacity: 0.5;
+  cursor: pointer;
+}
+
 /* only select these btn if on barcode input page */
 /*
 .viewing-page-7 .barcode-btn-group rect {
@@ -169,17 +176,29 @@ a {
   fill-opacity: 0.5;
   cursor: pointer;
 }*/
+.text-btn-group rect {
+  fill: #a1fcff; 
+  fill-opacity: 0.0;
+  stroke: none; 
+}
 
 /* only select these btn if on text input page */
 .viewing-page-8 .text-btn-group rect {
   fill: #a1fcff; 
   fill-opacity: 0.0;
-  stroke-width: 1; 
+  stroke-width: 1.0; 
   stroke: #fff; 
 }
 
 /* hover style */ 
 .viewing-page-8 .text-btn-group:hover rect {
+  fill: #a1fcff; 
+  fill-opacity: 0.5;
+  cursor: pointer;
+}
+
+/* select style */ 
+.viewing-page-8 .text-btn-group rect.select {
   fill: #a1fcff; 
   fill-opacity: 0.5;
   cursor: pointer;
@@ -318,6 +337,20 @@ div.control
     -webkit-transform: translate3d(0px, 530px, 0) !important; 
     -moz-transform: translate3d(0px, 530px, 0) !important;
     transform: translate3d(0px, 530px, 0) !important; 
+}
+
+div#legend-add
+{
+  float: right;
+  width: 30px;
+  top: -27px;
+  right: 63px;
+  position: relative;
+}
+
+div#legend-add button 
+{
+  padding: 3px 6px;
 }
 
 

@@ -63,18 +63,23 @@
  	***********************************************************/
 	function onBeforeScroll(index) {
 
+
+
 		if (pageBeforeIndex != index) { //prevent handler being called twice per scroll.
+
+			passColors.resetRectStroke(); //reset all rect stroke to none
 
 			pageBeforeIndex = index;
 			console.log("before " + index);
 			if (index == 3) { //page 2 is get started
-
 				getStartedSubmit();
-
 			} else if (index == 4) { //page 3 is colors
-
 				passColors.save();
+			} else if (index == 8) { //text boxes
+				passColors.updateRectStroke("rect.text-btn-rect");
 			}
+
+
 		}
 	}
 	/***********************************************************
@@ -92,7 +97,10 @@
 			} else if (index == 6) { //set image popover
 
 
+			} else if (index == 7) {
+
 			} else if (index == 8) { //set text input popover
+
 
 			}
 
@@ -129,6 +137,8 @@
 		console.log("passType " + passType);
 
 		passImages.set();
+
+		passBarcode.set();
 
 		passFields.set(passTemplate.keyDoc[passType].primaryFields, "primary");
 		passFields.set(passTemplate.keyDoc[passType].headerFields, "header"); //set header fields
@@ -246,6 +256,36 @@
 		});
 
 	}
+
+
+	/***********************************************************
+ 
+ 	check browser locale support
+	***********************************************************/
+	function toLocaleStringSupportsLocales() {
+		if (window.Intl && typeof window.Intl === "object") {
+			return true;
+		} else {
+			$.getScript("/assets/js/Intl.min.js")
+				.done(function(script, textStatus) {
+					console.log(textStatus);
+				})
+				.fail(function(jqxhr, settings, exception) {
+					alertDisplay("error", 'problem loading Intl.min.js');
+				});
+			return false;
+		}
+
+		//var number = 0;
+		//try {
+		//	number.toLocaleString("i");
+		//} catch (e) {
+		//	return e​.name === "RangeError";
+		//}
+		//return false;
+	}
+
+
 	/***********************************************************
  
  
@@ -253,7 +293,7 @@
 	function alertDisplay(alertType, alertMessage) {
 
 		//how long an alert is displayed
-		var alertTimeout = 2500;
+		var alertTimeout = 3500;
 		var outHtml = '';
 		var alertClass = 'alert-info';
 

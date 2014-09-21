@@ -74,6 +74,8 @@
 		d3.select(".pass-bg").style("stop-color", bgColor.toRgbString());
 		d3.select(".pass-bg-dark").style("stop-color", bgColor.darken(15).toRgbString());
 
+
+
 	}
 
 	/***********************************************************
@@ -85,6 +87,35 @@
 		console.log(d3.select(".value-text").style("fill"));
 		d3.selectAll(".value-text").style("fill", passTemplate.keyDoc.foregroundColor);
 		d3.selectAll(".label-text").style("fill", passTemplate.keyDoc.labelColor);
+	}
+
+
+	/***********************************************************
+ 
+ 
+ 	***********************************************************/
+	function updateRectStroke(selection) {
+
+		//set rect stroke color
+		var bgColor = tinycolor(passTemplate.keyDoc.backgroundColor);
+
+		if (bgColor.isDark()) {
+			d3.selectAll(selection).style("stroke", "#fff");
+		} else {
+			d3.selectAll(selection).style("stroke", "#000");
+
+		}
+
+		//d3.selectAll(selection).style("stroke", bgColor.complement().greyscale().toHexString());
+
+	}
+
+	function resetRectStroke() {
+
+		//reset text rect stroke color
+		d3.selectAll("rect.text-btn-rect").style("stroke", null);
+		//reset image rect stroke color
+		d3.selectAll("rect.img-btn-rect").style("stroke", null);
 	}
 
 
@@ -143,6 +174,14 @@
 	passColors.updateText = function() {
 		updateText();
 	};
+
+	passColors.updateRectStroke = function(selection) {
+		updateRectStroke(selection);
+	}
+
+	passColors.resetRectStroke = function() {
+		resetRectStroke();
+	}
 
 	/* save color data to server */
 	passColors.save = function() {

@@ -71,42 +71,21 @@
 	</g>
 </g>
 
-<!--
-<text transform="matrix(1 0 0 1 73.1655 38.6665)"><tspan x="0" y="0" class="st1 st2 st13">VE</tspan><tspan x="24.01" y="0" class="st1 st2 st13">R</tspan><tspan x="36.35" y="0" class="st1 st2 st13">Y</tspan><tspan x="48.04" y="0" class="st1 st2 st13"> BER</tspan><tspan x="91.05" y="0" class="st1 st2 st13">R</tspan><tspan x="103.39" y="0" class="st1 st2 st13">Y</tspan></text>
--->
-<!--
-<text transform="matrix(1 0 0 1 263.166 26.6665)"><tspan x="0" y="0" class="st6 st2 st11">T</tspan><tspan x="6.53" y="0" class="st6 st2 st11">O</tspan><tspan x="15.08" y="0" class="st6 st2 st11">T</tspan><tspan x="20.99" y="0" class="st6 st2 st11">A</tspan><tspan x="28.93" y="0" class="st6 st2 st11">L</tspan></text>
-<text transform="matrix(1 0 0 1 254.832 47.6665)" class="st7 st8 st14">$300</text>
--->
 <rect x="11.16" y="377.67" class="st0" width="11.5" height="14.5"/>
 <line class="st0" x1="16.91" y1="372.07" x2="16.91" y2="385.42"/>
 <line class="st0" x1="14.41" y1="375.67" x2="16.91" y2="372.07"/>
 <line class="st0" x1="16.91" y1="372.07" x2="19.16" y2="375.67"/>
+
 <g>
 	<circle class="st0" cx="299.33" cy="385.38" r="7.08"/>
 	<text transform="matrix(1 0 0 1 297.7559 388.9521)" class="st7 st9 st11">i</text>
 </g>
 
-<!--
-<image style="overflow:visible;" width="177" height="177" xlink:href="/assets/svg/img/storeCard/logo.png"  transform="matrix(0.2712 0 0 0.2636 15.6675 7.6689)">
-</image> -->
-<!--
-<text transform="matrix(1 0 0 1 17 211)"><tspan x="0" y="0" class="st6 st2 st11">V</tspan><tspan x="6.53" y="0" class="st6 st2 st11">ALID THRU </tspan></text>
-<text transform="matrix(1 0 0 1 17 233)" class="st7 st8 st12">12/31/2014</text>
-<text transform="matrix(1 0 0 1 258 211)" class="st6 st2 st11">CARD #</text>
-<text transform="matrix(1 0 0 1 266 233)" class="st7 st8 st12">0131</text>
-<text transform="matrix(1 0 0 1 120.5 233.168)" class="st7 st8 st12">John Appleseed </text>
-<text transform="matrix(1 0 0 1 121 210.5)" class="st6 st2 st11">CARD HOLDER</text>
-
-<image style="overflow:visible;" width="320" height="123" xlink:href="/assets/svg/img/storeCard/strip.png"  transform="matrix(0.9844 0 0 1 0 64)">
-</image> -->
-<!--
-<text transform="matrix(1.0733 0 0 1 16.166 128.6665)" class="st7 st8 st16">$200.19</text>
-<text transform="matrix(1.0733 0 0 1 18.166 155.6665)" class="st7 st8 st12">Remaining Balance</text>
--->
 <g class="barcode-btn-group" id="barcode-group">
-		<image id="barcode" style="overflow:visible;" width="322" height="91" xlink:href="/assets/svg/img/storeCard/barcode.jpg" transform="translate(35,304.2979) scale(0.766)"></image>
-		<text x="87.4985" y="354.9995" class="font-norm barcode">SAMPLE</text>
-		<rect data-target="barcode" width="322" height="91" transform="translate(35,304.2979) scale(0.766)" class="bar-btn-rect"/>
+		<rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect"/>
+		<image id="barcode" style="overflow:visible;" xlink:href="/assets/svg/img/storeCard/barcode.jpg"></image>
+		<text class="font-norm barcode">SAMPLE</text>
+
 </g>
+
 </svg>
