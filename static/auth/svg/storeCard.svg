@@ -1,0 +1,92 @@
+<svg id="storeCard" class="pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
+<style type="text/css">
+<![CDATA[
+	.st0{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	.st1{fill:#F1F2F2;}
+	.st2{font-family:'Helvetica-Bold';}
+	.st3{clip-path:url(#SVGID_3_);}
+	.st4{clip-path:url(#SVGID_5_);}
+	.st5{fill:url(#SVGID_1_);}
+	.st6{fill:#603913;}
+	.st7{fill:#FFFFFF;}
+	.st8{font-family:'Helvetica-Light';}
+	.st9{font-family:'TimesNewRomanPS-BoldMT';}
+	.st10{font-family:'Helvetica';}
+	svg#storeCard .label-text{font-size:11px; font-family:'Helvetica-Bold';}
+	svg#storeCard .value-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg#storeCard .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
+	svg#storeCard .headerFields.value-text{font-size:20px;}
+	svg#storeCard .barcode{font-size:40px;}
+	svg#storeCard .primaryFields.label-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg#storeCard .primaryFields.value-text{font-size:48px; font-family:'Helvetica-Light';}
+	svg#storeCard .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+]]>
+</style>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="157.5005" y1="4.882812e-04" x2="157.5005" y2="401.0005">
+	<stop  class="pass-bg-lite" offset="0" style="stop-color:#F37F7B"/>
+	<stop  class="pass-bg" offset="0.5" style="stop-color:#ED3D57"/>
+	<stop  class="pass-bg-dark" offset="1" style="stop-color:#DD1E47"/>
+</linearGradient>
+<path class="st5" d="M315,389c0,6.63-5.37,12-12,12H12c-6.63,0-12-5.37-12-12V12C0,5.37,5.37,0,12,0h291c6.63,0,12,5.37,12,12V389z"
+	/>
+
+<g class="pass-group">
+
+	<g class="img-btn-group" id="logo-group">
+		<image id="logo" style="overflow:visible;" width="48" height="48" x="15.6675" y="7.6689"></image>
+		<rect data-target="logo" width="48" height="48" x="15.6675" y="7.6689" class="img-btn-rect"/>
+	</g>
+
+	<g class="img-btn-group" id="strip-group">
+		<image id="strip" style="overflow:visible;" width="320" height="123" transform="scale(0.9859,1)" x="0" y="65"></image>
+		<rect data-target="strip" transform="scale(0.9859,1)" x="0" y="65" width="320" height="123" class="img-btn-rect"/>
+	</g>
+
+	<g id="logo1" class="text-btn-group" transform="translate(73.1655,38.6665)">
+		<text class="logo-text value-text">VERY BERRY</text>
+	</g>
+	<g id="header1" class="text-btn-group" transform="translate(263.166,10)">
+		<text class="label-text">TOTAL</text>
+		<text class="value-text">$300</text>
+	</g>
+	<g id="primary1" class="text-btn-group" transform="translate(16.166,75)">
+		<text class="value-text">$200.19</text>
+		<text class="label-text">Remaining Balance</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux1" class="text-btn-group" transform="translate(17,211)">
+		<text class="label-text">VALID THRU</text>
+		<text class="value-text">12/31/2014</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux2" class="text-btn-group" transform="translate(121,210.5)">
+		<text class="label-text">CARD HOLDER</text>
+		<text class="value-text">John Appleseed</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux3" class="text-btn-group" transform="translate(258,211)">
+		<text class="label-text">CARD #</text>
+		<text class="value-text">0131</text>
+		<rect class="text-btn-rect"/>
+	</g>
+</g>
+
+<rect x="11.16" y="377.67" class="st0" width="11.5" height="14.5"/>
+<line class="st0" x1="16.91" y1="372.07" x2="16.91" y2="385.42"/>
+<line class="st0" x1="14.41" y1="375.67" x2="16.91" y2="372.07"/>
+<line class="st0" x1="16.91" y1="372.07" x2="19.16" y2="375.67"/>
+
+<g>
+	<circle class="st0" cx="299.33" cy="385.38" r="7.08"/>
+	<text transform="matrix(1 0 0 1 297.7559 388.9521)" class="st7 st9 st11">i</text>
+</g>
+
+<g class="barcode-btn-group" id="barcode-group">
+		<rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect"/>
+		<image id="barcode" style="overflow:visible;"></image>
+		<text id="alt-text">sample</text>
+
+</g>
+
+</svg>

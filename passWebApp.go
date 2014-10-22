@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/lidashuang/goji_gzip"
+	"github.com/slugmobile/govalidator"
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
 	"html/template"
@@ -15,7 +16,6 @@ import (
 	"net/url"
 	"os"
 	"path"
-	"regexp"
 	"strconv"
 	"time"
 )
@@ -60,6 +60,9 @@ func init() {
 		//Domain: http://pass.ninja
 	}
 
+	//add custom validator functions
+	addValidators()
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -81,13 +84,14 @@ func main() {
 	goji.Get("/verify", handleVerify)
 	goji.Get("/index.html", handleTemplates)
 	//goji.Get("/landing.html", handleTemplates)
-	goji.Get("/register_pure.html", handleTemplates)
+	//goji.Get("/register_pure.html", handleTemplates)
 
 	//login pages
 	accounts := web.New()
 	goji.Handle("/accounts/*", accounts) //handle all things that require login
 	accounts.Use(requireLogin)           //login check middleware
 
+	accounts.Get("/accounts/assets/*", handleAccountStatic)                  //seperate assets for accounts
 	accounts.Get("/accounts/index.html", handleAccountTemplates)             //login root, view current passes
 	accounts.Get("/accounts/template/:passType", handleAccountPassStructure) //return a json object of the pass type
 	accounts.Get("/accounts/builder.html", handleAccountTemplates)           //make a pass
@@ -95,7 +99,7 @@ func main() {
 
 	goji.NotFound(handleNotFound)
 
-	goji.Use(utils.AddDb)
+	goji.Use(utils.AddDb) //comment out to remove db function for testing
 
 	goji.Serve() //set port via cl - example: app -bind :9000
 
@@ -154,6 +158,24 @@ func handleVerify(c web.C, res http.ResponseWriter, req *http.Request) {
 	emailToken := values.Get("token")
 	emailExpire := values.Get("expires")
 
+	//validate email
+	if ok := govalidator.IsEmail(emailAddr); !ok {
+		log.Printf("%s is not a valid email", emailAddr)
+		return
+	}
+
+	//TODO: validate time
+	//if ok := govalidator.IsTime(emailExpire); !ok {
+	//	log.Printf("%s is not a valide time format", emailAddr)
+	//	return
+	//}
+
+	//validate token
+	if ok := govalidator.IsBase64(emailToken); !ok {
+		log.Printf("%s is not a valid base64 string", emailAddr)
+		return
+	}
+
 	var pageContent string
 
 	if ok, err := utils.VerifyToken(emailTokenKey, emailToken, emailAddr, emailExpire); !ok {
@@ -188,8 +210,25 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("handleStatic %s", req.URL.Path[1:])
 
-	fs := http.FileServer(http.Dir("public"))
+	fs := http.FileServer(http.Dir("static/public"))
 	files := http.StripPrefix("/assets/", fs)
+
+	files.ServeHTTP(res, req)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func handleAccountStatic(c web.C, res http.ResponseWriter, req *http.Request) {
+
+	log.Printf("handleStatic %s", req.URL.Path[1:])
+
+	fs := http.FileServer(http.Dir("static/auth"))
+	files := http.StripPrefix("/accounts/assets/", fs)
 
 	files.ServeHTTP(res, req)
 
@@ -239,7 +278,7 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 	//passId := c.URLParams["passId"]
 	//newPass.Id = "pass.ninja." + passId + "." + passType
 
-	err = utils.WriteJson(res, newPass)
+	err = utils.WriteJson(res, newPass, true)
 	utils.Check(err)
 
 }
@@ -259,6 +298,14 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 	newPass := pass{}
 	if err := utils.ReadJson(req, &newPass); err != nil {
 		log.Printf("read json error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		return
+	}
+
+	//validate the struct before adding it to the dB
+	result, err := govalidator.ValidateStruct(newPass)
+	if err != nil {
+		log.Printf("validated: %t - validation error: %s", result, err.Error())
 		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
 		return
 	}
@@ -289,7 +336,8 @@ func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
 	//get form data
 	email, password := req.FormValue("email"), req.FormValue("password") //TODO: Sanitize forms
 
-	if ok := sanitizeEmail(email); !ok {
+	//validate email
+	if ok := govalidator.IsEmail(email); !ok {
 		log.Printf("Invalid email address %s", email)
 		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email"), http.StatusBadRequest)
 		return
@@ -340,8 +388,8 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	email, password := req.FormValue("email"), req.FormValue("password") //TODO: Sanitize forms
 
-	//check email with regex
-	if ok := sanitizeEmail(email); !ok {
+	//check email
+	if ok := govalidator.IsEmail(email); !ok {
 		log.Printf("malformed email address %s", email)
 		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
 		return
@@ -350,8 +398,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	//check db for user
 	if !db.FindByID("users", email, &user) {
 		log.Println("User not found")
-		//jsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
-		//return -- Check password, so operation takes equal time, even if user is not found
+		//Check password, so operation takes equal time, even if user is not found
 	}
 
 	//check password
@@ -471,7 +518,7 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 //////////////////////////////////////////////////////////////////////////
 func initSession(r *http.Request) *sessions.Session {
 
-	session, err := sessionStore.Get(r, "PassNinjaLogin") // Don't ignore the error in real code
+	session, err := sessionStore.Get(r, "PassNinjaLogin")
 	if err != nil {
 		log.Printf("session error: %s", err.Error())
 	}
@@ -492,6 +539,68 @@ func initSession(r *http.Request) *sessions.Session {
 
 	}
 	return session
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func addValidators() {
+
+	//check barcode format is 1 of 3 types
+	barcodeFormats := []string{"PKBarcodeFormatQR", "PKBarcodeFormatPDF417", "PKBarcodeFormatAztec"}
+	addListValidator("barcode", barcodeFormats)
+
+	//check transit type
+	transitTypes := []string{"PKTransitTypeAir", "PKTransitTypeBoat", "PKTransitTypeBus", "PKTransitTypeGeneric", "PKTransitTypeTrain"}
+	addListValidator("transit", transitTypes)
+
+	//check datestyle type (timestyle and date style are the same list)
+	timeTypes := []string{"PKDateStyleNone", "PKDateStyleShort", "PKDateStyleMedium", "PKDateStyleLong", "PKDateStyleFull"}
+	addListValidator("datestyle", timeTypes)
+
+	//check numstyle type
+	numTypes := []string{"PKNumberStyleDecimal", "PKNumberStylePercent", "PKNumberStyleScientific", "PKNumberStyleSpellOut"}
+	addListValidator("numstyle", numTypes)
+
+	//check text align style types
+	textAlignTypes := []string{"PKTextAlignmentLeft", "PKTextAlignmentCenter", "PKTextAlignmentRight", "PKTextAlignmentNatural"}
+	addListValidator("align", textAlignTypes)
+
+	//check to make sure its a valid currency code: USD,GBP etc
+	govalidator.TagMap["iso4217"] = govalidator.Validator(func(str string) bool {
+
+		if len(str) != 3 {
+			return false
+		}
+		if !govalidator.IsUpperCase(str) {
+			return false
+		}
+		return govalidator.IsAlpha(str)
+
+	})
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func addListValidator(key string, typeList []string) {
+
+	govalidator.TagMap[key] = govalidator.Validator(func(str string) bool {
+		for _, nextType := range typeList {
+			if str == nextType {
+				return true
+			}
+		}
+		return false
+	})
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -554,7 +663,10 @@ func createRawURL(token string, userEmail string, expires string) string {
 //////////////////////////////////////////////////////////////////////////
 func createFromTemplate(res http.ResponseWriter, layout string, file string) error {
 
-	fp := path.Join("templates", file)
+	//make sure the file name is safe
+	safeFile := govalidator.SafeFileName(file)
+
+	fp := path.Join("templates", safeFile)
 	lp := path.Join("templates", layout)
 
 	// Return a 404 if the template doesn't exist
@@ -576,22 +688,4 @@ func createFromTemplate(res http.ResponseWriter, layout string, file string) err
 	templates.ExecuteTemplate(res, "layout", nil)
 
 	return nil
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func sanitizeEmail(email string) bool {
-
-	//http://www.w3.org/TR/html5/forms.html#valid-e-mail-address-list
-	emailRegex := "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-	r := regexp.MustCompile(emailRegex)
-
-	log.Println(email)
-
-	return r.MatchString(email)
-
 }

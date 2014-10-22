@@ -5,7 +5,7 @@ import (
 )
 
 type registerPass struct {
-	PassTypeId   string    `json:"id" gorethink:"id"`                     //Pass type ID
+	PassTypeId   string    `json:"id" gorethink:"id" valid:"required"`    //Pass type ID
 	SerialNumber string    `json:"serialNumber" gorethink:"serialNumber"` //Serial number that uniquely identifies the pass.
 	Updated      time.Time `json:"updated" gorethink:"updated"`           //when the pass was last updated or created
 }
@@ -17,11 +17,11 @@ type device struct {
 }
 
 type pass struct {
-	Id          string            `json:"id" gorethink:"id"`             //Pass type ID
-	KeyDoc      passKeys          `json:"keyDoc" gorethink:"keyDoc"`     //The pass.json file, all the structs used to create it
-	Images      []passImage       `json:"images" gorethink:"images"`     //All the images needed for a pass
-	ManifestDoc map[string]string `json:"manifest" gorethink:"manifest"` //The manifest.json file, used to verify the content of a pass
-	Updated     time.Time         `json:"updated" gorethink:"updated"`   //when the pass was last updated or created
+	Id          string            `json:"id" gorethink:"id" valid:"required"` //Pass type ID
+	KeyDoc      passKeys          `json:"keyDoc" gorethink:"keyDoc"`          //The pass.json file, all the structs used to create it
+	Images      []passImage       `json:"images" gorethink:"images"`          //All the images needed for a pass
+	ManifestDoc map[string]string `json:"manifest" gorethink:"manifest"`      //The manifest.json file, used to verify the content of a pass
+	Updated     time.Time         `json:"updated" gorethink:"updated"`        //when the pass was last updated or created
 }
 
 /*************************************************************************
@@ -30,7 +30,7 @@ type pass struct {
 
 ************************************************************************/
 type passImage struct {
-	ImageData string `json:"image,omitempty" gorethink:"image,omitempty"`
+	ImageData string `json:"image,omitempty" gorethink:"image,omitempty" valid:"datauri"`
 	ImageName string `json:"name,omitempty" gorethink:"name,omitempty"`
 }
 
@@ -62,7 +62,7 @@ type passKeys struct {
 	// Information about an app that is associated with a pass.
 	//////////////////////////////////////////////////////////////////////////
 
-	AppLaunchURL               string `json:"appLaunchURL,omitempty" gorethink:"appLaunchURL,omitempty"`                             //Optional. A URL to be passed to the associated app when launching it.
+	AppLaunchURL               string `json:"appLaunchURL,omitempty" gorethink:"appLaunchURL,omitempty" valid:"url"`                 //Optional. A URL to be passed to the associated app when launching it.
 	AssociatedStoreIdentifiers []int  `json:"associatedStoreIdentifiers,omitempty" gorethink:"associatedStoreIdentifiers,omitempty"` //Optional. A list of iTunes Store item identifiers for the associated apps.
 
 	//////////////////////////////////////////////////////////////////////////
@@ -89,10 +89,10 @@ type passKeys struct {
 	// Information about where and when a pass is relevant.
 	//////////////////////////////////////////////////////////////////////////
 
-	Beacons      []beacon   `json:"beacons,omitempty" gorethink:"beacons,omitempty"`           //Optional. Beacons marking locations where the pass is relevant.
-	Locations    []location `json:"locations,omitempty" gorethink:"locations,omitempty"`       //Optional. Locations where the pass is relevant. For example, the location of your store.
-	MaxDistance  int        `json:"maxDistance,omitempty" gorethink:"maxDistance,omitempty"`   //Optional. Maximum distance in meters from a relevant latitude and longitude that the pass is relevant.
-	RelevantDate time.Time  `json:"relevantDate,omitempty" gorethink:"relevantDate,omitempty"` //Optional. Date and time when the pass becomes relevant. For example, the start time of a movie.
+	Beacons      []beacon   `json:"beacons,omitempty" gorethink:"beacons,omitempty"`                     //Optional. Beacons marking locations where the pass is relevant.
+	Locations    []location `json:"locations,omitempty" gorethink:"locations,omitempty"`                 //Optional. Locations where the pass is relevant. For example, the location of your store.
+	MaxDistance  int        `json:"maxDistance,omitempty" gorethink:"maxDistance,omitempty" valid:"int"` //Optional. Maximum distance in meters from a relevant latitude and longitude that the pass is relevant.
+	RelevantDate time.Time  `json:"relevantDate,omitempty" gorethink:"relevantDate,omitempty"`           //Optional. Date and time when the pass becomes relevant. For example, the start time of a movie.
 
 	//////////////////////////////////////////////////////////////////////////
 	// Style Keys
@@ -113,13 +113,13 @@ type passKeys struct {
 	// Visual styling and appearance of the pass.
 	//////////////////////////////////////////////////////////////////////////
 
-	Barcode            barcode `json:"barcode,omitempty" gorethink:"barcode,omitempty"`                       //Optional. Information specific to barcodes
-	BackgroundColor    string  `json:"backgroundColor,omitempty" gorethink:"backgroundColor,omitempty"`       //Optional. Background color of the pass, specified as an CSS-style RGB triple. For example, rgb(23, 187, 82).
-	ForegroundColor    string  `json:"foregroundColor,omitempty" gorethink:"foregroundColor,omitempty"`       //Optional. Foreground color of the pass, specified as a CSS-style RGB triple.
-	GroupingIdentifier string  `json:"groupingIdentifier,omitempty" gorethink:"groupingIdentifier,omitempty"` //Optional. Use this to group passes that are tightly related, such as the boarding passes for different connections of the same trip.
-	LabelColor         string  `json:"labelColor,omitempty" gorethink:"labelColor,omitempty"`                 //Optional. Color of the label text, specified as a CSS-style RGB triple.
-	LogoText           string  `json:"logoText,omitempty" gorethink:"logoText,omitempty"`                     //Optional. Text displayed next to the logo on the pass.
-	SuppressStripShine bool    `json:"suppressStripShine,omitempty" gorethink:"suppressStripShine,omitempty"` //Optional. If true, the strip image is displayed without a shine effect.
+	Barcode            barcode `json:"barcode,omitempty" gorethink:"barcode,omitempty"`                                  //Optional. Information specific to barcodes
+	BackgroundColor    string  `json:"backgroundColor,omitempty" gorethink:"backgroundColor,omitempty" valid:"rgbcolor"` //Optional. Background color of the pass, specified as an CSS-style RGB triple. For example, rgb(23, 187, 82).
+	ForegroundColor    string  `json:"foregroundColor,omitempty" gorethink:"foregroundColor,omitempty" valid:"rgbcolor"` //Optional. Foreground color of the pass, specified as a CSS-style RGB triple.
+	GroupingIdentifier string  `json:"groupingIdentifier,omitempty" gorethink:"groupingIdentifier,omitempty"`            //Optional. Use this to group passes that are tightly related, such as the boarding passes for different connections of the same trip.
+	LabelColor         string  `json:"labelColor,omitempty" gorethink:"labelColor,omitempty" valid:"rgbcolor"`           //Optional. Color of the label text, specified as a CSS-style RGB triple.
+	LogoText           string  `json:"logoText,omitempty" gorethink:"logoText,omitempty"`                                //Optional. Text displayed next to the logo on the pass.
+	SuppressStripShine bool    `json:"suppressStripShine,omitempty" gorethink:"suppressStripShine,omitempty"`            //Optional. If true, the strip image is displayed without a shine effect.
 
 	//////////////////////////////////////////////////////////////////////////
 	// Web Service Keys
@@ -129,5 +129,5 @@ type passKeys struct {
 	//////////////////////////////////////////////////////////////////////////
 
 	AuthenticationToken string `json:"authenticationToken,omitempty" gorethink:"authenticationToken,omitempty"` //The authentication token to use with the web service. The token must be 16 characters or longer.
-	WebServiceURL       string `json:"webServiceURL,omitempty" gorethink:"webServiceURL,omitempty"`             //The URL of a web service
+	WebServiceURL       string `json:"webServiceURL,omitempty" gorethink:"webServiceURL,omitempty" valid:"url"` //The URL of a web service
 }

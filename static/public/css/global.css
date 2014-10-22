@@ -1,0 +1,101 @@
+/********************************************
+  Global Styles 
+
+*********************************************/
+
+body {
+  font-family: 'Roboto','Helvetica Neue', sans-serif;
+  background: #C0C0C0;
+  padding: 0;
+  /* text-align: left;
+  position: relative; */
+  margin: 0;
+  height: 100%;
+ /* text-rendering: optimizeLegibility; 
+  -webkit-font-smoothing: antialiased; 
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: "liga", "kern"; */
+}
+
+/* font stack for all components: */
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+  
+  font-family: 'Roboto','Helvetica Neue', sans-serif;
+}
+
+
+/********************************************
+  Nav Bar Styles
+
+*********************************************/
+
+.home-menu.pure-menu-open {
+  background: rgba(0,0,0,0.4);
+  z-index: 4;
+}
+.pure-menu.pure-menu-open.pure-menu-fixed {
+
+  /* Remove border from fixed menu. */
+  border-bottom: 1px solid #FF0000; 
+  /* a higher z-index here because of the scroll-over effect. */
+  z-index: 4;
+}
+
+.home-menu a#header {
+  float: left;
+  clear: none;
+  overflow: hidden;
+  width: 260px;
+}
+
+.home-menu img {
+  height:35px;
+}
+
+.home-menu ul {
+  float: right; 
+  padding-top: 15px;
+}
+
+.home-menu li a {
+  background: none;
+  border: none;
+}
+
+.home-menu li button {
+  background:none!important;
+  border:none; 
+  padding:0!important;
+  cursor: pointer;
+}
+
+.home-menu li button:hover,
+.home-menu li button:focus {
+  background: none;
+  border: none;
+  color: #C0392B; 
+}
+
+.home-menu li a:hover,
+.home-menu li a:focus {
+  background: none;
+  border: none;
+  color: #C0392B; 
+}
+
+/********************************************
+  On tablets and other medium-sized devices
+
+*********************************************/
+@media (min-width: 48em) {
+
+.navbar {
+font-size: 18px;
+}
+
+.home-menu img {
+  
+  height:55px;
+  width: 220px;
+}
