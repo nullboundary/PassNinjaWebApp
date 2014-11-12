@@ -3,91 +3,91 @@
   'use strict';
 
   var editGroup = {
-      'svgId': "", //svg id of group
-      'svgType': "", //svg group type: second
-      'svgNum': "", //svg group num: 1
-      'dataType': "", //keydoc field type: secondaryField
-      'dataIndex': "" //keydoc array index value
+      'svgId': '', //svg id of group
+      'svgType': '', //svg group type: second
+      'svgNum': '', //svg group num: 1
+      'dataType': '', //keydoc field type: secondaryField
+      'dataIndex': '' //keydoc array index value
     },
 
     pKTimeTojsTime = { //convert apple PK constant to js time
 
-      "PKDateStyleNone": function () {
-        return d3.time.format("");
+      'PKDateStyleNone': function () {
+        return d3.time.format('');
       },
-      "PKDateStyleShort": function () {
-        return d3.time.format("%_I:%M %p");
+      'PKDateStyleShort': function () {
+        return d3.time.format('%_I:%M %p');
       },
-      "PKDateStyleMedium": function () {
-        return d3.time.format("%_I:%M:%S %p");
+      'PKDateStyleMedium': function () {
+        return d3.time.format('%_I:%M:%S %p');
       },
-      "PKDateStyleLong": function () {
-        return d3.time.format("%_I:%M:%S %p %Z"); //TODO - Implement time zones as text
+      'PKDateStyleLong': function () {
+        return d3.time.format('%_I:%M:%S %p %Z'); //TODO - Implement time zones as text
       },
-      "PKDateStyleFull": function () {
-        return d3.time.format("%_I:%M:%S %p %Z");
+      'PKDateStyleFull': function () {
+        return d3.time.format('%_I:%M:%S %p %Z');
       }
     },
 
     pKDateTojsDate = { //convert apple PK constant to js date
 
-      "PKDateStyleNone": function () {
-        return d3.time.format("");
+      'PKDateStyleNone': function () {
+        return d3.time.format('');
       },
-      "PKDateStyleShort": function () {
-        return d3.time.format("%_m/%e/%y");
+      'PKDateStyleShort': function () {
+        return d3.time.format('%_m/%e/%y');
       },
-      "PKDateStyleMedium": function () {
-        return d3.time.format("%b %e, %Y");
+      'PKDateStyleMedium': function () {
+        return d3.time.format('%b %e, %Y');
       },
-      "PKDateStyleLong": function () {
-        return d3.time.format("%B %e, %Y");
+      'PKDateStyleLong': function () {
+        return d3.time.format('%B %e, %Y');
       },
-      "PKDateStyleFull": function () {
-        return d3.time.format("%A, %B %e, %Y AD");
+      'PKDateStyleFull': function () {
+        return d3.time.format('%A, %B %e, %Y AD');
       }
     },
 
     pKNumberToJs = { //convert apple PK constant to js number format
 
-      "None": function () {
-        return d3.format("");
+      'None': function () {
+        return d3.format('');
       },
-      "PKNumberStyleDecimal": function () {
-        return d3.format(".4r"); //13.00
+      'PKNumberStyleDecimal': function () {
+        return d3.format('.4r'); //13.00
       },
-      "PKNumberStylePercent": function () {
-        return d3.format("%"); //multiply by 100 and suffix with "%"
+      'PKNumberStylePercent': function () {
+        return d3.format('%'); //multiply by 100 and suffix with '%'
       },
-      "PKNumberStyleScientific": function () {
-        return d3.format(".3n"); //1.33e+5
+      'PKNumberStyleScientific': function () {
+        return d3.format('.3n'); //1.33e+5
       },
-      "PKNumberStyleSpellOut": function () {
+      'PKNumberStyleSpellOut': function () {
         return; //TODO: implement spell out function
       }
     },
     selectToPKNumber = { //convert select options to apple PK constant
-      "None": "None",
-      "Decimal": "PKNumberStyleDecimal",
-      "Percent": "PKNumberStylePercent",
-      "Scientific": "PKNumberStyleScientific",
-      "Spell Out": "PKNumberStyleSpellOut"
+      'None': 'None',
+      'Decimal': 'PKNumberStyleDecimal',
+      'Percent': 'PKNumberStylePercent',
+      'Scientific': 'PKNumberStyleScientific',
+      'Spell Out': 'PKNumberStyleSpellOut'
     },
 
     pKValueToSVG = { //convert apple PK constant to css
-      "PKTextAlignmentLeft": "start",
-      "PKTextAlignmentCenter": "middle",
-      "PKTextAlignmentRight": "end",
-      "PKTextAlignmentNatural": "inherit",
-      "default": "inherit"
+      'PKTextAlignmentLeft': 'start',
+      'PKTextAlignmentCenter': 'middle',
+      'PKTextAlignmentRight': 'end',
+      'PKTextAlignmentNatural': 'inherit',
+      'default': 'inherit'
     },
 
     pkFieldType = { //convert svg field class to pass field types
-      "aux": "auxiliaryFields",
-      "second": "secondaryFields",
-      "header": "headerFields",
-      "primary": "primaryFields",
-      "default": ""
+      'aux': 'auxiliaryFields',
+      'second': 'secondaryFields',
+      'header': 'headerFields',
+      'primary': 'primaryFields',
+      'default': ''
     };
 
 
@@ -100,54 +100,50 @@
   function init() {
 
     //set the input box handler for the label
-    d3.select("#popLabel")
-      .on("input", onTextSubmit);
+    d3.select('#popLabel')
+      .on('input', onTextSubmit);
 
     //set the input box handler for the value
-    d3.select("#popValue")
-      .on("input", onTextSubmit);
+    d3.select('#popValue')
+      .on('input', onTextSubmit);
 
     //add events for selecting value format selector options
-    d3.select("select#value-format")
-      .on("input", onValueFormat);
+    d3.select('select#value-format')
+      .on('input', onValueFormat);
 
     //add handler for delete field button
-    d3.select("button#btn-del-field")
-      .on("click", onDelField);
+    d3.select('button#btn-del-field')
+      .on('click', onDelField);
 
     //add handler for add field button
-    d3.select("button#btn-add-field")
-      .on("click", onAddField);
+    d3.select('button#btn-add-field')
+      .on('click', onAddField);
 
     //add handler for number format selector
-    d3.select("#number-format")
-      .on("input", function () {
+    d3.select('#number-format')
+      .on('input', function () {
         onNumberStyle(this.value);
       });
 
     //add handler for date-time selector
-    d3.select("#timeDate-format")
-      .on("input", function () {});
+    d3.select('#timeDate-format')
+      .on('input', function () {});
 
 
 
   }
 
-  function setPassFields2(fieldArray, fieldType) {
+  /***********************************************************
+   add text elements and set values and labels for each field
 
-    if (typeof fieldArray !== "undefined") {
+   ***********************************************************/
+  function setPassFields(fieldArray, fieldType) {
 
-      var passGroup = d3.select("g.pass-group");
-      var removeGroups = passGroup.selectAll('.' + fieldType)
-      var groupLocArray = [];
+    if (typeof fieldArray !== 'undefined') {
 
-      console.log(removeGroups);
-
-      //get the translation coords of the groups being removed
-      removeGroups
-        .each(function (d, i) {
-          groupLocArray.push(getGroupLoc(d3.select(this)));
-        });
+      var passGroup = d3.select('g.pass-group'),
+        removeGroups = passGroup.selectAll('.' + fieldType),
+        groupLoc = removeGroups.attr('transform'); //get the translate of the first field group
 
       removeGroups.remove();
 
@@ -157,38 +153,43 @@
       textGroups
         .enter()
         .append('g')
-        .attr('transform', function (d, i) {
-          return groupLocArray[i]; //set old field locs
-        })
+        .attr('transform', groupLoc) //the x gets adjusted in setFieldSizes()
         .attr('class', 'text-btn-group ' + fieldType)
         .attr('id', function (d, i) {
           var idIndex = i + 1;
           return fieldType + idIndex;
         });
 
-      var elemList = ["label", "value"];
-
-      if (fieldType == "primary") {
-        if (pb.passType() == "coupon" || pb.passType() == "storeCard") {
-          elemList = ["value", "label"];
+      //add label & value text elems in the correct order
+      var elemList = ['label', 'value'];
+      if (fieldType == 'primary') {
+        if (pb.passType() == 'coupon' || pb.passType() == 'storeCard') {
+          elemList = ['value', 'label'];
         }
       }
+      addTextElem(textGroups, fieldType, elemList);
 
-      addTextElem2(textGroups, fieldType, elemList);
-
+      //set label text
       textGroups.select('.label-text')
         .text(function (d) {
           return valueOrDefault(d.label);
         });
 
-      setFormatValueField(valueElem, fieldArray[index]); //set value text
+      //set value text
+      textGroups.select('.value-text').each(function (d, i) {
+        setFormatValueField(d3.select(this), d); //set value text
+      });
 
       setFieldSizes(fieldArray, fieldType);
 
     }
   }
 
-  function addTextElem2(textGroups, fieldType, elemList) {
+  /***********************************************************
+
+
+   ***********************************************************/
+  function addTextElem(textGroups, fieldType, elemList) {
 
     var firstLineSize = 0;
     var fieldPKType = pkFieldType[fieldType]; //auxiliaryFields
@@ -199,12 +200,13 @@
     var len = elemList.length;
     for (var index = 0; index < len; ++index) {
 
-      textGroups
+      var textElem = textGroups
         .insert('text', d3.select(this) + 'rect.text-btn-rect')
         .attr('id', function (d, i) {
-          return fieldType + "-" + elemList[index] + i;
+          var idIndex = i + 1;
+          return fieldType + '-' + elemList[index] + idIndex;
         })
-        .attr("dy", ".71em") //set text top-baseline 0,0
+        .attr('dy', '.71em') //set text top-baseline 0,0
         .attr('class', function (d) {
           return elemList[index] + '-text ' + fieldPKType;
         });
@@ -215,120 +217,17 @@
         textY = firstLineSize + 5;
       }
 
-      textGroups.attr('x', function (d, i) {
+      textElem.attr('x', function (d) {
           return textX;
         })
-        .attr('y', function (d, i) {
+        .attr('y', function (d) {
           return textY;
+        })
+        .attr('text-anchor', function (d) { //horizontal align
+          return pKValueToSVG[valueOrDefault(d.textAlignment, 'default')];
         });
 
-      //.classed(JSON.parse('{ "' + "label" + '-text": true,"' + fieldPKType + '": true }')); //add classes label-text and fieldType
-      //.attr('text-anchor', pKValueToSVG[valueOrDefault(fieldArray[fieldIndex].textAlignment, "default")]); //horizontal align
-      //  var firstElemId = d3.select(groupId + ' text').attr('id'); //get the first textElem in the group
-
     }
-  }
-
-
-  /***********************************************************
- 	add text elements and set values and labels for each field
-
- 	***********************************************************/
-  function setPassFields(fieldArray, fieldType) {
-
-    //if field array exists or not
-    if (typeof fieldArray !== "undefined") {
-
-      var fieldPKType = pkFieldType[fieldType]; //auxiliaryFields
-
-      for (var index = 0; index < fieldArray.length; ++index) {
-
-        var idIndex = index + 1; //id count starts at 1.
-
-        //remove groups that already exist - get old group x&Y loc
-        var groupElem = d3.select("g#" + fieldType + idIndex);
-        var groupLoc = getGroupLoc(groupElem);
-        groupElem.remove();
-
-        //Add pass group
-        var passGroup = d3.select("g.pass-group")
-          .append('g')
-          .attr('transform', groupLoc)
-          .attr('class', 'text-btn-group')
-          .attr('id', fieldType + idIndex);
-
-        switch (fieldType) {
-        case "primary":
-
-          if (pb.passType() == "coupon" || pb.passType() == "storeCard") {
-            //Add Value Element
-            var valueElem = addTextElem("value", passGroup, fieldType, fieldArray, index);
-            //Add Label Element
-            var labelElem = addTextElem("label", passGroup, fieldType, fieldArray, index);
-            break; //only break if coupon or storeCard. Otherwise fall through
-          }
-
-        default:
-
-          //Add Label Element
-          var labelElem = addTextElem("label", passGroup, fieldType, fieldArray, index);
-          //Add Value Element
-          var valueElem = addTextElem("value", passGroup, fieldType, fieldArray, index);
-
-        }
-
-        labelElem.text(valueOrDefault(fieldArray[index].label)) //set label text
-        setFormatValueField(valueElem, fieldArray[index]); //set value text
-
-        //var labelWidth = setTextSize(labelElem, passGroup, fieldArray.length);
-        //var valueWidth = setValueSize(valueElem, labelElem, passGroup, fieldType, index, fieldArray.length);
-
-
-      }
-
-      setFieldSizes(fieldArray, fieldType);
-
-    }
-  }
-
-  /***********************************************************
-
-
- 	***********************************************************/
-  function addTextElem(textType, passGroup, fieldType, fieldArray, fieldIndex) {
-
-    var idIndex = fieldIndex + 1; //id count starts at 1.
-    var groupId = 'g#' + fieldType + idIndex; //g#aux1
-    var textId = fieldType + "-" + textType + idIndex; //aux-label1
-    var fieldPKType = pkFieldType[fieldType]; //auxiliaryFields
-    var textX = 0; //the relative position of the text inside the group
-    var textY = 0;
-
-    //Add Text Element
-    var textElem = passGroup
-      .insert('text', groupId + 'rect.text-btn-rect')
-      .attr('id', textId)
-      .attr("dy", ".71em") //set text top-baseline 0,0
-      .classed(JSON.parse('{ "' + textType + '-text": true,"' + fieldPKType + '": true }')) //add classes label-text and fieldType
-      .attr('text-anchor', pKValueToSVG[valueOrDefault(fieldArray[fieldIndex].textAlignment, "default")]); //horizontal align
-
-    var firstElemId = d3.select(groupId + ' text').attr('id'); //get the first textElem in the group
-
-    if (firstElemId == textId) { //this is the first text element (usually label)
-
-      textElem.attr('x', textX)
-        .attr('y', 0);
-
-
-    } else { //this is the second text element (usually value)
-
-      var firstLineSize = parseInt(d3.select(groupId + ' text').style('font-size'));
-      textElem.attr('x', textX)
-        .attr('y', firstLineSize + 5);
-
-    }
-
-    return textElem;
   }
 
   /***********************************************************
@@ -346,16 +245,16 @@
         //total widths + margin for each (could be done in setPass Loop? )
         var fieldIndex = index + 1,
           groupElem = d3.select('#' + fieldType + fieldIndex);
-        //groupLoc = d3.transform(groupElem.attr("transform")).translate;
+        //groupLoc = d3.transform(groupElem.attr('transform')).translate;
 
         updateRectSize(groupElem, fieldType); //readjust the rect in case text size changed
 
         var groupWidth = groupElem.node().getBBox().width; //get the whole field width (label or value)
         totalWidth = totalWidth + (groupWidth + fieldMargin);
-        console.log("grouText:" + groupElem.select('.value-text').text() + " groupWidth:" + groupWidth);
+        console.log('grouText:' + groupElem.select('.value-text').text() + ' groupWidth:' + groupWidth);
         alignFieldLeft(groupElem, fieldType, index);
       }
-      console.log("totalWidth:" + totalWidth);
+      console.log('totalWidth:' + totalWidth);
       return totalWidth;
 
     }
@@ -366,7 +265,7 @@
   function updateRectSize(groupElem, fieldType) {
 
       //update rectangle size
-      groupElem.select("rect")
+      groupElem.select('rect')
         .remove();
       var fieldPKType = pkFieldType[fieldType]; //auxiliaryFields
       //add/update the rectangle around the field to match the text size
@@ -384,12 +283,12 @@
       //do nothing its all the way to the left already
     } else {
       var fieldMargin = 15;
-      var groupLoc = d3.transform(groupElem.attr("transform")).translate;
+      var groupLoc = d3.transform(groupElem.attr('transform')).translate;
       var prevElem = d3.select('#' + fieldType + index);
-      var prevLoc = d3.transform(prevElem.attr("transform")).translate;
+      var prevLoc = d3.transform(prevElem.attr('transform')).translate;
       var prevWidth = prevElem.node().getBBox().width;
       var xLoc = prevLoc[0] + prevWidth + fieldMargin;
-      groupElem.attr("transform", "translate(" + xLoc + "," + groupLoc[1] + ")");
+      groupElem.attr('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
     }
   }
 
@@ -427,7 +326,7 @@
             //set font sizes
             valueElem.style('font-size', function (d) {
               newFontSize = valueFontSize - 0.55; //TODO: variable step size?
-              return newFontSize + "px";
+              return newFontSize + 'px';
             });
 
           } else { //start truncating the longest element
@@ -448,70 +347,11 @@
         }
         totalWidth = getTotalWidth(fieldArray, fieldType);
         remainWidth = passWidth - totalWidth;
-        console.log("totalWidth:" + totalWidth + " remainWidth:" + remainWidth + " font-size:" + newFontSize);
+        console.log('totalWidth:' + totalWidth + ' remainWidth:' + remainWidth + ' font-size:' + newFontSize);
 
 
       }
 
-
-
-      //var passWidth = 315 - 17; //pass margin = 17
-      //var totalWidth = getTotalWidth(fieldArray, fieldType);
-      //var remainWidth = passWidth - totalWidth;
-      //console.log("remainWidth:" + remainWidth);
-      //if (remainWidth < 0) {
-      /*
-              //var maxWidth = Math.round((passWidth / fieldArray.length) + remainWidth);
-              for (var index = 0; index < fieldArray.length; ++index) {
-
-                var fieldIndex = index + 1;
-                var groupElem = d3.select('#' + fieldType + fieldIndex);
-                var valueElem = groupElem.select('.value-text');
-                var labelElem = groupElem.select('.label-text');
-
-                var labelFontSize = Math.round(parseFloat(labelElem.style('font-size')));
-                var valueFontSize = Math.round(parseFloat(valueElem.style('font-size')));
-                var isTrucate = false;
-                var textWidth = $(valueElem.node()).width(); //jquery - native methods give inconsistant results
-
-                //  if (textWidth > maxWidth) { //first reduce the font size
-
-                valueElem.style('font-size', function (d) {
-
-                  totalWidth = getTotalWidth(fieldArray, fieldType);
-                  var scale = passWidth / totalWidth;
-                  var newFontSize = scale * valueFontSize;
-                  console.log("totalWidth:" + totalWidth + " scale:" + scale + " newFontSize:" + newFontSize);
-                  //var newFontSize = (maxWidth / $(valueElem.node()).width() * valueFontSize);
-
-                  if (newFontSize <= labelFontSize) {
-                    newFontSize = labelFontSize;
-                    isTrucate = true;
-                  }
-                  return newFontSize + "px";
-                });
-                console.log("valueElem:" + valueElem.node() + " fontSize:" + valueElem.style('font-size'));
-
-                //    } else { //Not bigger then maxWidth - remove inline css markup
-                //      valueElem.style('font-size', null);
-                //    }
-
-                //maxWidth = Math.round((passWidth / fieldArray.length) + remainWidth);
-
-              }
-              //if (isTrucate) {
-              //  break;
-              //}
-              //totalWidth = getTotalWidth(fieldArray, fieldType);
-              //remainWidth = passWidth - totalWidth;
-              //console.log("remainWidth:" + remainWidth);
-              //  }
-
-
-
-              //if too wide reduce font and measure again
-              //if still to wide. Trucate
-      */
 
     }
     /***********************************************************
@@ -521,11 +361,11 @@
   function truncateText(longElem) {
 
     if (longElem != undefined) {
-      console.log("longElem:" + longElem.text());
+      console.log('longElem:' + longElem.text());
       var longText = longElem.text();
-      longElem.text(longText.replace("...", "")); //remove the "..." from the end
+      longElem.text(longText.replace('...', '')); //remove the '...' from the end
       var valText = longElem.text();
-      longElem.text(valText.slice(0, -2) + "..."); //slice off the last 2 characters add "..."
+      longElem.text(valText.slice(0, -2) + '...'); //slice off the last 2 characters add '...'
 
     }
 
@@ -545,128 +385,6 @@
     }
     return longElem;
   }
-
-
-
-  /***********************************************************
-
-
-   ***********************************************************/
-  function setValueSize(valueElem, labelElem, passGroup, fieldType, fieldIndex, numOfField) {
-
-      //1. Set element margin depends on how many fields(how wide till the text is trucated)
-      //2. Minimize text size till == labelsize and if still doesn't fit, trucate
-      console.log(valueElem.attr('id'));
-
-      if (numOfField > 1) { //re-adjust the margin for multi-field values
-        var textMargin = 17;
-      }
-      var translate = d3.transform(passGroup.attr("transform")).translate;
-      if (fieldIndex == 0) {
-        //do nothing its all the way to the left already
-      } else { // if (fieldIndex == 1) { //second field
-        var prevElem = d3.select('#' + fieldType + fieldIndex);
-        var prevLoc = d3.transform(prevElem.attr("transform")).translate;
-        var prevWidth = $(prevElem.select('.value-text').node()).width();
-        var xLoc = prevLoc[0] + prevWidth + 17;
-        passGroup.attr("transform", "translate(" + xLoc + "," + translate[1] + ")")
-      }
-      var lastElem = d3.select('#' + fieldType + numOfField);
-      var lastLoc = d3.transform(lastElem.attr("transform")).translate;
-      console.log($(lastElem.select('.value-text').node()).width());
-      var lastWidth = $(lastElem.select('.value-text').node()).width();
-      console.log("lastLoc: " + lastLoc[0], " lastWidth:" + lastWidth);
-      var xLastLoc = (lastLoc[0] + lastWidth) + 10;
-      var passWidth = 315 - textMargin;
-      var xRemain = passWidth - xLastLoc;
-
-      var maxWidth = Math.round((passWidth / numOfField) + xRemain);
-      console.log("xLastLoc:" + xLastLoc + " xRemain:" + xRemain + " maxWidth:" + maxWidth);
-
-      var labelFontSize = Math.round(parseFloat(labelElem.style('font-size')));
-      var valueFontSize = Math.round(parseFloat(valueElem.style('font-size')));
-      var isTrucate = false;
-      var textWidth = $(valueElem.node()).width(); //jquery - native methods give inconsistant results
-
-      if (textWidth > maxWidth) { //first reduce the font size
-
-        valueElem.style('font-size', function (d) {
-          var newFontSize = (maxWidth / $(valueElem.node()).width() * valueFontSize);
-
-          if (newFontSize <= labelFontSize) {
-            newFontSize = labelFontSize;
-            isTrucate = true;
-          }
-          return newFontSize + "px";
-        });
-
-
-      } else { //Not bigger then maxWidth - remove inline css markup
-        valueElem.style('font-size', null);
-      }
-
-      if (isTrucate) { //Trucate display text after reducing fontsize if still to wide
-        textWidth = $(valueElem.node()).width();
-        while (textWidth > maxWidth) {
-
-          var valText = valueElem.text();
-          valueElem.text(valText.slice(0, -1));
-          textWidth = $(valueElem.node()).width();
-        }
-
-      }
-
-
-
-    }
-    /*
-    function setValueSize(valueElem, labelElem, passGroup, numOfField) {
-
-      console.log(valueElem.attr('id'));
-      var translate = d3.transform(passGroup.attr("transform")).translate;
-      var textMargin = translate[0] * 2; //TODO fix
-
-      if (numOfField > 1) { //re-adjust the margin for multi-field values
-        textMargin = 17;
-      }
-
-      var labelSize = parseFloat(labelElem.style('font-size'));
-      var maxWidth = (315 / numOfField) - textMargin;
-      var currentFontSize = parseInt(valueElem.style('font-size'));
-      var textLength = 0;
-      var textWidth = valueElem.node().getComputedTextLength();
-
-      if (textWidth >= maxWidth) {
-
-        console.log("maxField:" + maxWidth + " box too big: " + textWidth);
-
-        valueElem.style('font-size', function (d) {
-
-          console.log(maxWidth / this.getComputedTextLength() * currentFontSize);
-
-          var newFontSize = (maxWidth / this.getComputedTextLength() * currentFontSize);
-
-          console.log("newFontSize:" + newFontSize + " labelSize: " + labelSize);
-
-          if (newFontSize <= labelSize) {
-            newFontSize = labelSize;
-          }
-
-          return newFontSize + "px";
-        });
-
-        textLength = valueElem.node().getComputedTextLength();
-        console.log("textLength " + textLength);
-
-      } else { //Not bigger then maxWidth
-        valueElem.style('font-size', null);
-        textLength = textWidth;
-      }
-
-      return textLength;
-
-    }
-    */
 
   /***********************************************************
  	get the existing text group location
@@ -715,14 +433,14 @@
     } else if (fieldGroup.currencyCode != undefined) {
 
       var props = {
-        style: "currency",
+        style: 'currency',
         currency: fieldGroup.currencyCode
       };
 
       var fieldNumber = Number(fieldGroup.value);
       //display output
-      var currencyValue = fieldNumber.toLocaleString("en", props);
-      console.log("---------->" + currencyValue);
+      var currencyValue = fieldNumber.toLocaleString('en', props);
+      console.log('---------->' + currencyValue);
 
       fieldElement.text(currencyValue); //set value text as currency
 
@@ -733,7 +451,9 @@
     }
 
     //align text in field
-    //fieldElement.style('text-anchor', pKValueToCSS(fieldGroup.textAlignment));
+    fieldElement.attr('text-anchor', function (d) { //horizontal align
+      return pKValueToSVG[valueOrDefault(fieldGroup.textAlignment, 'default')];
+    });
 
   }
 
@@ -763,8 +483,8 @@
       .attr('rx', radius)
       .attr('ry', radius)
       //.attr('shape-rendering', 'crispEdges')
-      //.attr('stroke-dasharray', "1,2") //dashed line. 1 pixel - 2 pixel space
-      .on("click", onTextRectClick); //add event to new rect
+      //.attr('stroke-dasharray', '1,2') //dashed line. 1 pixel - 2 pixel space
+      .on('click', onTextRectClick); //add event to new rect
 
     return rect;
 
@@ -773,58 +493,13 @@
 
   /***********************************************************
  	Tests whether a json field is undefined and if it is not
- 	sets it to "" or to a default.
+ 	sets it to '' or to a default.
 
  	***********************************************************/
   function valueOrDefault(val, def) {
-    if (def == undefined) def = "";
+    if (def == undefined) def = '';
     return val == undefined ? def : val;
   }
-
-  /***********************************************************
-
-
-
-***********************************************************/
-  function show() {
-    for (var i = 0; i < arguments.length; i++) {
-      arguments[i].style("display", "inline");
-    }
-  }
-
-  /***********************************************************
-
-
-
-***********************************************************/
-  function hide() {
-    for (var i = 0; i < arguments.length; i++) {
-      arguments[i].style("display", "none");
-    }
-  }
-
-  /***********************************************************
-
-
-
-***********************************************************/
-  function enable() {
-    for (var i = 0; i < arguments.length; i++) {
-      arguments[i].attr('disabled', null);
-    }
-  }
-
-  /***********************************************************
-
-
-
-***********************************************************/
-  function disable() {
-    for (var i = 0; i < arguments.length; i++) {
-      arguments[i].attr('disabled', true);
-    }
-  }
-
 
   /***********************************************************
 
@@ -836,25 +511,25 @@
     console.log(editGroup);
     console.log(pb.template().keyDoc[pb.passType()][editGroup.dataType]);
 
-    //set to "" if label/value is undefined
+    //set to '' if label/value is undefined
     var targetLabel = valueOrDefault(pb.template().keyDoc[pb.passType()][editGroup.dataType][editGroup.dataIndex]
       .label);
     var targetValue = valueOrDefault(pb.template().keyDoc[pb.passType()][editGroup.dataType][editGroup.dataIndex]
       .value);
 
     //update the legend in popover to display the id of the field
-    d3.select("div#legend-header")
+    d3.select('div#legend-header')
       .text(editGroup.dataType);
 
     //set the input box attributes for the label
-    var inputLabel = d3.select("#popLabel")
+    var inputLabel = d3.select('#popLabel')
       .property('value', targetLabel)
-      .call(enable);
+      .call(pb.enable);
 
     //set the input box attributes for the value
-    var inputValue = d3.select("#popValue")
+    var inputValue = d3.select('#popValue')
       .property('value', targetValue)
-      .call(enable);
+      .call(pb.enable);
 
   }
 
@@ -868,12 +543,12 @@
     console.log(selection);
 
     //get the svg id and type of the text under the button
-    var svgGroupId = d3.select(selection.parentNode).attr("id");
+    var svgGroupId = d3.select(selection.parentNode).attr('id');
     var svgGroupType = svgGroupId.slice(0, -1); //get the group type: aux
     var svgGroupNum = parseInt(svgGroupId.slice(-1));
 
     //get the field type and index for the keydoc
-    var datafieldType = d3.select(selection).attr("data-target");
+    var datafieldType = d3.select(selection).attr('data-target');
     var dataGroupIndex = parseInt(svgGroupId.slice(-1)) - 1; //get the group index value, & subtract 1
 
     editGroup = {
@@ -898,24 +573,24 @@
     //set the group id of the text under the rectangle
     setEditGroup(this);
 
-    //set and clear select highlight style with "select class"
-    d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
-    d3.select(this).attr("class", "text-btn-rect select");
+    //set and clear select highlight style with 'select class'
+    d3.selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
+    d3.select(this).attr('class', 'text-btn-rect select');
 
     if (pb.template().keyDoc[pb.passType()][editGroup.dataType].length) {
       //setup text and attach handlers for text input controls
       configTextInputs();
     }
     //enable select inputs and buttons
-    enable(d3.select("#value-format"), d3.select("#btn-del-field"), d3.select(
-      "#btn-add-field"));
+    pb.enable(d3.select('#value-format'), d3.select('#btn-del-field'), d3.select(
+      '#btn-add-field'));
 
     //disable the add button if there are 4 fields
     //TODO: Some passes fields can only have a max of 2
     if (pb.template().keyDoc[pb.passType()][editGroup.dataType].length >= 4) {
-      d3.select("button#btn-add-field").call(disable);
+      d3.select('button#btn-add-field').call(pb.disable);
     } else if (pb.template().keyDoc[pb.passType()][editGroup.dataType].length <= 0) { //disable the delete button if there are 0 fields
-      d3.select("button#btn-del-field").call(disable);
+      d3.select('button#btn-del-field').call(pb.disable);
     }
 
   }
@@ -929,67 +604,68 @@
 
     d3.event.preventDefault();
 
+    var fieldData = pb.template().keyDoc[pb.passType()];
     //get array length before removal of data field
-    var arrayLength = pb.template().keyDoc[pb.passType()][editGroup.dataType].length;
+    var arrayLength = fieldData[editGroup.dataType].length;
     //remove this field data from the keyDoc
-    pb.template().keyDoc[pb.passType()][editGroup.dataType].splice(editGroup.dataIndex, 1);
+    fieldData[editGroup.dataType].splice(editGroup.dataIndex, 1);
 
     //hide last field on svg
     var idLastField = editGroup.svgType + arrayLength; //get the index of the last field on the pass
     if (arrayLength <= 1) { //keep the last rect for adding the field type back.
 
-      hide(d3.select("#" + idLastField + " text.label-text"), d3.select("#" +
-        idLastField + " text.value-text"));
+      pb.hide(d3.select('#' + idLastField + ' text.label-text'), d3.select('#' +
+        idLastField + ' text.value-text'));
 
     } else {
       //hide this value, but keep it in the svg markup for adding
-      hide(d3.select("#" + idLastField));
+      pb.hide(d3.select('#' + idLastField));
     }
 
     //set group num
     var groupNum = editGroup.svgNum;
-    if (editGroup.svgNum > pb.template().keyDoc[pb.passType()][editGroup.dataType].length) {
-      groupNum = pb.template().keyDoc[pb.passType()][editGroup.dataType].length;
+    if (editGroup.svgNum > fieldData[editGroup.dataType].length) {
+      groupNum = fieldData[editGroup.dataType].length;
     }
 
     //select the previous field on the pass, if there are more then 0
     var previousField = editGroup.svgType + groupNum;
-    console.log("prevField=" + previousField);
+    console.log('prevField=' + previousField);
     if (groupNum > 0) {
 
       //set select group to the previous rectangle
       setEditGroup(d3.select('g#' + previousField + ' rect')[0][0]);
 
       //reset legend after delete
-      d3.select("div#legend-header")
+      d3.select('div#legend-header')
         .text(editGroup.dataType);
 
       //update svg text
-      setPassFields(pb.template().keyDoc[pb.passType()][editGroup.dataType], editGroup.svgType);
+      setPassFields(fieldData[editGroup.dataType], editGroup.svgType);
 
       configTextInputs();
 
       //set text color, or the field text won't show up
-      $(".pass-template .value-text").css("fill", pb.template().keyDoc.foregroundColor);
-      $(".pass-template .label-text").css("fill", pb.template().keyDoc.labelColor);
+      $('.pass-template .value-text').css('fill', pb.template().keyDoc.foregroundColor);
+      $('.pass-template .label-text').css('fill', pb.template().keyDoc.labelColor);
 
-      //set and clear select highlight style with "select class"
-      d3.selectAll("rect.text-btn-rect")
-        .attr("class", "text-btn-rect");
+      //set and clear select highlight style with 'select class'
+      d3.selectAll('rect.text-btn-rect')
+        .attr('class', 'text-btn-rect');
 
       d3.select('g#' + editGroup.svgId + ' rect')
-        .attr("class", "text-btn-rect select");
+        .attr('class', 'text-btn-rect select');
 
       //enable all buttons
-      enable(d3.select("button#btn-del-field"), d3.select("button#btn-add-field"));
+      pb.enable(d3.select('button#btn-del-field'), d3.select('button#btn-add-field'));
 
     } else {
 
       //disable setting control
-      d3.select("#popLabel").call(disable).property('value', "");
-      d3.select("#popValue").call(disable).property('value', "");
-      d3.select("select#value-format").call(disable);
-      d3.select("button#btn-del-field").call(disable);
+      d3.select('#popLabel').call(pb.disable).property('value', '');
+      d3.select('#popValue').call(pb.disable).property('value', '');
+      d3.select('select#value-format').call(pb.disable);
+      d3.select('button#btn-del-field').call(pb.disable);
     }
 
   }
@@ -1003,63 +679,65 @@
 
     d3.event.preventDefault(); //prevent form submit
 
+    var fieldData = pb.template().keyDoc[pb.passType()];
+
     //set new field index
     var newSvgGroupIndex = editGroup.svgNum; //only increment if field data exists
-    if (pb.template().keyDoc[pb.passType()][editGroup.dataType].length) {
+    if (fieldData[editGroup.dataType].length) {
       var newSvgGroupIndex = editGroup.svgNum + 1;
     }
 
+    //1 add empty data to keydoc (with filler text?)
+    var fieldObject = {
+      'key': keyValue,
+      'label': 'LABEL', //placeholder text for a new field
+      'value': 'value'
+    };
+
+    //update the text for the 'new' svg group
+    fieldData[editGroup.dataType].splice(newSvgGroupIndex, 0, fieldObject);
+
+    //pb.template().keyDoc[pb.passType()][editGroup.dataType][editGroup.dataIndex] = fieldData //set value into keyDoc
+    setPassFields(fieldData[editGroup.dataType], editGroup.svgType);
+
     var keyValue = editGroup.svgType + newSvgGroupIndex; //example: aux4
-    console.log("addField:Keyvalue=" + keyValue);
+    console.log('addField:Keyvalue=' + keyValue);
 
     //set select group to the new rectangle
     setEditGroup(d3.select('g#' + keyValue + ' rect')[0][0]); //http://bost.ocks.org/mike/selection/#subclass
 
-    //1 add empty data to keydoc (with filler text?)
-    var fieldData = {
-      "key": keyValue,
-      "label": "LABEL", //placeholder text for a new field
-      "value": "value"
-    };
-
-    //update the text for the "new" svg group
-    pb.template().keyDoc[pb.passType()][editGroup.dataType].splice(editGroup.dataIndex, 0, fieldData);
-
-    //pb.template().keyDoc[pb.passType()][editGroup.dataType][editGroup.dataIndex] = fieldData //set value into keyDoc
-    setPassFields(pb.template().keyDoc[pb.passType()][editGroup.dataType], editGroup.svgType);
-
-    //set and clear select highlight style with "select class"
-    d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
-    d3.select('g#' + editGroup.svgId + ' rect').attr("class",
-      "text-btn-rect select");
+    //set and clear select highlight style with 'select class'
+    d3.selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
+    d3.select('g#' + editGroup.svgId + ' rect').attr('class',
+      'text-btn-rect select');
 
     //set text color
-    $(".pass-template .value-text").css("fill", pb.template().keyDoc.foregroundColor);
-    $(".pass-template .label-text").css("fill", pb.template().keyDoc.labelColor);
+    $('.pass-template .value-text').css('fill', pb.template().keyDoc.foregroundColor);
+    $('.pass-template .label-text').css('fill', pb.template().keyDoc.labelColor);
 
     //display the group
-    var valueText = d3.select("#" + keyValue + " text.value-text"),
-      labelText = d3.select("#" + keyValue + " text.label-text"),
-      valueElem = d3.select("#" + keyValue);
+    var valueText = d3.select('#' + keyValue + ' text.value-text'),
+      labelText = d3.select('#' + keyValue + ' text.label-text'),
+      valueElem = d3.select('#' + keyValue);
 
-    show(valueText, labelText, valueElem);
+    pb.show(valueText, labelText, valueElem);
 
     //configure controls
 
     //reset legend
-    d3.select("div#legend-header")
+    d3.select('div#legend-header')
       .text(editGroup.dataType);
 
     //enable and clear setting control
-    d3.select("#popLabel").call(enable).property('value', fieldData.label);
-    d3.select("#popValue").call(enable).property('value', fieldData.value);
+    d3.select('#popLabel').call(pb.enable).property('value', fieldObject.label);
+    d3.select('#popValue').call(pb.enable).property('value', fieldObject.value);
 
     //enable all buttons
-    enable(d3.select("button#btn-del-field"), d3.select("button#btn-add-field"));
+    pb.enable(d3.select('button#btn-del-field'), d3.select('button#btn-add-field'));
 
     //disable the add button if there are 4 fields
-    if (pb.template().keyDoc[pb.passType()][editGroup.dataType].length >= 4) {
-      d3.select("button#btn-add-field").call(disable);
+    if (fieldData[editGroup.dataType].length >= 4) {
+      d3.select('button#btn-add-field').call(pb.disable);
     }
 
 
@@ -1072,25 +750,25 @@
  	***********************************************************/
   function onValueFormat() {
 
-    //var valueSelect = d3.select("select#value-format");
+    //var valueSelect = d3.select('select#value-format');
 
     var selectOption = this.value;
 
     //destroy since we might be switching from other option
     $('#popValue').datetimepicker('destroy');
 
-    console.log("--->" + selectOption);
+    console.log('--->' + selectOption);
     //add/remove a second selector as needed
-    if (selectOption == "Number") {
+    if (selectOption == 'Number') {
 
-      hide(d3.select("#currency"), d3.select("#timeDate-format"));
-      show(d3.select("#number-format"));
+      pb.hide(d3.select('#currency'), d3.select('#timeDate-format'));
+      pb.show(d3.select('#number-format'));
 
 
-    } else if (selectOption == "Time") {
+    } else if (selectOption == 'Time') {
 
-      hide(d3.select("#currency"), d3.select("#number-format"));
-      show(d3.select("#timeDate-format"));
+      pb.hide(d3.select('#currency'), d3.select('#number-format'));
+      pb.show(d3.select('#timeDate-format'));
 
       //setup time picker
       $('#popValue').datetimepicker({
@@ -1101,7 +779,7 @@
         onChangeDateTime: onTextSubmit,
       });
 
-    } else if (selectOption == "Date") {
+    } else if (selectOption == 'Date') {
 
       //setup date picker
       $('#popValue').datetimepicker({
@@ -1110,30 +788,30 @@
         onChangeDateTime: onTextSubmit,
       });
 
-      hide(d3.select("#currency"), d3.select("#number-format"));
-      show(d3.select("#timeDate-format"));
+      pb.hide(d3.select('#currency'), d3.select('#number-format'));
+      pb.show(d3.select('#timeDate-format'));
 
-    } else if (selectOption == "Currency") {
+    } else if (selectOption == 'Currency') {
 
-      hide(d3.select("#timeDate-format"), d3.select("#number-format"));
+      pb.hide(d3.select('#timeDate-format'), d3.select('#number-format'));
 
-      var url = "/accounts/assets/data/currency.html";
+      var url = '/accounts/assets/data/currency.html';
       var uri = encodeURI(url);
       console.log(uri);
 
       //load svg xml + place into document
       d3.html(uri, function (html) {
 
-        d3.select("div#format-control").node().appendChild(html);
+        d3.select('div#format-control').node().appendChild(html);
         //add handler for currency selector
-        d3.select("#currency")
-          .call(show)
-          .on("input", function () {
+        d3.select('#currency')
+          .call(pb.show)
+          .on('input', function () {
             onCurrencyStyle(this.value);
           });
 
         //set the value to a default currency (USD)
-        onCurrencyStyle($("#currency").val());
+        onCurrencyStyle($('#currency').val());
 
 
       });
@@ -1141,8 +819,8 @@
 
 
     } else {
-      hide(d3.select("#currency"), d3.select("#number-format"), d3.select(
-        "#timeDate-format"));
+      pb.hide(d3.select('#currency'), d3.select('#number-format'), d3.select(
+        '#timeDate-format'));
 
     }
 
@@ -1159,14 +837,14 @@
 
     if (fieldData == undefined) {
 
-      var fieldValue = $("input#popValue").val();
-      var fieldLabel = $("input#popLabel").val().toUpperCase(); //get input box label
+      var fieldValue = $('input#popValue').val();
+      var fieldLabel = $('input#popLabel').val().toUpperCase(); //get input box label
       var keyValue = editGroup.svgId;
 
       var fieldData = {
-        "key": keyValue,
-        "label": fieldLabel,
-        "value": fieldValue
+        'key': keyValue,
+        'label': fieldLabel,
+        'value': fieldValue
       };
 
     }
@@ -1176,13 +854,13 @@
     pb.template().keyDoc[pb.passType()][editGroup.dataType][editGroup.dataIndex] = fieldData; //set value into keyDoc
     setPassFields(pb.template().keyDoc[pb.passType()][editGroup.dataType], editGroup.svgType); //update svg fields
 
-    //set and clear select highlight style with "select class"
-    d3.selectAll("rect.text-btn-rect").attr("class", "text-btn-rect");
-    d3.select('g#' + editGroup.svgId + ' rect').attr("class", "text-btn-rect select");
+    //set and clear select highlight style with 'select class'
+    d3.selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
+    d3.select('g#' + editGroup.svgId + ' rect').attr('class', 'text-btn-rect select');
 
     //set text color
-    $(".pass-template .value-text").css("fill", pb.template().keyDoc.foregroundColor);
-    $(".pass-template .label-text").css("fill", pb.template().keyDoc.labelColor);
+    $('.pass-template .value-text').css('fill', pb.template().keyDoc.foregroundColor);
+    $('.pass-template .label-text').css('fill', pb.template().keyDoc.labelColor);
 
     console.log(editGroup.dataType);
 
@@ -1195,27 +873,27 @@
  	***********************************************************/
   function onCurrencyStyle(value) {
 
-    var fieldValue = Number($("input#popValue").val());
+    var fieldValue = Number($('input#popValue').val());
     var currencyCode = value;
-    var fieldLabel = $("input#popLabel").val(); //get input box label
+    var fieldLabel = $('input#popLabel').val(); //get input box label
 
     var keyValue = editGroup.svgId;
     //console.log(currencyCode);
 
     //props = {
-    //	style: "currency",
+    //	style: 'currency',
     //	currency: currencyCode
     //};
 
     //display output
-    //var currencyText = fieldValue.toLocaleString("en", props);
+    //var currencyText = fieldValue.toLocaleString('en', props);
     //console.log(currencyText);
 
     var fieldData = {
-      "key": keyValue,
-      "currencyCode": currencyCode,
-      "label": fieldLabel,
-      "value": fieldValue
+      'key': keyValue,
+      'currencyCode': currencyCode,
+      'label': fieldLabel,
+      'value': fieldValue
     };
 
     onTextSubmit(fieldData);
@@ -1232,16 +910,16 @@
     var numberFormat = value;
     var pkNumStyle = selectToPKNumber[numberFormat]
 
-    var fieldValue = Number($("input#popValue").val());
-    var fieldLabel = $("input#popLabel").val(); //get input box label
+    var fieldValue = Number($('input#popValue').val());
+    var fieldLabel = $('input#popLabel').val(); //get input box label
 
     var keyValue = editGroup.svgId;
 
     var fieldData = {
-      "key": keyValue,
-      "numberStyle": pkNumStyle,
-      "label": fieldLabel,
-      "value": fieldValue
+      'key': keyValue,
+      'numberStyle': pkNumStyle,
+      'label': fieldLabel,
+      'value': fieldValue
     };
 
     onTextSubmit(fieldData);

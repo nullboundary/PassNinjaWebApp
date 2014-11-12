@@ -2,23 +2,32 @@
 
   'use strict';
 
+  var editGroup = {
+    'groupId': '', //svg id of group
+    'index': '' //keydoc array index value
+  };
+
   function init() {
 
     //set the input box handler for the label
-    //  d3.select("#back-label")
-    //    .on("input", onLabelSubmit);
+    //  d3.select('#back-label')
+    //    .on('input', onLabelSubmit);
 
     //set the input box handler for the value
-    //  d3.select("#back-text")
-    //    .on("input", onTextSubmit);
+    //  d3.select('#back-text')
+    //    .on('input', onTextSubmit);
 
     //add handler for delete field button
-    d3.select("button#btn-del-back-field")
-      .on("click", onDelField);
+    d3.select('button#btn-del-back-field')
+      .on('click', onDelField);
 
     //add handler for add field button
-    d3.select("button#btn-add-back-field")
-      .on("click", onAddField);
+    d3.select('button#btn-add-back-field')
+      .on('click', onAddField);
+
+    //add handler for update field button
+    d3.select('button#btn-update-back-field')
+      .on('click', onUpdateField);
 
 
   }
@@ -30,20 +39,20 @@
    ***********************************************************/
   function addHandlers() {
 
-      var backBBox = d3.select("g#back-fields").node().getBBox(); //calculated BBox of back fields group
+      var backBBox = d3.select('g#back-fields').node().getBBox(); //calculated BBox of back fields group
       //console.log(backBBox);
-      var backSVG = d3.select("svg.back");
+      var backSVG = d3.select('svg.back');
       var svgWidth = parseFloat(backSVG.attr('width'));
       var svgHeight = parseFloat(backSVG.attr('height'));
 
       var zoom = d3.behavior.zoom()
         .scaleExtent([1, 10])
-        .on("zoom", function () {
+        .on('zoom', function () {
 
           //move back-fields group
-          d3.select("g#back-fields").attr("transform", "translate(0," + d3.event.translate[1] + ")");
+          d3.select('g#back-fields').attr('transform', 'translate(0,' + d3.event.translate[1] + ')');
 
-          backBBox = d3.select("g#back-fields").node().getBBox();
+          backBBox = d3.select('g#back-fields').node().getBBox();
           var topYLoc = zoom.translate()[1]; //get the Y translate of pan (mouse/touch loc)
           var bottomYLoc = topYLoc + backBBox.height; //the bottom edge of the back-fields group
           var scale = svgHeight / backBBox.height;
@@ -80,35 +89,35 @@
         })
         .on('zoomstart', function () {
 
-          backBBox = d3.select("g#back-fields").node().getBBox();
+          backBBox = d3.select('g#back-fields').node().getBBox();
           var topYLoc = zoom.translate()[1];
           updateScrollBar(topYLoc, backBBox.height);
 
         })
         .on('zoomend', function () {
 
-          backBBox = d3.select("g#back-fields").node().getBBox();
+          backBBox = d3.select('g#back-fields').node().getBBox();
           var topYLoc = zoom.translate()[1];
           var bottomYLoc = topYLoc + backBBox.height; //the bottom edge of the back-fields group
-          console.log(" bbOx:" + backBBox.height);
+          console.log(' bbOx:' + backBBox.height);
 
           if (topYLoc > 0) { //return to zero after pull down.
 
             zoom.translate([0, 0]);
-            d3.select("g#back-fields").transition().ease("cubic").attr("transform", "translate(0," + 0 + ")");
+            d3.select('g#back-fields').transition().ease('cubic').attr('transform', 'translate(0,' + 0 + ')');
 
           } else if (bottomYLoc < (svgHeight - 30)) { //return to zero after pull up.
             var defaultY = (svgHeight - 60) - backBBox.height;
             zoom.translate([0, defaultY]);
-            d3.select("g#back-fields").transition().ease("cubic").attr("transform", "translate(0," + defaultY +
-              ")");
+            d3.select('g#back-fields').transition().ease('cubic').attr('transform', 'translate(0,' + defaultY +
+              ')');
           }
 
 
           updateScrollBar(topYLoc, backBBox.height);
 
           //hide srollbar
-          d3.select("line#scroll-bar")
+          d3.select('line#scroll-bar')
             .transition()
             .delay(1000)
             .style('display', 'none')
@@ -117,7 +126,7 @@
         });
 
       //activate zoom/pan events
-      d3.select("svg.back")
+      d3.select('svg.back')
         .call(zoom)
         .call(zoom.event);
 
@@ -131,7 +140,7 @@
 
     if (barLength < passHeight) {
 
-      //console.log("yLoc:" + yLoc + " lineStart:" + lineScale(yLoc) + " length:" + barLength);
+      //console.log('yLoc:' + yLoc + ' lineStart:' + lineScale(yLoc) + ' length:' + barLength);
 
       var y1 = lineScale(yLoc);
       var y2 = yExtent;
@@ -163,7 +172,7 @@
           .range([401, 0])
           .clamp(true);
 
-        //  console.log("yLoc:" + yLoc + " lineStart:" + lineStart(yLoc) + " length:" + length);
+        //  console.log('yLoc:' + yLoc + ' lineStart:' + lineStart(yLoc) + ' length:' + length);
 
         var y1 = lineStart(yLoc);
         var y2 = y1 + length;
@@ -177,16 +186,16 @@
 
      ***********************************************************/
   function drawScrollBar(y1, y2) {
-    d3.select("line#scroll-bar")
+    d3.select('line#scroll-bar')
       .style('display', 'inline')
       .transition().delay(0).duration(55)
-      .attr("x1", 310)
-      .attr("y1", y1)
-      .attr("x2", 310)
-      .attr("y2", y2)
-      .attr("stroke", "rgb(148,148,148)")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 4);
+      .attr('x1', 310)
+      .attr('y1', y1)
+      .attr('x2', 310)
+      .attr('y2', y2)
+      .attr('stroke', 'rgb(148,148,148)')
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-width', 4);
 
   }
 
@@ -199,57 +208,26 @@
     var margin = 16;
 
     //add the label
-    backFields.append("text")
-      .attr("x", 0)
-      .attr("y", 15)
-      .attr("class", "back-label")
-      .attr("dy", ".71em")
+    backFields.append('text')
+      .attr('x', 0)
+      .attr('y', 15)
+      .attr('class', 'back-label')
+      .attr('dy', '.71em')
       .text(function (d) {
         return d.label;
       });
 
     //add the value text
-    backFields.append("text")
-      .attr("x", 0)
-      .attr("y", 20)
-      .attr("dy", "1.81em") //Start 1 line down from label
-      .attr("class", "back-text")
+    backFields.append('text')
+      .attr('x', 0)
+      .attr('y', 20)
+      .attr('dy', '1.81em') //Start 1 line down from label
+      .attr('class', 'back-text')
       .text(function (d) {
 
         return d.value;
       })
       .call(wrap, (315 - (margin * 3))); //then wrap text
-
-
-    /*
-        var label = field.label;
-        var value = field.value;
-
-        var backBBox = d3.select("g#back-fields").node().getBBox();
-        var marginRight = 16;
-        var fieldWidth = backBBox.width - (marginRight * 3);
-
-
-        //add label text
-        groupElm.append("text")
-          .attr("x", 0)
-          .attr("y", 15)
-          .attr("class", "back-label")
-          .attr("dy", ".71em")
-          .text(label);
-
-        //add text elm to pass
-        groupElm.append("text")
-          .attr("x", 0)
-          .attr("y", 20)
-          .attr("dy", "1.81em") //Start 1 line down from label
-          .attr("class", "back-text")
-          .text(value) //add text to element first
-          .call(wrap, fieldWidth); //then wrap text
-
-        return groupElm.node().getBBox();
-    */
-
 
   }
 
@@ -266,24 +244,24 @@
         line = [],
         lineNumber = 0,
         lineHeight = 1.1, // ems
-        y = textElm.attr("y"),
-        dy = parseFloat(textElm.attr("dy")),
-        tspan = textElm.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+        y = textElm.attr('y'),
+        dy = parseFloat(textElm.attr('dy')),
+        tspan = textElm.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy + 'em');
 
       while (word = words.pop()) {
 
         line.push(word);
-        tspan.text(line.join(" "));
+        tspan.text(line.join(' '));
 
         if (tspan.node().getComputedTextLength() > width) {
 
           line.pop();
-          tspan.text(line.join(" "));
+          tspan.text(line.join(' '));
           line = [word];
-          tspan = textElm.append("tspan")
-            .attr("x", 0)
-            .attr("y", y)
-            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+          tspan = textElm.append('tspan')
+            .attr('x', 0)
+            .attr('y', y)
+            .attr('dy', ++lineNumber * lineHeight + dy + 'em')
             .text(word);
 
         }
@@ -299,28 +277,35 @@
   function onSelectBackField() {
     console.log(this);
 
-    var group = d3.select(this.parentNode);
-    var backFields = pb.template().keyDoc[pb.passType()].backFields;
-    var index = parseInt(group.attr('id').slice(-1)); //get keydoc index
+    var group = d3.select(this.parentNode),
+      backFields = pb.template().keyDoc[pb.passType()].backFields,
+      index = parseInt(group.attr('id').slice(-1)); //get keydoc index
 
-    //remove selected class styling from all rect
-    d3.selectAll('.back-field').each(function (d, i) {
-      d3.select(this).attr('class', 'back-field');
-    });
+    //remove selected class styling from previous selected rect
+    console.log(editGroup.groupId);
+    if (editGroup.groupId != '') {
+      d3.select('#' + editGroup.groupId).select('rect').attr('class', 'back-btn-rect');
+    }
 
     //set selected class styling on this rect
-    d3.select(this).attr('class', 'back-field select');
+    d3.select(this).attr('class', 'back-btn-rect select');
+
+    //update the selected edit group data
+    editGroup = {
+      'groupId': group.attr('id'), //svg id of group
+      'index': index //keydoc array index value
+    };
 
     //get label and value from keydoc
-    var labelText = backFields[index].label;
-    var valueText = backFields[index].value;
+    var labelText = backFields[index].label,
+      valueText = backFields[index].value;
 
     //set input to label
-    d3.select("input#back-label")
+    d3.select('input#back-label')
       .attr('value', labelText);
 
     //set textarea to value
-    d3.select("textarea#back-text")
+    d3.select('textarea#back-text')
       .text(valueText);
 
   }
@@ -338,29 +323,50 @@
 
 
    ***********************************************************/
+
+  function onUpdateField() {
+    d3.event.preventDefault();
+
+    var label = $('input#back-label').val(),
+      val = $.trim($('textarea#back-text').val()),
+      backFields = pb.template().keyDoc[pb.passType()].backFields;
+
+    backFields[editGroup.index].label = label;
+    backFields[editGroup.index].value = val;
+
+    setBackFields2();
+
+    d3.select(editGroup.groupId).select('rect').attr('class', 'back-btn-rect select');
+
+  }
+
+  /***********************************************************
+
+
+   ***********************************************************/
   function onAddField() {
 
     d3.event.preventDefault();
 
-    var label = $("input#back-label").val();
-    var val = $.trim($("textarea#back-text").val());
+    var backFields = pb.template().keyDoc[pb.passType()].backFields,
+      nextIndex = editGroup.index + 1,
+      keyValue = 'back' + nextIndex;
 
-    if (val != "") {
+    var fieldData = {
+      'key': keyValue,
+      'label': 'Label',
+      'value': 'Value'
+    };
 
-      var backFields = pb.template().keyDoc[pb.passType()].backFields;
-      var keyValue = "backField" + backFields.length;
+    backFields.splice(nextIndex, 0, fieldData);
 
-      var fieldData = {
-        "key": keyValue,
-        "label": label,
-        "value": val
-      };
+    //update the selected edit group data
+    editGroup = {
+      'groupId': keyValue, //svg id of group
+      'index': nextIndex //keydoc array index value
+    };
 
-      backFields.splice(backFields.length, 0, fieldData);
-
-      setBackFields2();
-
-    }
+    setBackFields2();
 
   }
 
@@ -370,60 +376,84 @@
    ***********************************************************/
   function setBackFields2() {
 
-    var backDataSet = pb.template().keyDoc[pb.passType()].backFields;
-    var backFieldRect = d3.select('rect#back-fields-bg');
-    var margin = 16;
+    var backDataSet = pb.template().keyDoc[pb.passType()].backFields,
+      backFieldRect = d3.select('rect#back-fields-bg'),
+      margin = 16;
 
     //reset backfield rect length
     backFieldRect.attr('height', 0);
     //remove groups that already exist
-    var groupElems = d3.selectAll("g.back-field");
+    var groupElems = d3.selectAll('g.back-field');
     groupElems.each(function () {
       d3.select(this).remove();
     });
 
-    if (typeof backDataSet !== "undefined") {
+    if (typeof backDataSet !== 'undefined') {
 
-      var backGroup = d3.select("g#back-fields");
+      var backGroup = d3.select('g#back-fields');
 
       //bind dataset
-      var backFields = backGroup.selectAll(".back-field").data(backDataSet);
+      var backFields = backGroup.selectAll('.back-field').data(backDataSet);
 
       //create the back field groups from the dataset
       backFields.enter().append('g')
-        .attr("class", "back-field")
+        .attr('class', 'back-field')
         .attr('id', function (d, i) {
-          return "back" + i;
+          return 'back' + i;
         });
 
       addText(backFields);
 
       //add the line between groups
       backFields.append('line')
-        .attr("x1", 0)
-        .attr("y1", 0)
-        .attr("x2", 315)
-        .attr("y2", 0)
-        .attr("class", "delimiter");
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 315)
+        .attr('y2', 0)
+        .attr('class', 'delimiter')
+        .style('visibility', function (d, i) {
+          if (i == 0) {
+            return 'hidden';
+          }
+        });
+
+      //var bGroupBBox = backGroup.node().getBBox();
+      backFields.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 285)
+        .attr('height', function (d, i) {
+          var bGroupBBox = d3.select(this.parentNode).node().getBBox();
+          return bGroupBBox.height
+        })
+        .attr('class', function (d) {
+
+          if (editGroup.groupId == d3.select(this.parentNode).attr('id')) {
+            return 'back-btn-rect select';
+          }
+          return 'back-btn-rect';
+
+        })
+        .on('click', onSelectBackField);
 
       //set the group translation
-      backFields.attr("transform", function (d, i) {
-        var backBBox = d3.select("g#back-fields").node().getBBox(); //calculated BBox of back fields group
+      backFields.attr('transform', function (d, i) {
+        var backBBox = d3.select('g#back-fields').node().getBBox(); //calculated BBox of back fields group
         var marginBottom = 20;
         if (i == 0) {
           marginBottom = 0;
         }
         var groupY = backBBox.height + marginBottom;
-        return "translate(" + margin + "," + groupY + ")";
+        return 'translate(' + margin + ',' + groupY + ')';
       });
 
       //extend the back fields rectangle
-      var backBBox = d3.select("g#back-fields").node().getBBox(); //calculated BBox of back fields group
+      var backBBox = d3.select('g#back-fields').node().getBBox(); //calculated BBox of back fields group
       var textHeight = backBBox.height - parseInt(backFieldRect.attr('y'));
 
       var rectHeight = parseInt(backFieldRect.attr('height'));
       rectHeight = rectHeight + textHeight + 25;
-      console.log("rectHeight:" + rectHeight + " bbOx:" + textHeight);
+      console.log('rectHeight:' + rectHeight + ' bbOx:' + textHeight);
       backFieldRect.attr('height', rectHeight + 25);
 
 
@@ -445,35 +475,35 @@
     //reset backfield rect length
     backFieldRect.attr('height', 0);
     //remove groups that already exist
-    var groupElems = d3.selectAll("g.back-field");
+    var groupElems = d3.selectAll('g.back-field');
     groupElems.each(function () {
       d3.select(this).remove();
     });
 
-    if (typeof backFields !== "undefined") {
+    if (typeof backFields !== 'undefined') {
 
       for (var index = 0; index < backFields.length; index++) {
 
-        var backBBox = d3.select("g#back-fields").node().getBBox(); //calculated BBox of back fields group
+        var backBBox = d3.select('g#back-fields').node().getBBox(); //calculated BBox of back fields group
         var margin = 16;
         var groupY = backBBox.height + 25;
 
 
         //add field group
-        var backGroup = d3.select("g#back-fields")
-          .append("g")
-          .attr("class", "back-field")
+        var backGroup = d3.select('g#back-fields')
+          .append('g')
+          .attr('class', 'back-field')
           .attr('id', 'back' + index)
-          .attr("transform", "translate(" + margin + "," + groupY + ")")
+          .attr('transform', 'translate(' + margin + ',' + groupY + ')')
 
         if (index > 0) { //delimiter line for all groups but first one
 
           backGroup.append('line')
-            .attr("x1", 0)
-            .attr("y1", 0)
-            .attr("x2", 315)
-            .attr("y2", 0)
-            .attr("class", "delimiter");
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 315)
+            .attr('y2', 0)
+            .attr('class', 'delimiter');
         }
 
         var textBBox = addText(backGroup, backFields[index]); //add label and value text
@@ -484,12 +514,12 @@
           .attr('y', 0)
           .attr('width', 285)
           .attr('height', bGroupBBox.height)
-          .on("click", onSelectBackField);
+          .on('click', onSelectBackField);
 
         //extend the back fields rectangle
         var rectHeight = parseInt(backFieldRect.attr('height'));
         rectHeight = rectHeight + textBBox.height + 25;
-        console.log("rectHeight:" + rectHeight + " bbOx:" + backBBox.height);
+        console.log('rectHeight:' + rectHeight + ' bbOx:' + backBBox.height);
         backFieldRect.attr('height', rectHeight);
 
       }

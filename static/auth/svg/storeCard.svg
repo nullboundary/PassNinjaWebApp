@@ -43,29 +43,29 @@
 		<rect data-target="strip" transform="scale(0.9859,1)" x="0" y="65" width="320" height="123" class="img-btn-rect"/>
 	</g>
 
-	<g id="logo1" class="text-btn-group" transform="translate(73.1655,38.6665)">
+	<g id="logo1" class="text-btn-group logo" transform="translate(73.1655,38.6665)">
 		<text class="logo-text value-text">VERY BERRY</text>
 	</g>
-	<g id="header1" class="text-btn-group" transform="translate(263.166,10)">
+	<g id="header1" class="text-btn-group header" transform="translate(263.166,10)">
 		<text class="label-text">TOTAL</text>
 		<text class="value-text">$300</text>
 	</g>
-	<g id="primary1" class="text-btn-group" transform="translate(16.166,75)">
+	<g id="primary1" class="text-btn-group primary" transform="translate(16.166,75)">
 		<text class="value-text">$200.19</text>
 		<text class="label-text">Remaining Balance</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="aux1" class="text-btn-group" transform="translate(17,211)">
+	<g id="aux1" class="text-btn-group aux" transform="translate(17,211)">
 		<text class="label-text">VALID THRU</text>
 		<text class="value-text">12/31/2014</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="aux2" class="text-btn-group" transform="translate(121,210.5)">
+	<g id="aux2" class="text-btn-group aux" transform="translate(121,210.5)">
 		<text class="label-text">CARD HOLDER</text>
 		<text class="value-text">John Appleseed</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="aux3" class="text-btn-group" transform="translate(258,211)">
+	<g id="aux3" class="text-btn-group aux" transform="translate(258,211)">
 		<text class="label-text">CARD #</text>
 		<text class="value-text">0131</text>
 		<rect class="text-btn-rect"/>

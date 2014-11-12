@@ -130,11 +130,11 @@ a {
   text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
 .pass-bg {
- fill:  #224774; 
+ fill:  #224774;
 }
 
-.pass-group { 
-  fill: none; 
+.pass-group {
+  fill: none;
 }
 
 /********************************************
@@ -144,29 +144,29 @@ a {
 
 /* rectangle opacity 0 on other pages */
 .img-btn-group rect {
-  fill: #a1fcff; 
-  fill-opacity: 0.0; 
-  
-} 
+  fill: #a1fcff;
+  fill-opacity: 0.0;
+
+}
 
 /* only select these btn if on img input page */
 .viewing-page-6 .img-btn-group rect {
-  fill: #a1fcff; 
-  fill-opacity: 0.0; 
-  stroke-width: 0.5; 
-  stroke: #fff; 
+  fill: #a1fcff;
+  fill-opacity: 0.0;
+  stroke-width: 0.5;
+  stroke: #fff;
 }
 
-/* hover style */ 
+/* hover style */
 .viewing-page-6 .img-btn-group:hover rect {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
 
-/* select style */ 
+/* select style */
 .viewing-page-6 .img-btn-group rect.select {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
@@ -174,74 +174,74 @@ a {
 /* only select these btn if on barcode input page */
 /*
 .viewing-page-7 .barcode-btn-group rect {
-  fill: #a1fcff; 
-  fill-opacity: 0.0; 
-  stroke-width: 1; 
-  stroke: #fff; 
+  fill: #a1fcff;
+  fill-opacity: 0.0;
+  stroke-width: 1;
+  stroke: #fff;
 }*/
 
 /*opacity 0 on other pages */
 .barcode-btn-group rect {
-  fill: #ffffff; 
-} 
+  fill: #ffffff;
+}
 
 /*
 .viewing-page-7 .barcode-btn-group:hover rect {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }*/
 .text-btn-group rect {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.0;
-  stroke: none; 
+  stroke: none;
 }
 
 /* only select these btn if on text input page */
 .viewing-page-8 .text-btn-group rect {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.0;
-  stroke-width: 1.0; 
-  stroke: #fff; 
+  stroke-width: 1.0;
+  stroke: #fff;
 }
 
-/* hover style */ 
+/* hover style */
 .viewing-page-8 .text-btn-group:hover rect {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
 
-/* select style */ 
+/* select style */
 .viewing-page-8 .text-btn-group rect.select {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
 
 /* only select these btn if on back fields page */
-.viewing-page-9 .back-field rect {
-  fill: #a1fcff; 
+.back-field rect {
+  fill: #a1fcff;
   fill-opacity: 0.0;
- 
+
 }
 
-/* back field hover style */ 
+/* back field hover style */
 .viewing-page-9 .back-field:hover rect {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
-  stroke-width: 1.0; 
-  stroke: #fff; 
+  stroke-width: 1.0;
+  stroke: #fff;
 }
 
-/* back field select style */ 
+/* back field select style */
 .viewing-page-9 .back-field rect.select {
-  fill: #a1fcff; 
+  fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
-  stroke-width: 1.0; 
-  stroke: #fff; 
+  stroke-width: 1.0;
+  stroke: #fff;
 }
 
 /* Don't change cursor for the text on the svg */
@@ -251,11 +251,11 @@ a {
 }
 
 /********************************************
-  Transistion the color sliders for each page 
+  Transistion the color sliders for each page
 
 *********************************************/
 
-#color-select {
+.color-select {
   position:relative;
   top:-100px;
   z-index: 2;
@@ -265,26 +265,26 @@ a {
 .rgb-background,
 .rgb-value,
 .rgb-label {
-  transition:all 1s ease; 
-  -webkit-transform: translate3d(200%, 300px, 0) !important; 
+  transition:all 1s ease;
+  -webkit-transform: translate3d(200%, 300px, 0) !important;
     -moz-transform: translate3d(200%, 300px, 0) !important;
-    transform: translate3d(200%, 300px, 0) !important; 
-} 
+    transform: translate3d(200%, 300px, 0) !important;
+}
 
-/* move the slider into screen */ 
+/* move the slider into screen */
 .viewing-page-3 .rgb-background,
 .viewing-page-4 .rgb-label,
 .viewing-page-5 .rgb-value{
 
-  transition:all 1s ease; 
-    -webkit-transform: translate3d(0px, 400px, 0) !important; 
+  transition:all 1s ease;
+    -webkit-transform: translate3d(0px, 400px, 0) !important;
     -moz-transform: translate3d(0px, 400px, 0) !important;
-    transform: translate3d(0px, 400px, 0) !important; 
-  
+    transform: translate3d(0px, 400px, 0) !important;
+
 }
 
 /********************************************
- Message Alert Box 
+ Message Alert Box
 
 *********************************************/
 
@@ -364,7 +364,7 @@ a {
 div.control
 {
   line-height: 1;
-  color: #fff;
+  color: rgb(255, 0, 0);
   font-family: 'Roboto','Helvetica Neue', sans-serif;
   font-size: 12px;
   padding: 12px;
@@ -375,14 +375,14 @@ div.control
   position: relative;
   top: -250px;
   z-index: 2;
-  transition:all 1s ease; 
-    -webkit-transform: translate3d(0px, 530px, 0) !important; 
+  transition:all 1s ease;
+    -webkit-transform: translate3d(0px, 530px, 0) !important;
     -moz-transform: translate3d(0px, 530px, 0) !important;
-    transform: translate3d(0px, 530px, 0) !important; 
+    transform: translate3d(0px, 530px, 0) !important;
 }
 
 div.control legend {
-  color: #fff;
+  color: rgb(255, 0, 0);
 }
 
 div#legend-add
@@ -394,7 +394,7 @@ div#legend-add
   position: relative;
 }
 
-div#legend-add button 
+div#legend-add button
 {
   padding: 3px 6px;
 }
@@ -406,10 +406,116 @@ select#currency {
 }
 
 .ninja-theme {
-  background: rgba(0,0,0,0.20);
+  background: rgba(0,0,0,0.70);
 }
 
 #loc-map { height: 180px; }
+
+div#settings-content{
+  display: block;
+  position: relative;
+  right: 40%;
+  width: 312px;
+  height: 410px;
+  overflow: auto;
+  font-size: small;
+  z-index: 1;
+}
+
+table {
+  width: 100%;
+}
+
+#loc-table th,#beacon-table th {
+  padding: .5em .5em;
+}
+#loc-table td,#beacon-table td {
+  padding: .5em .5em;
+}
+
+tbody tr:hover {
+  background: #a1fcff;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+tbody tr.select {
+  background: #a1fcff;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+/********************************************
+ Tabs for Location screen
+
+*********************************************/
+.loc-tabs input[type=radio] {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+      }
+.loc-tabs {
+  width: 650px;
+  float: none;
+  list-style: none;
+  position: relative;
+  padding: 0;
+ /* margin: 75px auto; */
+}
+.loc-tabs li{
+  float: left;
+}
+.loc-tabs label.tab-label {
+    display: block;
+    padding: 10px 20px;
+    border-radius: 2px 2px 0 0;
+    color: #fff;
+  /*  color: #08C; */
+  /*  font-size: 24px; */
+  /*  font-weight: normal; */
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    position: relative;
+    top: -20px;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+.loc-tabs label.tab-label:hover {
+  background: rgba(255,255,255,0.5);
+  top: -20px;
+}
+
+[id^=tab]:checked + label.tab-label {
+  background: rgba(0,0,0,0.70);
+  color: rgb(255, 0, 0);
+  z-index: 3;
+}
+
+[id^=tab]:checked ~ [id^=tab-content] {
+    display: block;
+}
+.tab-content{
+  z-index: 2;
+  display: none;
+ /* text-align: left; */
+ /* width: 100%; */
+  /*font-size: 20px; */
+ /* line-height: 140%; */
+  padding-top: 10px;
+  /*background: #08C; */
+  padding: 15px;
+  color: rgb(255, 0, 0);
+  position: absolute;
+  top: 16px;
+  left: 0;
+  box-sizing: border-box;
+  -webkit-animation-duration: 0.5s;
+  -o-animation-duration: 0.5s;
+  -moz-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+}
 
 /********************************************
  Pass transition between scroll pages
@@ -435,17 +541,17 @@ select#currency {
   perspective: 1000;
 
 }
-/* Applied to both front and back */ 
+/* Applied to both front and back */
 .pass-template.front, .pass-template.back {
   -webkit-backface-visibility:hidden;
   -moz-backface-visibility:hidden;
   backface-visibility: hidden;
-  
+
   -webkit-transform-origin: center center;
   -moz-transform-origin: center center;
   transform-origin: center center;
 
-  position: absolute;  
+  position: absolute;
 }
 
 /* front pane, placed above back */
@@ -462,7 +568,7 @@ select#currency {
 }
 
  /* Apply a "closed-hand" cursor during drag operation. */
-.pass-template.back:active { 
+.pass-template.back:active {
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
@@ -479,73 +585,73 @@ select#currency {
 /* front of pass, standard sizing and positioning */
 .fake-content .pass-template.front {
   transition:all 1s ease;
-  -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important; 
+  -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
-  transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;  
-  
+  transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
+
 }
 
 /* front of pass, scale to 40% */
 .viewing-page-2 .fake-content .pass-template.front {
   transition:all 1s ease;
-  -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important; 
+  -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
-  transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important; 
-  
+  transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
+
 }
 
 /* page transitions */
 .viewing-page-2 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -980%, 0) !important;
   -moz-transform: translate3d(0, -980%, 0) !important;
   transform: translate3d(0, -980%, 0) !important;
 }
 
 .viewing-page-3 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -900%, 0) !important;
   -moz-transform: translate3d(0, -900%, 0) !important;
   transform: translate3d(0, -900%, 0) !important;
 }
 
 .viewing-page-4 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -800%, 0) !important;
   -moz-transform: translate3d(0, -800%, 0) !important;
   transform: translate3d(0, -800%, 0) !important;
 }
 
 .viewing-page-5 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -700%, 0) !important;
   -moz-transform: translate3d(0, -700%, 0) !important;
   transform: translate3d(0, -700%, 0) !important;
 }
 
 .viewing-page-6 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -600%, 0) !important;
   -moz-transform: translate3d(0, -600%, 0) !important;
   transform: translate3d(0, -600%, 0) !important;
 }
 
 .viewing-page-7 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -500%, 0) !important;
   -moz-transform: translate3d(0, -500%, 0) !important;
   transform: translate3d(0, -500%, 0) !important;
 }
 
 .viewing-page-8 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -400%, 0) !important;
   -moz-transform: translate3d(0, -400%, 0) !important;
   transform: translate3d(0, -400%, 0) !important;
 }
 
 .viewing-page-9 .fake-content {
-  transition:all 1s ease; 
+  transition:all 1s ease;
   -webkit-transform: translate3d(0, -300%, 0) !important;
   -moz-transform: translate3d(0, -300%, 0) !important;
   transform: translate3d(0, -300%, 0) !important;
@@ -555,26 +661,26 @@ select#currency {
   transition:all 1s ease;
   -webkit-transform: translate3d(0, -200%, 0) !important;
   -moz-transform: translate3d(0, -200%, 0) !important;
-  transform: translate3d(0, -200%, 0) !important; 
+  transform: translate3d(0, -200%, 0) !important;
 }
 
 .viewing-page-11 .fake-content {
   transition:all 1s ease;
   -webkit-transform: translate3d(0, -100%, 0) !important;
   -moz-transform: translate3d(0, -100%, 0) !important;
-  transform: translate3d(0, -100%, 0) !important; 
+  transform: translate3d(0, -100%, 0) !important;
 }
 
-.viewing-page-12 .fake-content{ 
+.viewing-page-12 .fake-content{
   transition:all 1s ease;
 }
 
 /* Special page 9 front */
 .viewing-page-9 .fake-content .pass-template.front {
   transition:all 1s ease;
-  -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important; 
+  -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
-  transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;  
+  transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
 }
 
 /* Special page 9 back */
@@ -605,7 +711,7 @@ select#currency {
   }
 
 /********************************************
- loading spinner 
+ loading spinner
  -appears when you select & load an svg template
 ********************************************/
 
@@ -626,7 +732,7 @@ select#currency {
       height: 100%;
       width: 6px;
       display: inline-block;
-      
+
       -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
       animation: stretchdelay 1.2s infinite ease-in-out;
     }
@@ -652,12 +758,12 @@ select#currency {
     }
 
     @-webkit-keyframes stretchdelay {
-      0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+      0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
       20% { -webkit-transform: scaleY(1.0) }
     }
 
     @keyframes stretchdelay {
-      0%, 40%, 100% { 
+      0%, 40%, 100% {
         transform: scaleY(0.4);
         -webkit-transform: scaleY(0.4);
       } 20% {
@@ -692,7 +798,7 @@ select#currency {
   background-color: transparent;
 }
 
-/* set color to black during hover */ 
+/* set color to black during hover */
 .next .btn:hover {
   color: #000;
   border-color: #000;
@@ -700,7 +806,7 @@ select#currency {
 
 /* page 1 set the arrow in the center */
 .viewing-page-1 .next {
-  left: 22%; 
+  left: 22%;
 }
 
 /* make the arrow bigger for page 1 */
@@ -714,12 +820,12 @@ select#currency {
 
 
 /***********************************************************
-   medium & larger screens 
- 
-***********************************************************/
-@media (min-width: 48em) { 
+   medium & larger screens
 
-  /* div style for svg pass */ 
+***********************************************************/
+@media (min-width: 48em) {
+
+  /* div style for svg pass */
   .section-content,
   .fake-content {
     display: block;
@@ -742,31 +848,40 @@ select#currency {
   /* on medium screens getting started page centers the pass */
   .viewing-page-2 .fake-content {
     left:38%;
-  } 
+  }
 
   /* Dont scale down the pass for medium+ screens */
    .fake-content .pass-template.front
    {
     transition:all 1s ease;
-    -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important; 
+    -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
-    transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;  
+    transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   }
 
   .fake-content .pass-template.back {
      transition:all 1s ease;
-    -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important; 
+    -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
-    transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;  
+    transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
   }
 
   /* front of pass, scale to 50% Page 2 */
   .viewing-page-2 .fake-content .pass-template.front {
     transition:all 1s ease;
-    -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important; 
+    -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
-    transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important; 
+    transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
   }
+
+/* Special page 9 back */
+.viewing-page-9 .fake-content .pass-template.back {
+  transition:all 1s ease;
+  -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+  -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+  transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+  }
+
   /* The controls need to move up and align next to the pass on medium+ screens */
   div.control{
      top: -200px;
@@ -791,7 +906,7 @@ select#currency {
 
   /* page 1 set the arrow in the center */
   .viewing-page-1 .next {
-    left: 42%; 
+    left: 42%;
   }
 
 

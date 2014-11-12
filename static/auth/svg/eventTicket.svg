@@ -47,39 +47,39 @@
 
 
 <g class="pass-group">
-	<g id="logo1" class="text-btn-group" transform="translate(86.666,38.668)">
+	<g id="logo1" class="text-btn-group logo" transform="translate(86.666,38.668)">
 		<text class="logo-text value-text">Angry Velocity</text>
 	</g>
-	<g id="header1" class="text-btn-group" transform="translate(265,24.335)">
+	<g id="header1" class="text-btn-group header" transform="translate(265,24.335)">
 		<text class="label-text">PRICE</text>
 		<text class="value-text">$35</text>
 	</g>
-	<g id="primary1" class="text-btn-group" transform="translate(16.6055,84.002)">
+	<g id="primary1" class="text-btn-group primary" transform="translate(16.6055,84.002)">
 		<text class="label-text">LIVE CONCERT</text>
 		<text class="value-text">Angry Velocity</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="second1" class="text-btn-group" transform="translate(15.542,149.3354)">
+	<g id="second1" class="text-btn-group second" transform="translate(15.542,149.3354)">
 		<text class="label-text">DATE/TIME</text>
 		<text class="value-text">Tue Jul 29, 2014 7:30 PM</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="aux1" class="text-btn-group" transform="translate(15.2725,205.6689)">
+	<g id="aux1" class="text-btn-group aux" transform="translate(15.2725,205.6689)">
 		<text class="label-text">SECTION</text>
 		<text class="value-text">9</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="aux2" class="text-btn-group" transform="translate(110.6055,205.6689)">
+	<g id="aux2" class="text-btn-group aux" transform="translate(110.6055,205.6689)">
 		<text class="label-text">ROW</text>
 		<text class="value-text">H</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="aux3" class="text-btn-group" transform="translate(176.334,205.6689)">
+	<g id="aux3" class="text-btn-group aux" transform="translate(176.334,205.6689)">
 		<text class="label-text">SEAT</text>
 		<text class="value-text">11</text>
 		<rect class="text-btn-rect"/>
 	</g>
-	<g id="aux4" class="text-btn-group" transform="translate(242.334,205.6689)">
+	<g id="aux4" class="text-btn-group aux" transform="translate(242.334,205.6689)">
 		<text class="label-text">LOCATION</text>
 		<text class="value-text">City Park</text>
 		<rect class="text-btn-rect"/>

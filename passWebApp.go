@@ -16,7 +16,7 @@ import (
 	"net/url"
 	"os"
 	"path"
-	"strconv"
+	//"strings"
 	"time"
 )
 
@@ -82,7 +82,11 @@ func main() {
 
 	goji.Get("/assets/*", handleStatic)
 	goji.Get("/verify", handleVerify)
+
+	//home page
 	goji.Get("/index.html", handleTemplates)
+	goji.Get("/", handleTemplates)
+
 	//goji.Get("/landing.html", handleTemplates)
 	//goji.Get("/register_pure.html", handleTemplates)
 
@@ -91,8 +95,12 @@ func main() {
 	goji.Handle("/accounts/*", accounts) //handle all things that require login
 	accounts.Use(requireLogin)           //login check middleware
 
-	accounts.Get("/accounts/assets/*", handleAccountStatic)                  //seperate assets for accounts
-	accounts.Get("/accounts/index.html", handleAccountTemplates)             //login root, view current passes
+	accounts.Get("/accounts/assets/*", handleAccountStatic) //seperate assets for accounts
+
+	//login root, view current passes - TODO: now its set as builder!
+	accounts.Get("/accounts/index.html", handleAccountTemplates)
+	accounts.Get("/accounts/", handleAccountTemplates)
+
 	accounts.Get("/accounts/template/:passType", handleAccountPassStructure) //return a json object of the pass type
 	accounts.Get("/accounts/builder.html", handleAccountTemplates)           //make a pass
 	accounts.Post("/accounts/save", handleAccountSave)                       //save pass data
@@ -117,10 +125,16 @@ func handleTemplates(res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("handleTemplates: %s \n", req.URL.Path)
 
-	err := createFromTemplate(res, "layout.tmpl", req.URL.Path)
+	dir, file := path.Split(req.URL.Path)
+	if file == "" {
+		file = "index.html"
+	}
+	urlPath := path.Join(dir, file) //clean and rejoin path
+
+	err := createFromTemplate(res, "layout.tmpl", urlPath)
 	if err != nil {
 		log.Printf("template error %s", err)
-		http.NotFound(res, req)
+		handleNotFound(res, req)
 		return
 	}
 
@@ -136,10 +150,16 @@ func handleAccountTemplates(res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("handleAccountTemplates: %s \n", req.URL.Path)
 
-	err := createFromTemplate(res, "accountLayout.tmpl", req.URL.Path)
+	dir, file := path.Split(req.URL.Path)
+	if file == "" {
+		file = "index.html"
+	}
+	urlPath := path.Join(dir, file) //clean and rejoin path
+
+	err := createFromTemplate(res, "accountLayout.tmpl", urlPath)
 	if err != nil {
 		log.Printf("template error %s", err)
-		http.NotFound(res, req)
+		handleNotFound(res, req)
 		return
 	}
 
@@ -194,7 +214,7 @@ func handleVerify(c web.C, res http.ResponseWriter, req *http.Request) {
 	err := createFromTemplate(res, "layout.tmpl", pageContent)
 	if err != nil {
 		log.Printf("template error %s", err)
-		http.NotFound(res, req)
+		handleNotFound(res, req)
 		return
 	}
 
@@ -210,8 +230,10 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("handleStatic %s", req.URL.Path[1:])
 
-	fs := http.FileServer(http.Dir("static/public"))
-	files := http.StripPrefix("/assets/", fs)
+	dir := "static/public"
+	fs := http.FileServer(http.Dir(dir))
+	cleanFiles := noDirListing(dir, fs)
+	files := http.StripPrefix("/assets/", cleanFiles)
 
 	files.ServeHTTP(res, req)
 
@@ -225,10 +247,12 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleAccountStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	log.Printf("handleStatic %s", req.URL.Path[1:])
+	log.Printf("handleAccountStatic %s", req.URL.Path[1:])
 
-	fs := http.FileServer(http.Dir("static/auth"))
-	files := http.StripPrefix("/accounts/assets/", fs)
+	dir := "static/auth"
+	fs := http.FileServer(http.Dir(dir))
+	cleanFiles := noDirListing(dir, fs)
+	files := http.StripPrefix("/accounts/assets/", cleanFiles)
 
 	files.ServeHTTP(res, req)
 
@@ -347,8 +371,8 @@ func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
 	user.setPassword(password)
 	user.Email = email
 	user.Created = time.Now()
-	user.Verified = false
-	user.OAuth = false //email signup, not Oauth
+	user.Verified = true //TODO: passNinja is only going to use Oauth2 this will not be necessary
+	user.OAuth = false   //email signup, not Oauth
 
 	log.Printf("pass:%s email:%s", user.Password, user.Email)
 
@@ -358,16 +382,19 @@ func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	expiration := strconv.FormatInt(user.Created.AddDate(0, 0, 1).Unix(), 10) //token expires in 24 hours
-	emailtoken := utils.GenerateToken(emailTokenKey, user.Email, expiration)  //get token from base64 hmac
+	//TODO: passNinja is only going to use Oauth2 this will not be necessary
+	/*
+		expiration := strconv.FormatInt(user.Created.AddDate(0, 0, 1).Unix(), 10) //token expires in 24 hours
+		emailtoken := utils.GenerateToken(emailTokenKey, user.Email, expiration)  //get token from base64 hmac
 
-	url := createRawURL(emailtoken, user.Email, expiration) //generate verification url
+		url := createRawURL(emailtoken, user.Email, expiration) //generate verification url
 
-	emailVerify := NewEmailer()
-	go emailVerify.Send(user.Email, emailtoken, url) //send concurrently
+		emailVerify := NewEmailer()
+		go emailVerify.Send(user.Email, emailtoken, url) //send concurrently
 
-	//signup success. Redirect to /accounts - send email verification
-	http.Redirect(res, req, "/accounts/verify.html", http.StatusCreated)
+		//signup success. Redirect to /accounts - send email verification
+		http.Redirect(res, req, "/accounts/verify.html", http.StatusCreated)
+	*/
 
 }
 
@@ -653,6 +680,34 @@ func createRawURL(token string, userEmail string, expires string) string {
 
 	return u.String()
 
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func noDirListing(prefix string, h http.Handler) http.Handler {
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		safePath := govalidator.SafeFileName(r.URL.Path)
+
+		log.Println(path.Join(prefix, r.URL.Path))
+		fileInfo, err := os.Stat(path.Join(prefix, r.URL.Path))
+		if err != nil {
+			log.Println(err)
+			handleNotFound(w, r)
+			return
+		}
+		if fileInfo.IsDir() {
+			handleNotFound(w, r)
+			return
+		}
+
+		h.ServeHTTP(w, r)
+	})
 }
 
 //////////////////////////////////////////////////////////////////////////

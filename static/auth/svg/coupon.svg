@@ -161,32 +161,32 @@
 		<rect data-target="strip" transform="scale(0.9859,1)" x="0" y="65" width="320" height="123" class="img-btn-rect"/>
 	</g>
 
-	<g id="logo1" class="text-btn-group" transform="translate(72.4985,36)">
+	<g id="logo1" class="text-btn-group logo" transform="translate(72.4985,36)">
 		<text class="font-bold logo-text value-text">Cinderellas</text>
 	</g>
 
-	<g id="header1" class="text-btn-group" transform="translate(255,10)">
+	<g id="header1" class="text-btn-group header" transform="translate(255,10)">
 		<text class="font-norm label-text">OFFER</text>
 		<text class="value-text">In-store</text>
 	</g>
 
-	<g id="primary1" class="text-btn-group" transform="translate(17.499,75)">
+	<g id="primary1" class="text-btn-group primary" transform="translate(17.499,75)">
 		<text transform="scale(1.0733,1)" x="17.499" y="0" class="font-lite value-text">40% OFF</text>
 		<text transform="scale(1.0733,1)" x="17.499" y="20" class="font-lite label-text">All Summer Sandals</text>
 		<rect transform="scale(0.9859,1)" x="0" y="0" width="320" height="123" class="text-btn-rect"/>
 	</g>
 
-	<g id="aux1" class="text-btn-group" transform="translate(17,209)">
+	<g id="aux1" class="text-btn-group aux" transform="translate(17,209)">
 		<text class="font-norm label-text">VALID THRU</text>
 		<text class="value-text">07/31/2014</text>
 	</g>
 
-	<g id="aux2" class="text-btn-group" transform="translate(115.5,209)">
+	<g id="aux2" class="text-btn-group aux" transform="translate(115.5,209)">
 		<text class="font-norm label-text">LIMIT</text>
 		<text class="value-text">1 Per Customer </text>
 	</g>
 
-	<g id="aux3" class="text-btn-group" transform="translate(217,209)">
+	<g id="aux3" class="text-btn-group aux" transform="translate(217,209)">
 		<text class="font-norm label-text">COUPON #</text>
 		<text class="value-text">0131</text>
 	</g>

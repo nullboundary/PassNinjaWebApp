@@ -5,16 +5,16 @@
 
   var setHighField,
     setLowField,
-    prevState = "rect", //Fields shifted up for Square barcode or not?
+    prevState = 'rect', //Fields shifted up for Square barcode or not?
     setHighField = function setHighField() { //function shifts fields up to make room for square barcode
 
-      if (prevState == "rect") {
+      if (prevState == 'rect') {
         setFieldPosition(-6, -16);
       }
     },
     setLowField = function setLowField() { //function shifts fields down
 
-      if (prevState == "square") {
+      if (prevState == 'square') {
         setFieldPosition(6, 16);
       }
     },
@@ -75,7 +75,7 @@
 
       //handle input of alt Text message
       d3.select('input#popAlt')
-        .on("input", onAltText);
+        .on('input', onAltText);
     }
     /***********************************************************
 
@@ -86,13 +86,13 @@
     if (pb.template().keyDoc.barcode != null) {
 
       switch (pb.template().keyDoc.barcode.format) {
-      case "PKBarcodeFormatPDF417":
+      case 'PKBarcodeFormatPDF417':
         setBarType('PDF417');
         break;
-      case "PKBarcodeFormatAztec":
+      case 'PKBarcodeFormatAztec':
         setBarType('Aztec');
         break;
-      case "PKBarcodeFormatQR":
+      case 'PKBarcodeFormatQR':
         setBarType('QR');
         break;
       default:
@@ -111,17 +111,17 @@
  	***********************************************************/
   function onBarcodeSubmit() {
 
-    console.log("onBarcode");
+    console.log('onBarcode');
     d3.event.preventDefault();
 
     //get input box values
-    var barData = $("#popData").val();
-    var barEncode = $("#popEncode").val();
+    var barData = $('#popData').val();
+    var barEncode = $('#popEncode').val();
     var barType = $('#barcode-format').val();
 
 
 
-    if (barType != "No Barcode") {
+    if (barType != 'No Barcode') {
       pb.template().keyDoc.barcode.format = barcodeShape[barType].format;
       pb.template().keyDoc.barcode.message = barData;
       pb.template().keyDoc.barcode.messageEncoding = barEncode;
@@ -169,16 +169,16 @@
 
       if (altValue != undefined) {
 
-        var barcodeRect = d3.select("g#barcode-group rect")
+        var barcodeRect = d3.select('g#barcode-group rect')
           .transition()
           .attr('height', (barcodeShape[barType].height + 10))
           .attr('y', -10);
 
-        d3.select("g#barcode-group image")
+        d3.select('g#barcode-group image')
           .transition()
           .attr('y', 0)
 
-        var altText = d3.select("text#alt-text")
+        var altText = d3.select('text#alt-text')
           .style('display', 'inline')
           .text(altValue);
 
@@ -195,16 +195,16 @@
       } else { //no alt text, set back to default
 
 
-        d3.select("g#barcode-group rect")
+        d3.select('g#barcode-group rect')
           .transition()
           .attr('height', barcodeShape[barType].height)
           .attr('y', 0);
 
-        d3.select("g#barcode-group image")
+        d3.select('g#barcode-group image')
           .transition()
           .attr('y', 10);
 
-        var passGroup = d3.select("text#alt-text")
+        var passGroup = d3.select('text#alt-text')
           .style('display', 'none')
           .text(altValue);
       }
@@ -222,7 +222,7 @@
     setBarGroup(barType); //set group attr
 
     //set rectangle
-    d3.select("g#barcode-group rect")
+    d3.select('g#barcode-group rect')
 
     .attr('x', 0)
       .attr('y', 0)
@@ -230,7 +230,7 @@
       .attr('height', barcodeShape[barType].height);
 
     //set image
-    d3.select("g#barcode-group image")
+    d3.select('g#barcode-group image')
       .attr('x', 10)
       .attr('y', 10)
       .attr('width', barcodeShape[barType].image.width)
@@ -240,7 +240,7 @@
     setAltText(barType);
 
     //display
-    d3.select("g#barcode-group").transition().style("display", "inline");
+    d3.select('g#barcode-group').transition().style('display', 'inline');
 
     enableInputs();
 
@@ -253,9 +253,9 @@
   function setNone() {
 
       setLowField();
-      prevState = "rect";
+      prevState = 'rect';
 
-      d3.select("g#barcode-group").transition().style("display", "none");
+      d3.select('g#barcode-group').transition().style('display', 'none');
 
       disableInputs();
 
@@ -272,7 +272,7 @@
     var groupLoc = 'translate(' + xPos + ',' + yPos + ')';
 
     //set group
-    d3.select("g#barcode-group")
+    d3.select('g#barcode-group')
       .attr('transform', groupLoc)
       .attr('width', barcodeShape[barType].width)
       .attr('height', barcodeShape[barType].height)
@@ -305,10 +305,10 @@
   function shiftField(selection, amount) {
 
     var textGroup = d3.select(selection.parentNode);
-    var translate = d3.transform(textGroup.attr("transform")).translate;
+    var translate = d3.transform(textGroup.attr('transform')).translate;
     var xPos = translate[0];
     var yPos = translate[1] + amount;
-    textGroup.transition().attr("transform", "translate(" + xPos + "," + yPos + ")");
+    textGroup.transition().attr('transform', 'translate(' + xPos + ',' + yPos + ')');
 
   }
 
@@ -318,7 +318,7 @@
  	***********************************************************/
   function onBarcodeSelect() {
 
-    if (this.value == "No Barcode") {
+    if (this.value == 'No Barcode') {
       setNone();
     } else {
       setBarType(this.value);

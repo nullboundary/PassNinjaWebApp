@@ -16,11 +16,11 @@
 
     var w = 500,
       h = 600,
-      svg = d3.select("svg"),
+      svg = d3.select('svg'),
       currentEditTarget, //which text field is being edited
       targetGroupId;
 
-    passType = "coupon";
+    passType = 'coupon';
 
     //init all color sliders for page 2
     passBuilder.colors.init();
@@ -38,34 +38,43 @@
 
 
     //setup one page scroll
-    $(".main").onepage_scroll({
-      sectionContainer: "section",
+    $('.main').onepage_scroll({
+      sectionContainer: 'section',
       updateURL: false,
       responsiveFallback: false,
       pagination: true,
       keyboard: true,
-      direction: "vertical",
+      direction: 'vertical',
       loop: false,
       beforeMove: onBeforeScroll,
       afterMove: onAfterScroll
     });
 
     //don't submit form for popover tip selection buttons
-    $(document).on("click", ".select-button", function (e) {
+    $(document).on('click', '.select-button', function (e) {
       e.preventDefault();
       //var btn = $(this);
       //if (btn.val())
     });
 
     //Select PassType
-    $(document).on("click", ".pass-thumb-select", onSelectType);
+    $(document).on('click', '.pass-thumb-select', onSelectType);
 
     //Click Next Page Button
-    $(document).on("click", "#next-button", onNextPage);
+    $(document).on('click', '#next-button', onNextPage);
+
+    //prevent enter submit for all forms!
+    $('form.pure-form').on("keyup keypress", function (e) {
+      var code = e.keyCode || e.which;
+      if (code == 13) {
+        e.preventDefault();
+        return false;
+      }
+    });
 
     //only load back if you haven't already
-    if (d3.select("svg.back").empty()) {
-      loadSVG("back", onSVGLoad); //load the back svg
+    if (d3.select('svg.back').empty()) {
+      loadSVG('back', onSVGLoad); //load the back svg
     }
 
 
@@ -84,13 +93,15 @@
         passBuilder.colors.resetRectStroke(); //reset all rect stroke to none
 
         pageBeforeIndex = index;
-        console.log("before " + index);
+        console.log('before ' + index);
         if (index == 3) { //page 2 is get started
           getStartedSubmit();
         } else if (index == 4) { //page 3 is colors
           passBuilder.colors.save();
         } else if (index == 8) { //text boxes
-          passBuilder.colors.updateRectStroke("rect.text-btn-rect");
+          passBuilder.colors.updateRectStroke('rect.text-btn-rect');
+        } else if (index == 9) {
+          //passBuilder.location.xray(false);
         }
 
 
@@ -104,7 +115,7 @@
 
       if (pageAfterIndex != index) { //prevent handler being called twice per scroll.
         pageAfterIndex = index;
-        console.log("after " + index);
+        console.log('after ' + index);
 
         if (index == 3) { //color adjust page
 
@@ -117,7 +128,12 @@
 
           //add handlers for panning (scrolling) of svg back field data
           passBuilder.backFields.addHandlers();
+          passBuilder.location.xray(false);
 
+        } else if (index == 10) {
+          passBuilder.location.xray(true);
+        } else if (index == 11) {
+          passBuilder.location.xray(false);
         }
 
       }
@@ -128,15 +144,15 @@
  	***********************************************************/
   function getStartedSubmit() {
 
-    var orgName = $("#org-name").val();
+    var orgName = $('#org-name').val();
     var orgStr = orgName.replace(/\s|\./g, '').toLowerCase();
-    var passName = $("#pass-name").val().replace(/\s|\./g, '').toLowerCase();
-    var passDesc = $("#pass-desc").val();
+    var passName = $('#pass-name').val().replace(/\s|\./g, '').toLowerCase();
+    var passDesc = $('#pass-desc').val();
 
-    var passId = orgStr + "." + passName;
+    var passId = orgStr + '.' + passName;
 
 
-    passTemplate.id = "pass.ninja." + passId + "." + passType;
+    passTemplate.id = 'pass.ninja.' + passId + '.' + passType;
     passTemplate.keyDoc.description = passDesc;
     passTemplate.keyDoc.organizationName = orgName;
 
@@ -150,19 +166,19 @@
   function initNewPass() {
 
     //passTemplate
-    console.log("passType " + passType);
+    console.log('passType ' + passType);
 
     passBuilder.image.set();
 
     passBuilder.barcode.set();
 
-    passBuilder.fields.set(passTemplate.keyDoc[passType].primaryFields, "primary");
-    passBuilder.fields.set(passTemplate.keyDoc[passType].headerFields, "header"); //set header fields
-    passBuilder.fields.set(passTemplate.keyDoc[passType].secondaryFields, "second"); //set secondary fields
-    passBuilder.fields.set2(passTemplate.keyDoc[passType].auxiliaryFields, "aux"); //set auxiliary fields
+    passBuilder.fields.set(passTemplate.keyDoc[passType].primaryFields, 'primary');
+    passBuilder.fields.set(passTemplate.keyDoc[passType].headerFields, 'header'); //set header fields
+    passBuilder.fields.set(passTemplate.keyDoc[passType].secondaryFields, 'second'); //set secondary fields
+    passBuilder.fields.set(passTemplate.keyDoc[passType].auxiliaryFields, 'aux'); //set auxiliary fields
 
     //keydoc top level
-    $("text.logo-text").text(passTemplate.keyDoc.logoText);
+    $('text.logo-text').text(passTemplate.keyDoc.logoText);
 
     //set color sliders to match keydoc
     passBuilder.colors.updateSliders();
@@ -176,6 +192,8 @@
     //set back fields
     passBuilder.backFields.set();
 
+    passBuilder.location.update();
+
   }
 
   /***********************************************************
@@ -185,16 +203,16 @@
   function postUpdate(jsonData) {
 
     //save pass data on server for each field update
-    var jqxhr = $.post("/accounts/save", JSON.stringify(jsonData))
+    var jqxhr = $.post('/accounts/save', JSON.stringify(jsonData))
       .done(function () {
 
-        alertDisplay("saved", "All changes have been successfully saved.");
+        alertDisplay('saved', 'All changes have been successfully saved.');
 
       })
       .fail(function (jqXHR) {
 
         var error = jQuery.parseJSON(jqXHR.responseText); //parse json
-        alertDisplay("error", error.error);
+        alertDisplay('error', error.error);
 
       })
       .always(function () {
@@ -207,7 +225,7 @@
 
  	***********************************************************/
   function onNextPage(event) {
-    $(".main").moveDown();
+    $('.main').moveDown();
   }
 
   /***********************************************************
@@ -216,23 +234,23 @@
  	***********************************************************/
   function onSelectType(event) {
 
-    console.log("selectpass");
+    console.log('selectpass');
 
     var id = $(event.target).attr('id');
     console.log(id);
     passType = id;
 
-    var svgObj = d3.select("svg");
+    var svgObj = d3.select('svg');
     if (!svgObj.empty()) {
-      console.log("clear pass");
+      console.log('clear pass');
       passTemplate = null; //clear data
-      d3.select("svg.front").remove();
+      d3.select('svg.front').remove();
     }
 
-    var url = "/accounts/template/" + passType;
+    var url = '/accounts/template/' + passType;
     var uri = encodeURI(url);
     console.log(uri);
-    $("div.spinner").show(); //show spinner
+    $('div.spinner').show(); //show spinner
 
     var jqxhr = $.getJSON(uri)
       .done(function (data) {
@@ -241,14 +259,14 @@
         passTemplate = data; //store json pass template object
         loadSVG(passType, onFrontSVGLoad);
 
-        $("div.spinner").hide(); //show spinner
-        $("#next-button").show(); //show next arrow
+        $('div.spinner').hide(); //show spinner
+        $('#next-button').show(); //show next arrow
 
       })
       .fail(function (jqXHR) {
 
         var error = jQuery.parseJSON(jqXHR.responseText); //parse json
-        alertDisplay("error", error.error());
+        alertDisplay('error', error.error());
 
       })
       .always(function () {
@@ -261,14 +279,14 @@
 
  	***********************************************************/
   function loadSVG(passType, callback) {
-    console.log("loadSVG");
+    console.log('loadSVG');
 
-    var url = "/accounts/assets/svg/" + passType + ".svg";
+    var url = '/accounts/assets/svg/' + passType + '.svg';
     var uri = encodeURI(url);
     console.log(uri);
 
     //load svg xml + place into document
-    d3.xml(uri, "image/svg+xml", callback);
+    d3.xml(uri, 'image/svg+xml', callback);
 
   }
 
@@ -279,10 +297,10 @@
   var onSVGLoad = function (error, xml) {
 
     if (xml != undefined) {
-      d3.select("div.fake-content").node().appendChild(xml.documentElement);
+      d3.select('div.fake-content').node().appendChild(xml.documentElement);
       return true;
     } else {
-      alertDisplay("error", error);
+      alertDisplay('error', error);
       return false;
     }
 
@@ -307,27 +325,72 @@
  	check browser locale support
 	***********************************************************/
   function toLocaleStringSupportsLocales() {
-    if (window.Intl && typeof window.Intl === "object") {
+    if (window.Intl && typeof window.Intl === 'object') {
       return true;
     } else {
-      $.getScript("/assets/js/Intl.min.js")
+      $.getScript('/assets/js/Intl.min.js')
         .done(function (script, textStatus) {
           console.log(textStatus);
         })
         .fail(function (jqxhr, settings, exception) {
-          alertDisplay("error", 'problem loading Intl.min.js');
+          alertDisplay('error', 'problem loading Intl.min.js');
         });
       return false;
     }
 
     //var number = 0;
     //try {
-    //	number.toLocaleString("i");
+    //	number.toLocaleString('i');
     //} catch (e) {
-    //	return e​.name === "RangeError";
+    //	return e​.name === 'RangeError';
     //}
     //return false;
   }
+
+  /***********************************************************
+
+
+
+***********************************************************/
+  function show() {
+    for (var i = 0; i < arguments.length; i++) {
+      arguments[i].style('display', 'inline');
+    }
+  }
+
+  /***********************************************************
+
+
+
+***********************************************************/
+  function hide() {
+    for (var i = 0; i < arguments.length; i++) {
+      arguments[i].style('display', 'none');
+    }
+  }
+
+  /***********************************************************
+
+
+
+***********************************************************/
+  function enable() {
+    for (var i = 0; i < arguments.length; i++) {
+      arguments[i].attr('disabled', null);
+    }
+  }
+
+  /***********************************************************
+
+
+
+***********************************************************/
+  function disable() {
+    for (var i = 0; i < arguments.length; i++) {
+      arguments[i].attr('disabled', true);
+    }
+  }
+
 
 
   /***********************************************************
@@ -341,23 +404,21 @@
     var outHtml = '';
     var alertClass = 'alert-info';
 
-    if (alertType == "error") {
+    if (alertType == 'error') {
       alertClass = 'alert-error'; //red
-      outHtml =
-        '<i class="fa fa-frown-o"></i></i><strong>&nbsp; Error! &nbsp;</strong>'; //error style
-    } else if (alertType == "saved") {
+      outHtml = '<i class="fa fa - frown - o "></i></i><strong>&nbsp; Error! &nbsp;</strong>'; //error style
+    } else if (alertType == 'saved') {
       alertClass = 'alert-success'; //green
-      outHtml =
-        '<i class="fa fa-check-square-o"></i><strong>&nbsp; Saved! &nbsp;</strong>' //saved style
+      outHtml = '<i class="fa fa - check - square - o "></i><strong>&nbsp; Saved! &nbsp;</strong>' //saved style
     }
 
-    $(".alert")
+    $('.alert')
       .attr('class', 'alert alert-dismissable ' + alertClass)
       .html(outHtml + alertMessage)
       .css('display', 'visible');
 
     setTimeout(function () {
-      $(".alert").css('display', 'none');
+      $('.alert').css('display', 'none');
     }, alertTimeout);
   }
 
@@ -375,6 +436,22 @@
 
   passBuilder.alertDisplay = function (alertType, alertMessage) {
     alertDisplay(alertType, alertMessage);
+  };
+
+  passBuilder.show = function () {
+    show.apply(this, arguments);
+  };
+
+  passBuilder.hide = function () {
+    hide.apply(this, arguments);
+  };
+
+  passBuilder.enable = function () {
+    enable.apply(this, arguments);
+  };
+
+  passBuilder.disable = function () {
+    disable.apply(this, arguments);
   };
 
   passBuilder.update = function (jsonData) {

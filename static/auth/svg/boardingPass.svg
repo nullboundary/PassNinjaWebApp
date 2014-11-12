@@ -38,7 +38,7 @@
 <!--
 <text transform="matrix(1 0 0 1 86.666 37.668)"><tspan x="0" y="0" class="st8 st3 st15">Pass</tspan><tspan x="42.04" y="0" class="st8 st3 st15"> </tspan><tspan x="46.38" y="0" class="st8 st3 st15">Airline</tspan></text>
 -->
-<g id="header1" class="text-btn-group" transform="translate(269,13.335)">
+<g id="header1" class="text-btn-group header" transform="translate(269,13.335)">
 		<text class="font-bold label-text">GATE</text>
 		<text class="font-lite value-text">23</text>
 </g>

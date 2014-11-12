@@ -9,9 +9,9 @@
   function init() {
 
     //setup all color sliders
-    configColorSlider(".rgb-label", ".label-text");
-    configColorSlider(".rgb-value", ".value-text");
-    configColorSlider(".rgb-background", ".pass-bg");
+    configColorSlider('.rgb-label', '.label-text');
+    configColorSlider('.rgb-value', '.value-text');
+    configColorSlider('.rgb-background', '.pass-bg');
   }
 
   /***********************************************************
@@ -20,7 +20,7 @@
  	***********************************************************/
   function configColorSlider(sliderClass, changeClass) {
 
-    var colorValue = $(changeClass).css("fill");
+    var colorValue = $(changeClass).css('fill');
 
     $(sliderClass).ColorPickerSliders({
       flat: true,
@@ -32,14 +32,14 @@
       },
       onchange: function (container, color) {
 
-        if (changeClass == ".pass-bg") { //adjust values gradiant in pass background
+        if (changeClass == '.pass-bg') { //adjust values gradiant in pass background
 
-          d3.select(".pass-bg-lite").style("stop-color", color.tiny.brighten(15).toRgbString());
-          d3.select(changeClass).style("stop-color", color.tiny.toRgbString());
-          d3.select(".pass-bg-dark").style("stop-color", color.tiny.darken(15).toRgbString());
+          d3.select('.pass-bg-lite').style('stop-color', color.tiny.brighten(15).toRgbString());
+          d3.select(changeClass).style('stop-color', color.tiny.toRgbString());
+          d3.select('.pass-bg-dark').style('stop-color', color.tiny.darken(15).toRgbString());
 
         } else { //adjust values of all the other classes
-          d3.selectAll(changeClass).style("fill", color.tiny.toRgbString());
+          d3.selectAll(changeClass).style('fill', color.tiny.toRgbString());
         }
 
       },
@@ -58,9 +58,9 @@
   function updateSliders() {
 
 
-    $(".rgb-label").trigger("colorpickersliders.updateColor", pb.template().keyDoc.labelColor);
-    $(".rgb-value").trigger("colorpickersliders.updateColor", pb.template().keyDoc.foregroundColor);
-    $(".rgb-background").trigger("colorpickersliders.updateColor", pb.template().keyDoc.backgroundColor);
+    $('.rgb-label').trigger('colorpickersliders.updateColor', pb.template().keyDoc.labelColor);
+    $('.rgb-value').trigger('colorpickersliders.updateColor', pb.template().keyDoc.foregroundColor);
+    $('.rgb-background').trigger('colorpickersliders.updateColor', pb.template().keyDoc.backgroundColor);
 
   }
 
@@ -73,9 +73,9 @@
     //set bg gradiant color
     var bgColor = tinycolor(pb.template().keyDoc.backgroundColor);
 
-    d3.select(".pass-bg-lite").style("stop-color", bgColor.brighten(15).toRgbString());
-    d3.select(".pass-bg").style("stop-color", bgColor.toRgbString());
-    d3.select(".pass-bg-dark").style("stop-color", bgColor.darken(15).toRgbString());
+    d3.select('.pass-bg-lite').style('stop-color', bgColor.brighten(15).toRgbString());
+    d3.select('.pass-bg').style('stop-color', bgColor.toRgbString());
+    d3.select('.pass-bg-dark').style('stop-color', bgColor.darken(15).toRgbString());
 
 
 
@@ -87,9 +87,9 @@
  	***********************************************************/
   function updateText() {
 
-    console.log(d3.select(".value-text").style("fill"));
-    d3.selectAll(".value-text").style("fill", pb.template().keyDoc.foregroundColor);
-    d3.selectAll(".label-text").style("fill", pb.template().keyDoc.labelColor);
+    console.log(d3.select('.value-text').style('fill'));
+    d3.selectAll('.value-text').style('fill', pb.template().keyDoc.foregroundColor);
+    d3.selectAll('.label-text').style('fill', pb.template().keyDoc.labelColor);
   }
 
 
@@ -103,22 +103,22 @@
     var bgColor = tinycolor(pb.template().keyDoc.backgroundColor);
 
     if (bgColor.isDark()) {
-      d3.selectAll(selection).style("stroke", "#fff");
+      d3.selectAll(selection).style('stroke', '#fff');
     } else {
-      d3.selectAll(selection).style("stroke", "#000");
+      d3.selectAll(selection).style('stroke', '#000');
 
     }
 
-    //d3.selectAll(selection).style("stroke", bgColor.complement().greyscale().toHexString());
+    //d3.selectAll(selection).style('stroke', bgColor.complement().greyscale().toHexString());
 
   }
 
   function resetRectStroke() {
 
     //reset text rect stroke color
-    d3.selectAll("rect.text-btn-rect").style("stroke", null);
+    d3.selectAll('rect.text-btn-rect').style('stroke', null);
     //reset image rect stroke color
-    d3.selectAll("rect.img-btn-rect").style("stroke", null);
+    d3.selectAll('rect.img-btn-rect').style('stroke', null);
   }
 
 
@@ -128,11 +128,11 @@
  	***********************************************************/
   function onColorSave() {
 
-    console.log("colorSave");
+    console.log('colorSave');
 
-    var bgColor = $(".pass-bg").css("stop-color");
-    var labelColor = $(".label-text").css("fill");
-    var valueColor = $(".value-text").css("fill");
+    var bgColor = $('.pass-bg').css('stop-color');
+    var labelColor = $('.label-text').css('fill');
+    var valueColor = $('.value-text').css('fill');
 
     //set colors in keyDoc
     pb.template().keyDoc.foregroundColor = valueColor;
@@ -141,11 +141,11 @@
 
 
     var passData = {
-      "id": pb.template().id,
-      "keyDoc": {
-        "labelColor": labelColor,
-        "foregroundColor": valueColor,
-        "backgroundColor": bgColor
+      'id': pb.template().id,
+      'keyDoc': {
+        'labelColor': labelColor,
+        'foregroundColor': valueColor,
+        'backgroundColor': bgColor
       }
     };
 
