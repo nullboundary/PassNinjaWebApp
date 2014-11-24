@@ -2,11 +2,13 @@ package main
 
 import (
 	"bitbucket.org/cicadaDev/utils"
-	"code.google.com/p/go.crypto/bcrypt"
 	"fmt"
+	"github.com/gorilla/context"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/lidashuang/goji_gzip"
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/providers/gplus"
 	"github.com/slugmobile/govalidator"
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
@@ -16,18 +18,16 @@ import (
 	"net/url"
 	"os"
 	"path"
-	//"strings"
 	"time"
 )
 
 //userModel can be any struct that represents a user in a system
 type userModel struct {
+	Id            string    `form:"id" gorethink:"id"`
 	Email         string    `form:"email" gorethink:"email"`                         //Email is ID of user
-	Password      []byte    `form:"password" gorethink:"password,omitempty"`         //bcrypted
+	User          goth.User `form:"user" gorethink:"user"`                           //Detailed User info from oauth login
 	Organization  string    `form:"organization" gorethink:"organization,omitempty"` //User organization name
-	OAuth         bool      `form:"_" gorethink:"oauth"`                             //User is using OAuth login, not email
-	Authenticated bool      `form:"-" gorethink:"-"`                                 //User is Authenticated
-	Verified      bool      `form:"_" gorethink:"verified,omitempty"`                //Email is verified
+	OAuthProvider string    `form:"_" gorethink:"oauth"`                             //User is using OAuth login, not email
 	Created       time.Time `form:"_" gorethink:"created,omitempty"`                 //Account Created time/date
 	LastLogin     time.Time `form:"-" gorethink:"lastLogin,omitempty"`               //Last login time
 	Subscriber    bool      `form:"_" gorethink:"subscriber,omitempty"`              //subscriber: true or false? (false could be free trial users)
@@ -44,7 +44,12 @@ var (
 	emailTokenKey   []byte = make([]byte, 32)
 )
 
+// SessionName is the key used to access the session store.
+const oauthSessionName = "_ninja_auth"
+const loginSessionName = "_ninja_ssid"
+
 //var emailTokenKey = "something-secret" //key for email verification hmac
+var idTokenKey = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
 
 func init() {
 	sessionAuthKey = securecookie.GenerateRandomKey(64)
@@ -52,13 +57,10 @@ func init() {
 	emailTokenKey = securecookie.GenerateRandomKey(32) //key for email verification hmac
 
 	sessionStore = sessions.NewCookieStore(sessionAuthKey, sessionCryptKey)
-	sessionStore.Options = &sessions.Options{
-		Path:     "/accounts",
-		MaxAge:   86400 * 2,
-		HttpOnly: true,
-		//Secure:   true,
-		//Domain: http://pass.ninja
-	}
+
+	goth.UseProviders(
+		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "http://local.pass.ninja:8000/auth/gplus/callback"),
+	)
 
 	//add custom validator functions
 	addValidators()
@@ -73,22 +75,15 @@ func init() {
 //////////////////////////////////////////////////////////////////////////
 func main() {
 
-	//println(runtime.Version())
 	goji.Use(gzip.GzipHandler) //gzip everything
 
-	goji.Post("/signup", handleSignUp)
-	goji.Post("/login", handleLogin)
-	goji.Post("/logout", handleLogout)
-
-	goji.Get("/assets/*", handleStatic)
-	goji.Get("/verify", handleVerify)
+	goji.Get("/auth/:provider", handleAuthorize)
+	goji.Get("/auth/:provider/callback", handleCallBack)
 
 	//home page
 	goji.Get("/index.html", handleTemplates)
 	goji.Get("/", handleTemplates)
-
-	//goji.Get("/landing.html", handleTemplates)
-	//goji.Get("/register_pure.html", handleTemplates)
+	goji.Get("/assets/*", handleStatic)
 
 	//login pages
 	accounts := web.New()
@@ -157,61 +152,6 @@ func handleAccountTemplates(res http.ResponseWriter, req *http.Request) {
 	urlPath := path.Join(dir, file) //clean and rejoin path
 
 	err := createFromTemplate(res, "accountLayout.tmpl", urlPath)
-	if err != nil {
-		log.Printf("template error %s", err)
-		handleNotFound(res, req)
-		return
-	}
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func handleVerify(c web.C, res http.ResponseWriter, req *http.Request) {
-
-	values := req.URL.Query()
-	emailAddr := values.Get("email")
-	emailToken := values.Get("token")
-	emailExpire := values.Get("expires")
-
-	//validate email
-	if ok := govalidator.IsEmail(emailAddr); !ok {
-		log.Printf("%s is not a valid email", emailAddr)
-		return
-	}
-
-	//TODO: validate time
-	//if ok := govalidator.IsTime(emailExpire); !ok {
-	//	log.Printf("%s is not a valide time format", emailAddr)
-	//	return
-	//}
-
-	//validate token
-	if ok := govalidator.IsBase64(emailToken); !ok {
-		log.Printf("%s is not a valid base64 string", emailAddr)
-		return
-	}
-
-	var pageContent string
-
-	if ok, err := utils.VerifyToken(emailTokenKey, emailToken, emailAddr, emailExpire); !ok {
-
-		if err != nil {
-			log.Printf("%s", err) //base64 decode failed
-		} else {
-			log.Printf("email token: %s. failed verification", emailToken) //hmac failed
-		}
-		pageContent = "verifyFail.html"
-	} else {
-		pageContent = "verifyOk.html"
-		//TODO: set Verifiy in DB!
-	}
-
-	err := createFromTemplate(res, "layout.tmpl", pageContent)
 	if err != nil {
 		log.Printf("template error %s", err)
 		handleNotFound(res, req)
@@ -299,8 +239,7 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	//passId := c.URLParams["passId"]
-	//newPass.Id = "pass.ninja." + passId + "." + passType
+	newPass.Id = "" // a new pass needs a new clear id
 
 	err = utils.WriteJson(res, newPass, true)
 	utils.Check(err)
@@ -334,13 +273,32 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	//pass is new, generate a token id, otherwise verify token
+	if newPass.Id == "" {
+		newPass.Id = utils.GenerateToken(idTokenKey, newPass.Name, newPass.KeyDoc.OrganizationName) //get token from base64 hmac
+	} else {
+		if ok, err := utils.VerifyToken(idTokenKey, newPass.Id, newPass.Name, newPass.KeyDoc.OrganizationName); !ok {
+			if err != nil {
+				log.Printf("%s", err.Error()) //base64 decode failed
+			} else {
+				log.Printf("validated: %t - validation error: %s", result, err.Error())
+			}
+			utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+			return
+		}
+	}
+
+	newPass.Updated = time.Now()
+
 	if !db.Merge("pass", "id", newPass.Id, newPass) {
 		log.Println("db Merge Error")
 		utils.JsonErrorResponse(res, fmt.Errorf("A conflict has occured updating the pass."), http.StatusInternalServerError)
 		return
 	}
 
-	utils.JsonErrorResponse(res, fmt.Errorf("none"), http.StatusOK) //save is successful!
+	receipt := map[string]string{"id": newPass.Id, "time": newPass.Updated.String()}
+	err = utils.WriteJson(res, receipt, true)
+	//utils.JsonErrorResponse(res, fmt.Errorf("none"), http.StatusOK) //save is successful!
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -349,109 +307,147 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleSignUp(c web.C, res http.ResponseWriter, req *http.Request) {
+func handleAuthorize(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	db, err := utils.GetDbType(c)
-	utils.Check(err)
+	log.Println("handleAuthorize")
 
-	log.Println("handleSignup")
-	user := userModel{}
+	defer context.Clear(req)
 
-	//get form data
-	email, password := req.FormValue("email"), req.FormValue("password") //TODO: Sanitize forms
-
-	//validate email
-	if ok := govalidator.IsEmail(email); !ok {
-		log.Printf("Invalid email address %s", email)
-		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email"), http.StatusBadRequest)
+	//get matching provider from url (gplus,facebook,etc)
+	provider, err := goth.GetProvider(c.URLParams["provider"])
+	if err != nil {
+		log.Printf("provider oauth error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
 		return
 	}
 
-	defer clearPassMemory([]byte(password))
-	user.setPassword(password)
-	user.Email = email
-	user.Created = time.Now()
-	user.Verified = true //TODO: passNinja is only going to use Oauth2 this will not be necessary
-	user.OAuth = false   //email signup, not Oauth
-
-	log.Printf("pass:%s email:%s", user.Password, user.Email)
-
-	if ok := db.Add("users", user); !ok {
-		log.Println("Add User Error")
-		utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
+	//creates the auth url with its query parameters
+	sess, err := provider.BeginAuth()
+	if err != nil {
+		log.Printf("begin oauth error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
 		return
 	}
 
-	//TODO: passNinja is only going to use Oauth2 this will not be necessary
-	/*
-		expiration := strconv.FormatInt(user.Created.AddDate(0, 0, 1).Unix(), 10) //token expires in 24 hours
-		emailtoken := utils.GenerateToken(emailTokenKey, user.Email, expiration)  //get token from base64 hmac
-
-		url := createRawURL(emailtoken, user.Email, expiration) //generate verification url
-
-		emailVerify := NewEmailer()
-		go emailVerify.Send(user.Email, emailtoken, url) //send concurrently
-
-		//signup success. Redirect to /accounts - send email verification
-		http.Redirect(res, req, "/accounts/verify.html", http.StatusCreated)
-	*/
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
-
-	db, err := utils.GetDbType(c)
-	utils.Check(err)
-
-	log.Println("handleLogin")
-
-	user := userModel{}
-
-	email, password := req.FormValue("email"), req.FormValue("password") //TODO: Sanitize forms
-
-	//check email
-	if ok := govalidator.IsEmail(email); !ok {
-		log.Printf("malformed email address %s", email)
-		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
+	//get the auth url to for the user to load and authorize at provider
+	url, err := sess.GetAuthURL()
+	if err != nil {
+		log.Printf("get auth url error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
 		return
 	}
 
-	//check db for user
-	if !db.FindByID("users", email, &user) {
-		log.Println("User not found")
-		//Check password, so operation takes equal time, even if user is not found
-	}
-
-	//check password
-	defer clearPassMemory([]byte(password))
-	if err != nil || bcrypt.CompareHashAndPassword(user.Password, []byte(password)) != nil {
-		log.Println("Password doesn't match")
-		utils.JsonErrorResponse(res, fmt.Errorf("Invalid email or password."), http.StatusUnauthorized)
-		return
-	}
-
-	//create and save session
-	session := initSession(req)
-	// Set session values.
-	session.Values["email"] = user.Email
-	session.Values["page"] = "view"
-
-	// Save it.
+	session := initSession(req, oauthSessionName, "/")
+	session.Values[oauthSessionName] = sess.Marshal() //save auth url in session
 	err = session.Save(req, res)
+	if err != nil {
+		log.Printf("session save error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		return
+	}
+
+	http.Redirect(res, req, url, http.StatusTemporaryRedirect)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func handleCallBack(c web.C, res http.ResponseWriter, req *http.Request) {
+
+	log.Println("handleCallback")
+
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
+
+	defer context.Clear(req)
+
+	//get matching provider from url (gplus,facebook,etc)
+	provider, err := goth.GetProvider(c.URLParams["provider"])
+	if err != nil {
+		log.Printf("provider oauth error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		return
+	}
+
+	//get or init session from store
+	oAuthsession := initSession(req, oauthSessionName, "/")
+
+	//check that the saved session value from auth is present
+	if oAuthsession.Values[oauthSessionName] == nil {
+		log.Printf("session error: could not find a matching session value for this request")
+		http.Redirect(res, req, "/", http.StatusFound)
+		return
+	}
+
+	//unmarshal the values of session into a goth sess (authURL)
+	sess, err := provider.UnmarshalSession(oAuthsession.Values[oauthSessionName].(string))
+	if err != nil {
+		log.Printf("session unmarshal error: %s", err.Error())
+		http.Redirect(res, req, "/", http.StatusFound)
+		return
+	}
+
+	//exchange the callback access code for an access token from provider
+	accessToken, err := sess.Authorize(provider, req.URL.Query())
+	if err != nil {
+		log.Printf("session authorize error: %s", err.Error())
+		http.Redirect(res, req, "/", http.StatusFound)
+		return
+	}
+
+	loginSession := initSession(req, loginSessionName, "/accounts")
+
+	// Check if the user is already connected, login if so
+	storedToken := loginSession.Values["accessToken"]
+	if storedToken != nil {
+		log.Println("Current user already connected")
+		http.Redirect(res, req, "/accounts/", http.StatusFound)
+	}
+
+	//If not logged in store the access token in the session for later use
+	loginSession.Values["accessToken"] = accessToken
+	err = loginSession.Save(req, res)
 	if err != nil {
 		log.Printf("session save error: %s", err.Error())
 		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(res, req, "/accounts/index.html", http.StatusOK)
-	return
+	//fetch user info
+	user, err := provider.FetchUser(sess)
+	if err != nil {
+		log.Printf("complete oauth error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Server Error!"), http.StatusInternalServerError)
+		return
+	}
+
+	newUser := userModel{}
+
+	//check db for user
+	if !db.FindByID("users", user.UserID, &newUser) {
+		log.Println("User not found")
+
+		//add new user
+		newUser.Id = user.UserID
+		newUser.Email = user.Email
+		newUser.OAuthProvider = provider.Name()
+		newUser.User = user //all details from oauth login
+		newUser.Created = time.Now()
+
+		if ok := db.Add("users", newUser); !ok {
+			log.Println("Add User Error")
+			utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
+			return
+		}
+	}
+
+	//populate template with users info here
+
+	http.Redirect(res, req, "/accounts/", http.StatusFound)
 
 }
 
@@ -463,22 +459,22 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleLogout(res http.ResponseWriter, req *http.Request) {
 
-	session, err := sessionStore.Get(req, "PassNinjaLogin")
-	if err != nil {
-		log.Printf("login session error: %s", err)
-		return
-	}
+	//session, err := sessionStore.Get(req, "PassNinjaLogin")
+	//if err != nil {
+	//	log.Printf("login session error: %s", err)
+	//	return
+	//}
 
 	// Set session values to nothing.
-	session.Values["email"] = ""
-	session.Values["page"] = ""
+	//session.Values["email"] = ""
+	//session.Values["page"] = ""
 
-	err = session.Save(req, res)
-	if err != nil {
-		log.Printf("session save error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
-		return
-	}
+	//err = session.Save(req, res)
+	//if err != nil {
+	//	log.Printf("session save error: %s", err.Error())
+	//	utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
+	//	return
+	//}
 
 	http.Redirect(res, req, "/index.html", 302)
 }
@@ -505,30 +501,26 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 
 		log.Println("requireLogin ")
 
-		session, err := sessionStore.Get(r, "PassNinjaLogin")
-		if err != nil {
-			log.Printf("login session error: %s", err)
-			http.Redirect(w, r, "../index.html", http.StatusFound) //encrypt token not matching!
-		}
+		session := initSession(r, loginSessionName, "/accounts")
 
-		if val, ok := session.Values["email"].(string); ok { // if val is a string
+		if val, ok := session.Values["accessToken"].(string); ok { // if val is a string
 
 			switch val {
 			case "":
 
-				http.Redirect(w, r, "../index.html", http.StatusFound)
+				http.Redirect(w, r, "/", http.StatusFound)
 
 			default: //load the page
 
-				log.Println(session.Values["email"])
+				log.Println(val)
 				log.Println(r.URL.String())
-
 				h.ServeHTTP(w, r)
 			}
+
 		} else {
 
 			// if val is not a string type
-			http.Redirect(w, r, "../index.html", http.StatusFound)
+			http.Redirect(w, r, "/", http.StatusFound)
 		}
 
 	}
@@ -543,9 +535,9 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func initSession(r *http.Request) *sessions.Session {
+func initSession(r *http.Request, sessionName string, sessionPath string) *sessions.Session {
 
-	session, err := sessionStore.Get(r, "PassNinjaLogin")
+	session, err := sessionStore.Get(r, sessionName)
 	if err != nil {
 		log.Printf("session error: %s", err.Error())
 	}
@@ -553,16 +545,13 @@ func initSession(r *http.Request) *sessions.Session {
 	if session.IsNew { //Set some cookie options
 		log.Println("new Session!")
 
-		/*
-			session.Options = &sessions.Options{
-				Path:     "/accounts",
-				MaxAge:   86400 * 2,
-				HttpOnly: true,
-				//Secure:   true,
-				//Domain: http://pass.ninja
-			}
-		*/
-		//session.Options.Domain = "pass.ninja"
+		session.Options = &sessions.Options{
+			Path:     sessionPath,
+			MaxAge:   86400 * 2,
+			HttpOnly: true,
+			//Secure:   true,
+			//Domain: http://pass.ninja
+		}
 
 	}
 	return session
@@ -636,35 +625,6 @@ func addListValidator(key string, typeList []string) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func (u *userModel) setPassword(password string) {
-
-	//bcrypt password
-	defer clearPassMemory([]byte(password))
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12) //cost ~400ms on mac-air
-	utils.Check(err)
-	u.Password = hashedPassword
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-// clearPassMemory
-//
-//////////////////////////////////////////////////////////////////////////
-func clearPassMemory(b []byte) {
-	//write over the memory where the password was stored.
-	for i := 0; i < len(b); i++ {
-		b[i] = 0
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
 func createRawURL(token string, userEmail string, expires string) string {
 
 	u := url.URL{}
@@ -694,7 +654,7 @@ func noDirListing(prefix string, h http.Handler) http.Handler {
 
 		safePath := govalidator.SafeFileName(r.URL.Path)
 
-		log.Println(path.Join(prefix, r.URL.Path))
+		log.Println(path.Join(prefix, safePath))
 		fileInfo, err := os.Stat(path.Join(prefix, r.URL.Path))
 		if err != nil {
 			log.Println(err)
