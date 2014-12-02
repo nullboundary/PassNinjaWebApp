@@ -3,6 +3,7 @@ package main
 import (
 	"bitbucket.org/cicadaDev/utils"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
@@ -18,6 +19,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -59,7 +61,7 @@ func init() {
 	sessionStore = sessions.NewCookieStore(sessionAuthKey, sessionCryptKey)
 
 	goth.UseProviders(
-		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "http://local.pass.ninja:8000/auth/gplus/callback"),
+		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "http://local.pass.ninja:8000/"),
 	)
 
 	//add custom validator functions
@@ -77,8 +79,10 @@ func main() {
 
 	goji.Use(gzip.GzipHandler) //gzip everything
 
-	goji.Get("/auth/:provider", handleAuthorize)
-	goji.Get("/auth/:provider/callback", handleCallBack)
+	//API
+	//goji.Get("/auth/:provider", handleAuthorize)
+	goji.Post("/auth/:provider/callback", handleCallBack)
+	goji.Get("/auth/:provider/unlink/", handleUnlink)
 
 	//home page
 	goji.Get("/index.html", handleTemplates)
@@ -90,14 +94,15 @@ func main() {
 	goji.Handle("/accounts/*", accounts) //handle all things that require login
 	accounts.Use(requireLogin)           //login check middleware
 
-	accounts.Get("/accounts/assets/*", handleAccountStatic) //seperate assets for accounts
+	accounts.Get("/accounts/assets/*", handleAccountStatic) //seperate assets for accounts - TODO add back to non accounts
 
-	//login root, view current passes - TODO: now its set as builder!
+	//login root, view current passes - TODO: now its set as builder! - TODO: Make static
 	accounts.Get("/accounts/index.html", handleAccountTemplates)
 	accounts.Get("/accounts/", handleAccountTemplates)
+	accounts.Get("/accounts/builder.html", handleAccountTemplates) //make a pass
 
+	//API
 	accounts.Get("/accounts/template/:passType", handleAccountPassStructure) //return a json object of the pass type
-	accounts.Get("/accounts/builder.html", handleAccountTemplates)           //make a pass
 	accounts.Post("/accounts/save", handleAccountSave)                       //save pass data
 
 	goji.NotFound(handleNotFound)
@@ -298,6 +303,7 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	receipt := map[string]string{"id": newPass.Id, "time": newPass.Updated.String()}
 	err = utils.WriteJson(res, receipt, true)
+	utils.Check(err)
 	//utils.JsonErrorResponse(res, fmt.Errorf("none"), http.StatusOK) //save is successful!
 }
 
@@ -317,7 +323,7 @@ func handleAuthorize(c web.C, res http.ResponseWriter, req *http.Request) {
 	provider, err := goth.GetProvider(c.URLParams["provider"])
 	if err != nil {
 		log.Printf("provider oauth error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
 		return
 	}
 
@@ -325,7 +331,7 @@ func handleAuthorize(c web.C, res http.ResponseWriter, req *http.Request) {
 	sess, err := provider.BeginAuth()
 	if err != nil {
 		log.Printf("begin oauth error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
 		return
 	}
 
@@ -333,20 +339,25 @@ func handleAuthorize(c web.C, res http.ResponseWriter, req *http.Request) {
 	url, err := sess.GetAuthURL()
 	if err != nil {
 		log.Printf("get auth url error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
 		return
 	}
 
-	session := initSession(req, oauthSessionName, "/")
+	/*session := initSession(req, oauthSessionName, "/")
 	session.Values[oauthSessionName] = sess.Marshal() //save auth url in session
 	err = session.Save(req, res)
 	if err != nil {
 		log.Printf("session save error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
 		return
-	}
+	}*/
 
-	http.Redirect(res, req, url, http.StatusTemporaryRedirect)
+	//tokenMap, err := createJWToken(url)
+	//utils.Check(err)
+	authUrl := map[string]string{"authurl": url}
+	err = utils.WriteJson(res, authUrl, true)
+	utils.Check(err)
+	//http.Redirect(res, req, url, http.StatusTemporaryRedirect)
 
 }
 
@@ -363,7 +374,7 @@ func handleCallBack(c web.C, res http.ResponseWriter, req *http.Request) {
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
 
-	defer context.Clear(req)
+	//defer context.Clear(req)
 
 	//get matching provider from url (gplus,facebook,etc)
 	provider, err := goth.GetProvider(c.URLParams["provider"])
@@ -374,50 +385,41 @@ func handleCallBack(c web.C, res http.ResponseWriter, req *http.Request) {
 	}
 
 	//get or init session from store
-	oAuthsession := initSession(req, oauthSessionName, "/")
+	//oAuthsession := initSession(req, oauthSessionName, "/")
 
 	//check that the saved session value from auth is present
-	if oAuthsession.Values[oauthSessionName] == nil {
-		log.Printf("session error: could not find a matching session value for this request")
-		http.Redirect(res, req, "/", http.StatusFound)
-		return
-	}
+	//if oAuthsession.Values[oauthSessionName] == nil {
+	//	log.Printf("session error: could not find a matching session value for this request")
+	//	http.Redirect(res, req, "/", http.StatusFound)
+	//	return
+	//}
 
 	//unmarshal the values of session into a goth sess (authURL)
-	sess, err := provider.UnmarshalSession(oAuthsession.Values[oauthSessionName].(string))
+	/*sess, err := provider.UnmarshalSession(oAuthsession.Values[oauthSessionName].(string))
 	if err != nil {
 		log.Printf("session unmarshal error: %s", err.Error())
 		http.Redirect(res, req, "/", http.StatusFound)
 		return
-	}
+	}*/
+	//	provider.Name()
+	//p := provider.(*Provider)
 
-	//exchange the callback access code for an access token from provider
-	accessToken, err := sess.Authorize(provider, req.URL.Query())
+	sess := &gplus.Session{}
+
+	param := req.URL.Query()
+
+	log.Println(param.Get("code"))
+
+	//sess.AuthURL
+	//1. Exchange authorization code for access token
+	_, err = sess.Authorize(provider, req.URL.Query())
 	if err != nil {
 		log.Printf("session authorize error: %s", err.Error())
-		http.Redirect(res, req, "/", http.StatusFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
 		return
 	}
 
-	loginSession := initSession(req, loginSessionName, "/accounts")
-
-	// Check if the user is already connected, login if so
-	storedToken := loginSession.Values["accessToken"]
-	if storedToken != nil {
-		log.Println("Current user already connected")
-		http.Redirect(res, req, "/accounts/", http.StatusFound)
-	}
-
-	//If not logged in store the access token in the session for later use
-	loginSession.Values["accessToken"] = accessToken
-	err = loginSession.Save(req, res)
-	if err != nil {
-		log.Printf("session save error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
-		return
-	}
-
-	//fetch user info
+	//2. fetch user info
 	user, err := provider.FetchUser(sess)
 	if err != nil {
 		log.Printf("complete oauth error: %s", err.Error())
@@ -426,29 +428,89 @@ func handleCallBack(c web.C, res http.ResponseWriter, req *http.Request) {
 	}
 
 	newUser := userModel{}
+	jwtoken, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error) {
+		return idTokenKey, nil
+	})
+	if err == nil && jwtoken.Valid { //3a. Link user accounts - if user not already logged in
 
-	//check db for user
-	if !db.FindByID("users", user.UserID, &newUser) {
-		log.Println("User not found")
+		/* Link an additional oauth account provider to this user, check if its already linked
+				 User.findOne({ google: profile.sub }, function(err, existingUser) {
+		          if (existingUser) {
+		            return res.status(409).send({ message: 'There is already a Google account that belongs to you' });
+		          }
+		*/
 
-		//add new user
-		newUser.Id = user.UserID
-		newUser.Email = user.Email
-		newUser.OAuthProvider = provider.Name()
-		newUser.User = user //all details from oauth login
-		newUser.Created = time.Now()
-
-		if ok := db.Add("users", newUser); !ok {
-			log.Println("Add User Error")
-			utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
+		if !db.FindByID("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
+			utils.JsonErrorResponse(res, fmt.Errorf("User not found"), http.StatusBadRequest)
 			return
 		}
+
+		tokenMap, err := createJWToken(newUser.Id)
+		utils.Check(err)
+		err = utils.WriteJson(res, tokenMap, true)
+		utils.Check(err)
+
+	} else { //3b. Create a new user account or return an existing one.
+
+		if !db.FindByID("users", user.UserID, &newUser) { //if user not found
+
+			//add new user
+			newUser.Id = user.UserID
+			newUser.Email = user.Email
+			newUser.OAuthProvider = provider.Name()
+			newUser.User = user //all details from oauth login
+			newUser.Created = time.Now()
+
+			if ok := db.Add("users", newUser); !ok {
+				log.Println("Add User Error")
+				utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
+				return
+			}
+
+		}
+		//http.Redirect(res, req, "/accounts/", http.StatusFound)
+		tokenMap, err := createJWToken(newUser.Id)
+		utils.Check(err)
+		err = utils.WriteJson(res, tokenMap, true)
+		utils.Check(err)
+
 	}
 
-	//populate template with users info here
+	/*
+		loginSession := initSession(req, loginSessionName, "/accounts")
 
-	http.Redirect(res, req, "/accounts/", http.StatusFound)
+		// Check if the user is already connected, login if so
+		storedToken := loginSession.Values["accessToken"]
+		if storedToken != nil {
+			log.Println("Current user already connected")
+			http.Redirect(res, req, "/accounts/", http.StatusFound)
+		}
 
+		//If not logged in store the access token in the session for later use
+		loginSession.Values["accessToken"] = accessToken
+		err = loginSession.Save(req, res)
+		if err != nil {
+			log.Printf("session save error: %s", err.Error())
+			utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
+			return
+		}
+	*/
+	/*
+		//check db for user
+		if !db.FindByID("users", user.UserID, &newUser) {
+			log.Println("User not found")
+
+			if ok := db.Add("users", newUser); !ok {
+				log.Println("Add User Error")
+				utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
+				return
+			}
+		}
+
+		//populate template with users info here
+
+		http.Redirect(res, req, "/accounts/", http.StatusFound)
+	*/
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -457,26 +519,81 @@ func handleCallBack(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleLogout(res http.ResponseWriter, req *http.Request) {
+func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	//session, err := sessionStore.Get(req, "PassNinjaLogin")
-	//if err != nil {
-	//	log.Printf("login session error: %s", err)
-	//	return
-	//}
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
 
-	// Set session values to nothing.
-	//session.Values["email"] = ""
-	//session.Values["page"] = ""
+	jwtoken, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error) {
+		return idTokenKey, nil
+	})
+	if err != nil || !jwtoken.Valid {
+		log.Println("Current user not connected")
+		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), 401)
+		return
+	}
 
-	//err = session.Save(req, res)
-	//if err != nil {
-	//	log.Printf("session save error: %s", err.Error())
-	//	utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
-	//	return
-	//}
+	newUser := &userModel{}
+	if !db.FindByID("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
+		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), http.StatusBadRequest)
+		return
+	}
 
-	http.Redirect(res, req, "/index.html", 302)
+	accessToken := newUser.User.AccessToken
+
+	//Execute HTTP GET request to revoke current accessToken
+	url := "https://accounts.google.com/o/oauth2/revoke?token=" + accessToken
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Println("Failed to revoke token for a given user")
+		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), 400)
+		return
+	}
+	defer resp.Body.Close()
+
+	//clear user provider data, but keep the user
+	newUser.OAuthProvider = ""
+	newUser.User = goth.User{}
+
+	if !db.Merge("users", "id", newUser.Id, newUser) {
+		log.Println("db Merge Error")
+		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), http.StatusInternalServerError)
+		return
+	}
+
+	res.WriteHeader(http.StatusNoContent) //successfully unlinked from oauth
+	return
+
+	// Only disconnect a connected user
+	/*loginSession := initSession(req, loginSessionName, "/accounts")
+
+	token := loginSession.Values["accessToken"]
+	if token == nil {
+		log.Println("Current user not connected")
+		utils.JsonErrorResponse(res, fmt.Errorf("Current user not connected."), 401)
+		return
+	}
+
+	// Execute HTTP GET request to revoke current token
+	url := "https://accounts.google.com/o/oauth2/revoke?token=" + token.(string)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Println("Failed to revoke token for a given user")
+		utils.JsonErrorResponse(res, fmt.Errorf("Unlink failed."), 400)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Reset the user's session
+	session.Values["accessToken"] = nil
+	err = session.Save(req, res)
+	if err != nil {
+		log.Printf("session save error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(res, req, "/", 302) */
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -501,7 +618,23 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 
 		log.Println("requireLogin ")
 
-		session := initSession(r, loginSessionName, "/accounts")
+		param := r.URL.Query()
+		log.Println(param.Get("token"))
+
+		jwtoken, err := parseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
+			return idTokenKey, nil
+		})
+
+		if err == nil && jwtoken.Valid {
+
+			log.Println(r.URL.String())
+			h.ServeHTTP(w, r)
+
+		} else {
+			w.WriteHeader(http.StatusUnauthorized) //successfully unlinked from oauth
+		}
+
+		/*session := initSession(r, loginSessionName, "/accounts")
 
 		if val, ok := session.Values["accessToken"].(string); ok { // if val is a string
 
@@ -521,7 +654,7 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 
 			// if val is not a string type
 			http.Redirect(w, r, "/", http.StatusFound)
-		}
+		}*/
 
 	}
 
@@ -617,6 +750,54 @@ func addListValidator(key string, typeList []string) {
 		return false
 	})
 
+}
+
+// Try to find the token in an http.Request.
+// This method will call ParseMultipartForm if there's no token in the header.
+// Currently, it looks in the Authorization header as well as
+// looking for an 'access_token' request parameter in req.Form.
+func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token, err error) {
+
+	// Look for an Authorization header
+	if ah := req.Header.Get("Authorization"); ah != "" {
+		// Should be a bearer token
+		if len(ah) > 6 && strings.ToUpper(ah[0:6]) == "BEARER" {
+			return jwt.Parse(ah[7:], keyFunc)
+		}
+	}
+
+	// Look for "?token=" url parameter
+	param := req.URL.Query()
+	if tokStr := param.Get("token"); tokStr != "" {
+		return jwt.Parse(tokStr, keyFunc)
+	}
+
+	// Look for "access_token" parameter
+	req.ParseMultipartForm(10e6)
+	if tokStr := req.Form.Get("access_token"); tokStr != "" {
+		return jwt.Parse(tokStr, keyFunc)
+	}
+
+	return nil, jwt.ErrNoTokenInRequest
+
+}
+
+func createJWToken(subClaim string) (map[string]string, error) {
+
+	token := jwt.New(jwt.GetSigningMethod("HS256"))
+
+	// Set some claims
+	token.Claims["sub"] = subClaim
+	token.Claims["iat"] = time.Now().Unix()
+	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+
+	// Sign and get the complete encoded token as a string
+	tokenString, err := token.SignedString(idTokenKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]string{"token": tokenString}, nil
 }
 
 //////////////////////////////////////////////////////////////////////////
