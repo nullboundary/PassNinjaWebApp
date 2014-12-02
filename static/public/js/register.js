@@ -1,52 +1,153 @@
-angular.module('passNinja', ['satellizer'])
-  .config(function($authProvider) {
+var login = (function (ninjaSignIn, $, undefined) {
 
-    $authProvider.facebook({
-      clientId: '624059410963642',
-    });
+  'use strict';
+  var provider = {
+    google: {
+      loginURL: '/auth/gplus',
+      authURL: 'https://accounts.google.com/o/oauth2/auth',
+      queryParams: {
+        client_id: '969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com',
+        redirect_uri: window.location.origin || window.location.protocol + '//' + window.location.host,
+        response_type: 'code',
+        scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+        state: 'state'
+      },
+      popupOptions: {
+        width: 452,
+        height: 633
+      }
+    }
+  };
+  /***********************************************************
 
-    $authProvider.google({
-      clientId: '631036554609-v5hm2amv4pvico3asfi97f54sc51ji4o.apps.googleusercontent.com'
-    });
 
-    $authProvider.github({
-      clientId: '0ba2600b1dbdb756688b'
-    });
+  ***********************************************************/
+  function init() {
 
-    $authProvider.linkedin({
-      clientId: '77cw786yignpzj'
-    });
+      $(document).on('click', '.signin', signIn);
 
-    $authProvider.yahoo({
-      clientId: 'dj0yJmk9dkNGM0RTOHpOM0ZsJmQ9WVdrOVlVTm9hVk0wTkRRbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0wMA--'
-    });
+    }
+    /***********************************************************
 
-    $authProvider.twitter({
-      url: '/auth/twitter'
-    });
 
-    $authProvider.oauth2({
-      name: 'foursquare',
-      url: '/auth/foursquare',
-      redirectUri: window.location.origin,
-      clientId: 'MTCEJ3NGW2PNNB31WOSBFDSAD4MTHYVAZ1UKIULXZ2CVFC2K',
-      authorizationEndpoint: 'https://foursquare.com/oauth2/authenticate',
-    });
+    ***********************************************************/
+  function signIn(e) {
+      e.preventDefault();
+      var authProvider = $(this).attr('id');
+      if (isAuthenticated()) { //already logged in
+        loadAccount();
+      } else { //initiate oauth sign in
+        var url = getAuthUrl(provider[authProvider]); //get the provider url
+        //Set Oauth Popup
+        oAuthPopup(provider[authProvider], url);
+      }
 
-  });
+    }
+    /***********************************************************
 
-angular.module('passNinja')
-  .controller('NavbarCtrl', function($scope, $auth) {
-    $scope.isAuthenticated = function() {
-      return $auth.isAuthenticated();
-    };
-  });
 
-angular.module('passNinja')
-  .controller('LoginCtrl', function($scope, $auth) {
+    ***********************************************************/
+  function isAuthenticated() {
+      return window.localStorage.getItem('token')
+    }
+    /***********************************************************
 
-    $scope.authenticate = function(provider) {
-      $auth.authenticate(provider);
-    };
 
-  });
+    ***********************************************************/
+  function logOut() {
+    // The backend doesn't care about logouts, delete the token and you're good to go.
+    window.localStorage.removeItem('token');
+  }
+
+  /***********************************************************
+
+
+   ***********************************************************/
+  function oAuthPopup(auth, url) {
+
+      //open the oauth window
+      var options = auth.popupOptions;
+      var popupWindow = window.open(url, '_blank', 'width=' + options.width + ',height=' + options.height);
+
+      //focus the oauth window
+      if (popupWindow && popupWindow.focus) {
+        popupWindow.focus();
+      }
+
+      var polling = window.setInterval(function () {
+        try {
+          if (popupWindow.document.domain === document.domain && (popupWindow.location.search || popupWindow.location.hash)) {
+            //var queryParams = popupWindow.location.search.substring(1).replace(/\/$/, '');
+            //var queryParams = getQueryParam(popupWindow.location.search.substr(1).split('&'));
+            //var hashParams = popupWindow.location.hash.substring(1).replace(/\/$/, '');
+            //console.log(queryParams['code']);
+            popupWindow.close();
+            window.clearInterval(polling);
+            post(auth.loginURL, popupWindow.location.search);
+
+          }
+        } catch (error) {}
+
+        if (popupWindow.closed) {
+          window.clearInterval(polling);
+        }
+      }, 35);
+    }
+    /***********************************************************
+
+
+     ***********************************************************/
+  function getAuthUrl(authProvider) {
+
+    var str = $.param(authProvider.queryParams);
+    console.log(authProvider.authURL + "?" + str);
+    return authProvider.authURL + "?" + str;
+  }
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function post(provider, query) {
+
+    var jqxhr = $.post(provider + query)
+      .done(function (data) {
+        localStorage.setItem('token', data.token);
+        loadAccount();
+      })
+      .fail(function (response) {
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem('token');
+        }
+      })
+      .always(function () {
+
+      });
+
+
+
+  }
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function loadAccount() {
+
+    var authToken = isAuthenticated();
+    if (authToken) {
+      var params = {
+        token: authToken
+      }
+      var tokenParam = jQuery.param(params);
+      window.location = "/accounts/?" + tokenParam;
+    }
+  }
+
+  ninjaSignIn.init = function () {
+    init();
+  };
+
+}(ninjaSignIn = window.ninjaSignIn || {}, jQuery));
+
+ninjaSignIn.init();

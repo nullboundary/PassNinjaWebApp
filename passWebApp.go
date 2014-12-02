@@ -61,7 +61,7 @@ func init() {
 	sessionStore = sessions.NewCookieStore(sessionAuthKey, sessionCryptKey)
 
 	goth.UseProviders(
-		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "http://local.pass.ninja:8000/"),
+		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "http://local.pass.ninja:8000"),
 	)
 
 	//add custom validator functions
@@ -81,7 +81,7 @@ func main() {
 
 	//API
 	//goji.Get("/auth/:provider", handleAuthorize)
-	goji.Post("/auth/:provider/callback", handleCallBack)
+	goji.Post("/auth/:provider", handleLogin)
 	goji.Get("/auth/:provider/unlink/", handleUnlink)
 
 	//home page
@@ -367,9 +367,9 @@ func handleAuthorize(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleCallBack(c web.C, res http.ResponseWriter, req *http.Request) {
+func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	log.Println("handleCallback")
+	log.Println("handleLogin")
 
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
@@ -766,7 +766,7 @@ func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token,
 		}
 	}
 
-	// Look for "?token=" url parameter
+	// Look for "token=" url parameter
 	param := req.URL.Query()
 	if tokStr := param.Get("token"); tokStr != "" {
 		return jwt.Parse(tokStr, keyFunc)
