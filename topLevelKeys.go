@@ -17,11 +17,13 @@ type device struct {
 }
 
 type pass struct {
-	Id          string            `json:"id" gorethink:"id" valid:"required"` //Pass type ID
-	KeyDoc      passKeys          `json:"keyDoc" gorethink:"keyDoc"`          //The pass.json file, all the structs used to create it
-	Images      []passImage       `json:"images" gorethink:"images"`          //All the images needed for a pass
-	ManifestDoc map[string]string `json:"manifest" gorethink:"manifest"`      //The manifest.json file, used to verify the content of a pass
-	Updated     time.Time         `json:"updated" gorethink:"updated"`        //when the pass was last updated or created
+	Id          string            `json:"id" gorethink:"id"`                              //Pass ID
+	Name        string            `json:"passname" gorethink:"passname" valid:"required"` //Pass name for user identification
+	KeyDoc      passKeys          `json:"keyDoc" gorethink:"keyDoc"`                      //The pass.json file, all the structs used to create it
+	Images      []passImage       `json:"images" gorethink:"images"`                      //All the images needed for a pass
+	ManifestDoc map[string]string `json:"manifest" gorethink:"manifest"`                  //The manifest.json file, used to verify the content of a pass
+	Updated     time.Time         `json:"updated" gorethink:"updated"`                    //when the pass was last updated or created
+	Status      string            `json:"status" gorethink:"status"`                      //Is the pass ready for distribution, in process, or expired
 }
 
 /*************************************************************************

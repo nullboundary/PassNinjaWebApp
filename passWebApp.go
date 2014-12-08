@@ -51,7 +51,8 @@ const oauthSessionName = "_ninja_auth"
 const loginSessionName = "_ninja_ssid"
 
 //var emailTokenKey = "something-secret" //key for email verification hmac
-var idTokenKey = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
+var passTokenKey = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
+var jWTokenKey = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`)   //TODO: lets make a new key and put this somewhere safer!
 
 func init() {
 	sessionAuthKey = securecookie.GenerateRandomKey(64)
@@ -244,7 +245,8 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	newPass.Id = "" // a new pass needs a new clear id
+	newPass.Id = ""      // a new pass needs a new clear id
+	newPass.Status = "1" //first page complete
 
 	err = utils.WriteJson(res, newPass, true)
 	utils.Check(err)
@@ -278,16 +280,21 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
+	userId := c.Env["jwt-userid"].(string)
+
 	//pass is new, generate a token id, otherwise verify token
 	if newPass.Id == "" {
-		newPass.Id = utils.GenerateToken(idTokenKey, newPass.Name, newPass.KeyDoc.OrganizationName) //get token from base64 hmac
+		newPass.Id = utils.GenerateToken(passTokenKey, newPass.Name, userId) //get token from base64 hmac
 	} else {
-		if ok, err := utils.VerifyToken(idTokenKey, newPass.Id, newPass.Name, newPass.KeyDoc.OrganizationName); !ok {
-			if err != nil {
-				log.Printf("%s", err.Error()) //base64 decode failed
-			} else {
-				log.Printf("validated: %t - validation error: %s", result, err.Error())
-			}
+		ok, err := utils.VerifyToken(passTokenKey, newPass.Id, newPass.Name, userId)
+		if err != nil {
+			log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
+			utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+			return
+		}
+		if !ok {
+			log.Println("Token Failed to verify!")
 			utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
 			return
 		}
@@ -429,7 +436,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	newUser := userModel{}
 	jwtoken, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error) {
-		return idTokenKey, nil
+		return jWTokenKey, nil
 	})
 	if err == nil && jwtoken.Valid { //3a. Link user accounts - if user not already logged in
 
@@ -525,7 +532,7 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	utils.Check(err)
 
 	jwtoken, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error) {
-		return idTokenKey, nil
+		return jWTokenKey, nil
 	})
 	if err != nil || !jwtoken.Valid {
 		log.Println("Current user not connected")
@@ -622,12 +629,13 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 		log.Println(param.Get("token"))
 
 		jwtoken, err := parseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
-			return idTokenKey, nil
+			return jWTokenKey, nil
 		})
 
 		if err == nil && jwtoken.Valid {
 
 			log.Println(r.URL.String())
+			c.Env["jwt-userid"] = jwtoken.Claims["sub"].(string) //add the id to the context
 			h.ServeHTTP(w, r)
 
 		} else {
@@ -792,7 +800,7 @@ func createJWToken(subClaim string) (map[string]string, error) {
 	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
 	// Sign and get the complete encoded token as a string
-	tokenString, err := token.SignedString(idTokenKey)
+	tokenString, err := token.SignedString(jWTokenKey)
 	if err != nil {
 		return nil, err
 	}
