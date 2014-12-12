@@ -28,10 +28,10 @@ type passStructure struct {
 // Information about a location beacon.
 //////////////////////////////////////////////////////////////////////////
 type beacon struct {
-	Major         int    `json:"major,omitempty" gorethink:"major,omitempty" valid:"int"`   //Optional. Major identifier of a Bluetooth Low Energy location beacon.
-	Minor         int    `json:"minor,omitempty" gorethink:"minor,omitempty" valid:"int"`   //Optional. Minor identifier of a Bluetooth Low Energy location beacon.
-	ProximityUUID string `json:"proximityUUID" gorethink:"proximityUUID" valid:"uuid"`      //Required. Unique identifier of a Bluetooth Low Energy location beacon.
-	RelevantText  string `json:"relevantText,omitempty" gorethink:"relevantText,omitempty"` //Optional. Text displayed on the lock screen when the pass is currently relevant.
+	Major         int    `json:"major,omitempty" gorethink:"major,omitempty" valid:"int"`                  //Optional. Major identifier of a Bluetooth Low Energy location beacon.
+	Minor         int    `json:"minor,omitempty" gorethink:"minor,omitempty" valid:"int"`                  //Optional. Minor identifier of a Bluetooth Low Energy location beacon.
+	ProximityUUID string `json:"proximityUUID,omitempty" gorethink:"proximityUUID,omitempty" valid:"uuid"` //Required. Unique identifier of a Bluetooth Low Energy location beacon.
+	RelevantText  string `json:"relevantText,omitempty" gorethink:"relevantText,omitempty"`                //Optional. Text displayed on the lock screen when the pass is currently relevant.
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -40,10 +40,10 @@ type beacon struct {
 // Information about a location.
 //////////////////////////////////////////////////////////////////////////
 type location struct {
-	Altitude     float64 `json:"altitude,omitempty" gorethink:"altitude,omitempty"`         //Optional. Altitude, in meters, of the location.
-	Latitude     float64 `json:"latitude" gorethink:"latitude" valid:"latitude"`            //Required. Latitude, in degrees, of the location.
-	Longitude    float64 `json:"longitude" gorethink:"longitude" valid:"longitude"`         //Required. Longitude, in degrees, of the location.
-	RelevantText string  `json:"relevantText,omitempty" gorethink:"relevantText,omitempty"` //Optional. Text displayed on the lock screen when the pass is currently relevant.
+	Altitude     float64 `json:"altitude,omitempty" gorethink:"altitude,omitempty"`                     //Optional. Altitude, in meters, of the location.
+	Latitude     float64 `json:"latitude,omitempty" gorethink:"latitude,omitempty" valid:"latitude"`    //Required. Latitude, in degrees, of the location.
+	Longitude    float64 `json:"longitude,omitempty" gorethink:"longitude,omitempty" valid:"longitude"` //Required. Longitude, in degrees, of the location.
+	RelevantText string  `json:"relevantText,omitempty" gorethink:"relevantText,omitempty"`             //Optional. Text displayed on the lock screen when the pass is currently relevant.
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -52,10 +52,10 @@ type location struct {
 // Information about a pass’s barcode.
 //////////////////////////////////////////////////////////////////////////
 type barcode struct {
-	AltText         string `json:"altText,omitempty" gorethink:"altText,omitempty"` //Optional. Text displayed near the barcode, a human-readable version of the barcode data in case the barcode doesn’t scan.
-	Format          string `json:"format" gorethink:"format" valid:"barcode"`       //Required. Barcode format. Must be one of the following values: PKBarcodeFormatQR, PKBarcodeFormatPDF417, PKBarcodeFormatAztec.
-	Message         string `json:"message" gorethink:"message"`                     //Required. Message or payload to be displayed as a barcode.
-	MessageEncoding string `json:"messageEncoding" gorethink:"messageEncoding"`     //Required. Text encoding that is used to convert the message from the string representation to a data representation to render the barcode. eg: iso-8859-1
+	AltText         string `json:"altText,omitempty" gorethink:"altText,omitempty"`                 //Optional. Text displayed near the barcode, a human-readable version of the barcode data in case the barcode doesn’t scan.
+	Format          string `json:"format,omitempty" gorethink:"format,omitempty" valid:"barcode"`   //Required. Barcode format. Must be one of the following values: PKBarcodeFormatQR, PKBarcodeFormatPDF417, PKBarcodeFormatAztec.
+	Message         string `json:"message,omitempty" gorethink:"message,omitempty"`                 //Required. Message or payload to be displayed as a barcode.
+	MessageEncoding string `json:"messageEncoding,omitempty" gorethink:"messageEncoding,omitempty"` //Required. Text encoding that is used to convert the message from the string representation to a data representation to render the barcode. eg: iso-8859-1
 }
 
 /*************************************************************************
@@ -68,10 +68,10 @@ type fields struct {
 	AttributedValue   string   `json:"attributedValue,omitempty" gorethink:"attributedValue,omitempty"`           //Optional. Attributed value of the field. The value may contain HTML markup for links. Only the <a> tag and its href attribute are supported.
 	ChangeMessage     string   `json:"changeMessage,omitempty" gorethink:"changeMessage,omitempty"`               //Optional. Format string for the alert text that is displayed when the pass is updated.
 	DataDetectorTypes []string `json:"dataDetectorTypes,omitempty" gorethink:"dataDetectorTypes,omitempty"`       //Optional. Data dectors that are applied to the field’s value.
-	Key               string   `json:"key" gorethink:"key"`                                                       //Required. The key must be unique within the scope of the entire pass. For example, “departure-gate”.
+	Key               string   `json:"key,omitempty" gorethink:"key,omitempty"`                                   //Required. The key must be unique within the scope of the entire pass. For example, “departure-gate”.
 	Label             string   `json:"label,omitempty" gorethink:"label,omitempty"`                               //Optional. Label text for the field.
 	TextAlignment     string   `json:"textAlignment,omitempty" gorethink:"textAlignment,omitempty" valid:"align"` //Optional. Alignment for the field’s contents
-	Value             string   `json:"value" gorethink:"value"`                                                   //Required. Value of the field. For example, 42
+	Value             string   `json:"value,omitempty" gorethink:"value,omitempty"`                               //Required. Value of the field. For example, 42
 
 	DateStyle       string `json:"dateStyle,omitempty" gorethink:"dateStyle,omitempty" valid:"datestyle"` //Style of date to display
 	IgnoresTimeZone bool   `json:"ignoresTimeZone,omitempty" gorethink:"ignoresTimeZone,omitempty"`       //Optional. Always display the time and date in the given time zone, not in the user’s current time zone. The default value is false.

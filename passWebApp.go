@@ -2,17 +2,18 @@ package main
 
 import (
 	"bitbucket.org/cicadaDev/utils"
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/binary"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/context"
-	"github.com/gorilla/securecookie"
-	"github.com/gorilla/sessions"
 	"github.com/lidashuang/goji_gzip"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/gplus"
 	"github.com/slugmobile/govalidator"
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
+	"hash/fnv"
 	"html/template"
 	"log"
 	"net/http"
@@ -39,27 +40,13 @@ type userModel struct {
 	PassList      []string  `form:"_" gorethink:"passList,omitempty"`                //A list of the pass Ids this users has made
 }
 
-var (
-	sessionStore    *sessions.CookieStore
-	sessionAuthKey  []byte = make([]byte, 64)
-	sessionCryptKey []byte = make([]byte, 32)
-	emailTokenKey   []byte = make([]byte, 32)
-)
-
-// SessionName is the key used to access the session store.
-const oauthSessionName = "_ninja_auth"
-const loginSessionName = "_ninja_ssid"
-
 //var emailTokenKey = "something-secret" //key for email verification hmac
 var passTokenKey = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
 var jWTokenKey = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`)   //TODO: lets make a new key and put this somewhere safer!
 
-func init() {
-	sessionAuthKey = securecookie.GenerateRandomKey(64)
-	sessionCryptKey = securecookie.GenerateRandomKey(32)
-	emailTokenKey = securecookie.GenerateRandomKey(32) //key for email verification hmac
+var downloadServer = "http://share.pass.ninja/pass/1/passes/"
 
-	sessionStore = sessions.NewCookieStore(sessionAuthKey, sessionCryptKey)
+func init() {
 
 	goth.UseProviders(
 		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "http://local.pass.ninja:8000"),
@@ -80,8 +67,7 @@ func main() {
 
 	goji.Use(gzip.GzipHandler) //gzip everything
 
-	//API
-	//goji.Get("/auth/:provider", handleAuthorize)
+	//Login
 	goji.Post("/auth/:provider", handleLogin)
 	goji.Get("/auth/:provider/unlink/", handleUnlink)
 
@@ -104,7 +90,11 @@ func main() {
 
 	//API
 	accounts.Get("/accounts/template/:passType", handleAccountPassStructure) //return a json object of the pass type
-	accounts.Post("/accounts/save", handleAccountSave)                       //save pass data
+	//accounts.Get("/accounts/passes/", handleListPasses)                      //get a list of all the users passes
+	accounts.Post("/accounts/passes/", handleCreatePass)         //creates a new pass
+	accounts.Get("/accounts/passes/:id", handleGetPass)          //get a specific pass data object
+	accounts.Get("/accounts/passes/:id/link", handleGetPassLink) //get a public link to a pass
+	accounts.Patch("/accounts/passes/:id", handleUpdatePass)     //partial update of pass data
 
 	goji.NotFound(handleNotFound)
 
@@ -245,8 +235,9 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	newPass.Id = ""      // a new pass needs a new clear id
-	newPass.Status = "1" //first page complete
+	newPass.Id = ""                  // a new pass needs a new clear id
+	newPass.Status = "1"             //first page complete
+	newPass.KeyDoc.FormatVersion = 1 //apple says: always set to 1
 
 	err = utils.WriteJson(res, newPass, true)
 	utils.Check(err)
@@ -259,8 +250,114 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleAccountSave")
+func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handleGetPass")
+
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
+
+	passId := c.URLParams["id"] //get id from url
+	_, err = base64.URLEncoding.DecodeString(passId)
+	if err != nil {
+		log.Println("Pass Id is not base64")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+
+	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
+	userId := c.Env["jwt-userid"].(string)
+
+	newPass := pass{}
+	//is this a good idea? Should verify first...?
+	if !db.FindByID("pass", passId, &newPass) {
+		log.Println("Pass not found")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+
+	//id is a token, verify it
+	ok, err := utils.VerifyToken(passTokenKey, passId, newPass.Name, userId) //TODO: we dont have a pass name here??
+	if err != nil {
+		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+	if !ok {
+		log.Println("Token Failed to verify!")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+
+	if newPass.Status != "ready" {
+		log.Println("Requested Pass is not ready for distribution!")
+		utils.JsonErrorResponse(res, fmt.Errorf("Requested Pass is not ready for sharing!"), http.StatusNotFound)
+		return
+	}
+
+	passUrl := downloadServer + newPass.FileName
+
+	receipt := map[string]string{"name": newPass.Name, "url": passUrl}
+	err = utils.WriteJson(res, receipt, true)
+	utils.Check(err)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func handleGetPass(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handleGetPass")
+
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
+
+	passId := c.URLParams["id"] //get id from url
+	if !govalidator.IsBase64(passId) {
+		log.Println("Pass Id is not base64")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+
+	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
+	userId := c.Env["jwt-userid"].(string)
+
+	newPass := pass{}
+	//is this a good idea? Should verify first...
+	if !db.FindByID("pass", passId, &newPass) {
+		log.Println("Pass not found")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+
+	//id is a token, verify it
+	ok, err := utils.VerifyToken(passTokenKey, passId, newPass.Name, userId) //TODO: we dont have a pass name here??
+	if err != nil {
+		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+	if !ok {
+		log.Println("Token Failed to verify!")
+		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		return
+	}
+
+	err = utils.WriteJson(res, newPass, true)
+	utils.Check(err)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handleCreatePass")
 
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
@@ -283,35 +380,22 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
 	userId := c.Env["jwt-userid"].(string)
 
-	//pass is new, generate a token id, otherwise verify token
-	if newPass.Id == "" {
-		newPass.Id = utils.GenerateToken(passTokenKey, newPass.Name, userId) //get token from base64 hmac
-	} else {
-		ok, err := utils.VerifyToken(passTokenKey, newPass.Id, newPass.Name, userId)
-		if err != nil {
-			log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
-			utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
-			return
-		}
-		if !ok {
-			log.Println("Token Failed to verify!")
-			utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
-			return
-		}
-	}
-
+	//pass is new, generate a token id
+	newPass.Id = utils.GenerateToken(passTokenKey, newPass.Name, userId) //get id as token from base64 hmac
 	newPass.Updated = time.Now()
+	newPass.UserId = userId
+	log.Println(userId)
 
-	if !db.Merge("pass", "id", newPass.Id, newPass) {
-		log.Println("db Merge Error")
-		utils.JsonErrorResponse(res, fmt.Errorf("A conflict has occured updating the pass."), http.StatusInternalServerError)
+	if !db.Add("pass", newPass) {
+		log.Println("db Add Pass Error")
+		utils.JsonErrorResponse(res, fmt.Errorf("A conflict has occured creating the pass."), http.StatusInternalServerError)
 		return
 	}
 
 	receipt := map[string]string{"id": newPass.Id, "time": newPass.Updated.String()}
 	err = utils.WriteJson(res, receipt, true)
 	utils.Check(err)
-	//utils.JsonErrorResponse(res, fmt.Errorf("none"), http.StatusOK) //save is successful!
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -320,51 +404,75 @@ func handleAccountSave(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleAuthorize(c web.C, res http.ResponseWriter, req *http.Request) {
+func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handleUpdatePass")
 
-	log.Println("handleAuthorize")
-
-	defer context.Clear(req)
-
-	//get matching provider from url (gplus,facebook,etc)
-	provider, err := goth.GetProvider(c.URLParams["provider"])
-	if err != nil {
-		log.Printf("provider oauth error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
-		return
-	}
-
-	//creates the auth url with its query parameters
-	sess, err := provider.BeginAuth()
-	if err != nil {
-		log.Printf("begin oauth error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
-		return
-	}
-
-	//get the auth url to for the user to load and authorize at provider
-	url, err := sess.GetAuthURL()
-	if err != nil {
-		log.Printf("get auth url error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
-		return
-	}
-
-	/*session := initSession(req, oauthSessionName, "/")
-	session.Values[oauthSessionName] = sess.Marshal() //save auth url in session
-	err = session.Save(req, res)
-	if err != nil {
-		log.Printf("session save error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Authorize fail, Bad Request!"), http.StatusBadRequest)
-		return
-	}*/
-
-	//tokenMap, err := createJWToken(url)
-	//utils.Check(err)
-	authUrl := map[string]string{"authurl": url}
-	err = utils.WriteJson(res, authUrl, true)
+	db, err := utils.GetDbType(c)
 	utils.Check(err)
-	//http.Redirect(res, req, url, http.StatusTemporaryRedirect)
+
+	passId := c.URLParams["id"]
+
+	//TODO make a URLEncoding base64 validator!
+	_, err = base64.URLEncoding.DecodeString(passId)
+	if err != nil {
+		log.Println("Pass Id is not base64")
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		return
+	}
+
+	newPass := pass{}
+	if err := utils.ReadJson(req, &newPass); err != nil {
+		log.Printf("read json error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		return
+	}
+
+	newPass.Id = passId //add the id in url to the pass - validate it below
+
+	//validate the struct before adding it to the dB
+	result, err := govalidator.ValidateStruct(newPass)
+	if err != nil {
+		log.Printf("validated: %t - validation error: %s", result, err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		return
+	}
+
+	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
+	userId := c.Env["jwt-userid"].(string)
+
+	ok, err := utils.VerifyToken(passTokenKey, newPass.Id, newPass.Name, userId) //id is a token, verify it
+	if err != nil {
+		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		return
+	}
+	if !ok {
+		log.Println("Token Failed to verify!")
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		return
+	}
+
+	newPass.Updated = time.Now() //update the timestamp
+
+	if !db.Merge("pass", "id", newPass.Id, newPass) {
+		log.Println("db Merge Error")
+		utils.JsonErrorResponse(res, fmt.Errorf("A conflict has occured updating the pass."), http.StatusInternalServerError)
+		return
+	}
+
+	//TODO: set status to "ready" here rather than in frontend. Also finalize all required data
+	if newPass.Status == "ready" {
+		//Unique PassTypeId for the db and the pass file name
+		idHash := generateFnvHashId(newPass.Name, time.Now().String()) //generate a hash using pass orgname + color + time
+		passName := strings.Replace(newPass.Name, " ", "-", -1)        //remove spaces from organization name
+		fileName := fmt.Sprintf("%s-%d", passName, idHash)
+		newPass.FileName = govalidator.SafeFileName(fileName)
+
+	}
+
+	receipt := map[string]string{"id": newPass.Id, "time": newPass.Updated.String()}
+	err = utils.WriteJson(res, receipt, true)
+	utils.Check(err)
 
 }
 
@@ -381,8 +489,6 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
 
-	//defer context.Clear(req)
-
 	//get matching provider from url (gplus,facebook,etc)
 	provider, err := goth.GetProvider(c.URLParams["provider"])
 	if err != nil {
@@ -391,23 +497,6 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	//get or init session from store
-	//oAuthsession := initSession(req, oauthSessionName, "/")
-
-	//check that the saved session value from auth is present
-	//if oAuthsession.Values[oauthSessionName] == nil {
-	//	log.Printf("session error: could not find a matching session value for this request")
-	//	http.Redirect(res, req, "/", http.StatusFound)
-	//	return
-	//}
-
-	//unmarshal the values of session into a goth sess (authURL)
-	/*sess, err := provider.UnmarshalSession(oAuthsession.Values[oauthSessionName].(string))
-	if err != nil {
-		log.Printf("session unmarshal error: %s", err.Error())
-		http.Redirect(res, req, "/", http.StatusFound)
-		return
-	}*/
 	//	provider.Name()
 	//p := provider.(*Provider)
 
@@ -483,41 +572,6 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	}
 
-	/*
-		loginSession := initSession(req, loginSessionName, "/accounts")
-
-		// Check if the user is already connected, login if so
-		storedToken := loginSession.Values["accessToken"]
-		if storedToken != nil {
-			log.Println("Current user already connected")
-			http.Redirect(res, req, "/accounts/", http.StatusFound)
-		}
-
-		//If not logged in store the access token in the session for later use
-		loginSession.Values["accessToken"] = accessToken
-		err = loginSession.Save(req, res)
-		if err != nil {
-			log.Printf("session save error: %s", err.Error())
-			utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
-			return
-		}
-	*/
-	/*
-		//check db for user
-		if !db.FindByID("users", user.UserID, &newUser) {
-			log.Println("User not found")
-
-			if ok := db.Add("users", newUser); !ok {
-				log.Println("Add User Error")
-				utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
-				return
-			}
-		}
-
-		//populate template with users info here
-
-		http.Redirect(res, req, "/accounts/", http.StatusFound)
-	*/
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -571,36 +625,6 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusNoContent) //successfully unlinked from oauth
 	return
 
-	// Only disconnect a connected user
-	/*loginSession := initSession(req, loginSessionName, "/accounts")
-
-	token := loginSession.Values["accessToken"]
-	if token == nil {
-		log.Println("Current user not connected")
-		utils.JsonErrorResponse(res, fmt.Errorf("Current user not connected."), 401)
-		return
-	}
-
-	// Execute HTTP GET request to revoke current token
-	url := "https://accounts.google.com/o/oauth2/revoke?token=" + token.(string)
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Println("Failed to revoke token for a given user")
-		utils.JsonErrorResponse(res, fmt.Errorf("Unlink failed."), 400)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Reset the user's session
-	session.Values["accessToken"] = nil
-	err = session.Save(req, res)
-	if err != nil {
-		log.Printf("session save error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ohnos! Server Error!"), http.StatusInternalServerError)
-		return
-	}
-
-	http.Redirect(res, req, "/", 302) */
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -642,60 +666,10 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 			w.WriteHeader(http.StatusUnauthorized) //successfully unlinked from oauth
 		}
 
-		/*session := initSession(r, loginSessionName, "/accounts")
-
-		if val, ok := session.Values["accessToken"].(string); ok { // if val is a string
-
-			switch val {
-			case "":
-
-				http.Redirect(w, r, "/", http.StatusFound)
-
-			default: //load the page
-
-				log.Println(val)
-				log.Println(r.URL.String())
-				h.ServeHTTP(w, r)
-			}
-
-		} else {
-
-			// if val is not a string type
-			http.Redirect(w, r, "/", http.StatusFound)
-		}*/
-
 	}
 
 	return http.HandlerFunc(fn)
 
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func initSession(r *http.Request, sessionName string, sessionPath string) *sessions.Session {
-
-	session, err := sessionStore.Get(r, sessionName)
-	if err != nil {
-		log.Printf("session error: %s", err.Error())
-	}
-
-	if session.IsNew { //Set some cookie options
-		log.Println("new Session!")
-
-		session.Options = &sessions.Options{
-			Path:     sessionPath,
-			MaxAge:   86400 * 2,
-			HttpOnly: true,
-			//Secure:   true,
-			//Domain: http://pass.ninja
-		}
-
-	}
-	return session
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -790,6 +764,12 @@ func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token,
 
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
 func createJWToken(subClaim string) (map[string]string, error) {
 
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
@@ -828,6 +808,26 @@ func createRawURL(token string, userEmail string, expires string) string {
 	u.RawQuery = q.Encode()
 
 	return u.String()
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	generate a hash fnv1a hash. Fast, unique, but insecure! use only for ids and such.
+//  https://programmers.stackexchange.com/questions/49550/which-hashing-algorithm-is-best-for-uniqueness-and-speed
+//
+//////////////////////////////////////////////////////////////////////////
+func generateFnvHashId(hashSeeds ...string) uint32 {
+
+	inputString := strings.Join(hashSeeds, "")
+
+	var randomness int32
+	binary.Read(rand.Reader, binary.LittleEndian, &randomness) //add a little randomness
+	inputString = fmt.Sprintf("%s%x", inputString, randomness)
+
+	h := fnv.New32a()
+	h.Write([]byte(inputString))
+	return h.Sum32()
 
 }
 

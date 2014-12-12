@@ -20,15 +20,15 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
     <!--<![endif]-->
     <link href="/assets/css/plugin/modal.css" rel="stylesheet" type="text/css">
-    <link href="/accounts/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" type="text/css">
     <link rel="stylesheet" href="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-geocoder.css" type="text/css">
-    <link href="/accounts/assets/css/plugin/onepage-scroll.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/plugin/onepage-scroll.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/global.css" rel="stylesheet" type="text/css">
-    <link href="/accounts/assets/css/builder.css" rel="stylesheet" type="text/css">
-    <link href="/accounts/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/builder.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
   </head>
 
   <body>
@@ -61,35 +61,45 @@
               </div>
               <!-- Thumbnail Grid of Pass Type Selection -->
               <div class="passtype-grid pure-g">
-                <div class="pure-u-1 pure-u-md-1-5">
-                  <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/accounts/assets/img/boarding_01_thumb.png" alt="Boarding Pass" width="226" height="290">
-                  <ul class="passtype-label">
-                    <li><h4>Boarding Pass</h4></li>
-                  </ul>
+                <div class="pure-u-1-3 pure-u-md-1-5">
+                  <figure>
+                    <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/assets/img/boarding_01_thumb.png" alt="Boarding Pass" width="226" height="290">
+                    <figcaption class="passtype-label">
+                      Boarding Pass
+                    </figcaption>
+                  </figure>
                 </div>
-                <div class="pure-u-1 pure-u-md-1-5">
-                  <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/accounts/assets/img/coupon_03_thumb.png" alt="Coupon" width="226" height="290">
-                  <ul class="passtype-label">
-                    <li><h4>Coupon</h4></li>
-                  </ul>
+                <div class="pure-u-1-3 pure-u-md-1-5">
+                  <figure>
+                    <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/assets/img/coupon_03_thumb.png" alt="Coupon" width="226" height="290">
+                    <figcaption class="passtype-label">
+                      Coupon
+                    </figcaption>
+                  </figure>
                 </div>
-                <div class="pure-u-1 pure-u-md-1-5">
-                  <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/accounts/assets/img/event_01_strip_thumb.png" alt="Event Ticket" width="226" height="290">
-                  <ul class="passtype-label">
-                    <li><h4>Event Ticket</h4></li>
-                  </ul>
+                <div class="pure-u-1-3 pure-u-md-1-5">
+                  <figure>
+                    <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_strip_thumb.png" alt="Event Ticket" width="226" height="290">
+                    <figcaption class="passtype-label">
+                      Event Ticket
+                    </figcaption>
+                  </figure>
                 </div>
-                <div class="pure-u-1 pure-u-md-1-5">
-                  <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/accounts/assets/img/store_01_thumb.png" alt="Store Card" width="226" height="290">
-                  <ul class="passtype-label">
-                    <li><h4>Store Card</h4></li>
-                  </ul>
+                <div class="pure-u-1-3 pure-u-md-1-5">
+                  <figure>
+                    <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/assets/img/store_01_thumb.png" alt="Store Card" width="226" height="290">
+                    <figcaption class="passtype-label">
+                      Store Card
+                    </figcaption>
+                  </figure>
                 </div>
-                <div class="pure-u-1 pure-u-md-1-5">
-                  <img id="generic" class="pure-img-responsive pass-thumb-select" src="/accounts/assets/img/event_01_fullbg_thumb.png" alt="Generic" width="226" height="290">
-                  <ul class="passtype-label">
-                    <li><h4>Generic</h4></li>
-                  </ul>
+                <div class="pure-u-1-3 pure-u-md-1-5">
+                  <figure>
+                    <img id="generic" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_fullbg_thumb.png" alt="Generic" width="226" height="290">
+                    <figcaption class="passtype-label">
+                      Generic
+                    </figcaption>
+                  </figure>
                 </div>
               </div>
             </section>
@@ -103,12 +113,11 @@
                   <h2>Fill out the name of the pass template and organization!</h2>
                   <form class="pure-form">
                     <fieldset class="pure-group">
-                      <input type="text" class="pure-input-1" id="pass-name" placeholder="Pass Name">
+                      <input type="text" class="pure-input-1" id="pass-name" placeholder="Pass Name" required>
                       <input type="text" class="pure-input-1" id="pass-desc" placeholder="Pass Description">
                     </fieldset>
-                    <fieldset class="pure-group">
-                      <input type="text" class="pure-input-1" id="org-name" placeholder="Organization Name">
-                      <input type="text" class="pure-input-1" id="org-desc" placeholder="Organization Description">
+                    <fieldset>
+                      <input type="text" class="pure-input-1" id="org-name" placeholder="Organization Name" required>
                     </fieldset>
                   </form>
                 </div>
@@ -194,21 +203,21 @@
                   <h2>Choose the barcode type.</h2>
                 </div>
                 <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
-                   <!-- Barcode Popover -->
+                   <!-- Barcode Control -->
                   <div class="control ninja-theme">
-                    <form id="pop-bar" class="pure-form pure-form-aligned">
+                    <form id="barcode" class="pure-form pure-form-aligned">
                         <fieldset class="pure-group">
-                          <input id="popData" type="text" class="pure-input-1" placeholder="Barcode Message">
-                          <input id="popAlt" type="text" class="pure-input-1"  placeholder="Alternative Text">
+                          <input id="bar-message" type="text" class="pure-input-1" placeholder="Barcode Message">
+                          <input id="bar-alt" type="text" class="pure-input-1"  placeholder="Alternative Text">
                         </fieldset>
                         <fieldset>
                         <div class="pure-control-group">
-                          <label for="popEncode">Message Encoding</label>
-                          <input id="popEncode" type="text" value="iso-8859-1">
+                          <label for="bar-encode">Message Encoding</label>
+                          <input id="bar-encode" type="text" value="iso-8859-1">
                         </div>
                         <div class="pure-control-group">
-                          <label for="barcode-format">Barcode Format</label>
-                           <select id="barcode-format">
+                          <label for="bar-format">Barcode Format</label>
+                           <select id="bar-format">
                             <option>PDF417</option>
                             <option>Aztec</option>
                             <option>QR</option>
@@ -503,13 +512,7 @@
                   <div class="fake-content">
                   </div>
                   <div class="control ninja-theme">
-                  <form class="pure-form pure-form-aligned">
-                     <fieldset>
-                        <div class="pure-control-group">
-
-                        </div>
-                  </fieldset>
-                  </form>
+                  <a id="passurl" href="#"></a>
                 </div>
 
                 </div>
@@ -544,20 +547,22 @@
               ================================================== -->
               <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/plugin/jquery.onepage-scroll.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/jquery.onepage-scroll.js"></script>
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.0.0/tinycolor.min.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/plugin/jquery.colorpickersliders.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/plugin/jquery.datetimepicker.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/jquery.colorpickersliders.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/jquery.datetimepicker.js"></script>
               <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/plugin/l.control.geosearch.js"></script>
-	            <script type="text/javascript" src="/accounts/assets/js/plugin/l.geosearch.provider.google.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/app/images.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/app/location.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/app/fields.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/app/backfields.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/app/colors.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/app/barcode.js"></script>
-              <script type="text/javascript" src="/accounts/assets/js/passbuilder.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/l.control.geosearch.js"></script>
+	            <script type="text/javascript" src="/assets/js/plugin/l.geosearch.provider.google.js"></script>
+              <script type="text/javascript" src="/assets/js/app/images.js"></script>
+              <script type="text/javascript" src="/assets/js/app/cert.js"></script>
+              <script type="text/javascript" src="/assets/js/app/share.js"></script>
+              <script type="text/javascript" src="/assets/js/app/location.js"></script>
+              <script type="text/javascript" src="/assets/js/app/fields.js"></script>
+              <script type="text/javascript" src="/assets/js/app/backfields.js"></script>
+              <script type="text/javascript" src="/assets/js/app/colors.js"></script>
+              <script type="text/javascript" src="/assets/js/app/barcode.js"></script>
+              <script type="text/javascript" src="/assets/js/passbuilder.js"></script>
 
 
             </body>
