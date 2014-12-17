@@ -2,6 +2,7 @@ package main
 
 import (
 	"bitbucket.org/cicadaDev/utils"
+	"bytes"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/binary"
@@ -10,14 +11,15 @@ import (
 	"github.com/lidashuang/goji_gzip"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/gplus"
+	"github.com/pressly/cji"
 	"github.com/slugmobile/govalidator"
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
 	"hash/fnv"
 	"html/template"
+	"image/png"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"path"
 	"strings"
@@ -26,7 +28,7 @@ import (
 
 //userModel can be any struct that represents a user in a system
 type userModel struct {
-	Id            string    `form:"id" gorethink:"id"`
+	ID            string    `form:"id" gorethink:"id"`
 	Email         string    `form:"email" gorethink:"email"`                         //Email is ID of user
 	User          goth.User `form:"user" gorethink:"user"`                           //Detailed User info from oauth login
 	Organization  string    `form:"organization" gorethink:"organization,omitempty"` //User organization name
@@ -44,7 +46,7 @@ type userModel struct {
 var passTokenKey = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
 var jWTokenKey = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`)   //TODO: lets make a new key and put this somewhere safer!
 
-var downloadServer = "http://share.pass.ninja/pass/1/passes/"
+var downloadServer = "http://local.pass.ninja:8001/pass/1/passes/"
 
 func init() {
 
@@ -91,10 +93,11 @@ func main() {
 	//API
 	accounts.Get("/accounts/template/:passType", handleAccountPassStructure) //return a json object of the pass type
 	//accounts.Get("/accounts/passes/", handleListPasses)                      //get a list of all the users passes
-	accounts.Post("/accounts/passes/", handleCreatePass)         //creates a new pass
-	accounts.Get("/accounts/passes/:id", handleGetPass)          //get a specific pass data object
-	accounts.Get("/accounts/passes/:id/link", handleGetPassLink) //get a public link to a pass
-	accounts.Patch("/accounts/passes/:id", handleUpdatePass)     //partial update of pass data
+	accounts.Get("/accounts/passes/:id", handleGetPass) //get a specific pass data object
+
+	accounts.Post("/accounts/passes/", handleCreatePass)          //creates a new pass
+	accounts.Patch("/accounts/passes/:id/link", handleMutatePass) //get a public link to a pass - or update pass variables.
+	accounts.Patch("/accounts/passes/:id", handleUpdatePass)      //partial update of pass data
 
 	goji.NotFound(handleNotFound)
 
@@ -223,19 +226,20 @@ func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Requ
 		templateID = "pass.ninja.pass.template.generic"
 	default:
 		log.Println("Pass type not found")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusBadRequest)
 		return
 	}
 
 	newPass := pass{}
 
-	if !db.FindByID("passTemplate", templateID, &newPass) {
+	if !db.FindById("passTemplate", templateID, &newPass) {
 		log.Println("Pass type not found")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusBadRequest)
 		return
 	}
 
-	newPass.Id = ""                  // a new pass needs a new clear id
+	newPass.Id = "" // a new pass needs a new clear id
+	newPass.PassType = passType
 	newPass.Status = "1"             //first page complete
 	newPass.KeyDoc.FormatVersion = 1 //apple says: always set to 1
 
@@ -256,47 +260,121 @@ func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
 
-	passId := c.URLParams["id"] //get id from url
-	_, err = base64.URLEncoding.DecodeString(passId)
+	passID := c.URLParams["id"] //get id from url
+	_, err = base64.URLEncoding.DecodeString(passID)
 	if err != nil {
 		log.Println("Pass Id is not base64")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
 		return
 	}
 
 	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
-	userId := c.Env["jwt-userid"].(string)
+	userID := c.Env["jwt-userid"].(string)
 
 	newPass := pass{}
 	//is this a good idea? Should verify first...?
-	if !db.FindByID("pass", passId, &newPass) {
+	if !db.FindById("pass", passID, &newPass) {
 		log.Println("Pass not found")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
 		return
 	}
 
 	//id is a token, verify it
-	ok, err := utils.VerifyToken(passTokenKey, passId, newPass.Name, userId) //TODO: we dont have a pass name here??
+	err = verifyToken(newPass.Id, newPass.Name, userID)
 	if err != nil {
-		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
-		return
-	}
-	if !ok {
-		log.Println("Token Failed to verify!")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, err, http.StatusBadRequest)
 		return
 	}
 
 	if newPass.Status != "ready" {
 		log.Println("Requested Pass is not ready for distribution!")
-		utils.JsonErrorResponse(res, fmt.Errorf("Requested Pass is not ready for sharing!"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready for sharing"), http.StatusNotFound)
 		return
 	}
 
-	passUrl := downloadServer + newPass.FileName
+	passURL := downloadServer + newPass.FileName
+	log.Println(passURL)
 
-	receipt := map[string]string{"name": newPass.Name, "url": passUrl}
+	receipt := map[string]string{"name": newPass.Name, "url": passURL}
+	err = utils.WriteJson(res, receipt, true)
+	utils.Check(err)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handleCustomPass")
+
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
+
+	//get and check id
+	passID := c.URLParams["id"] //get id from url
+	_, err = base64.URLEncoding.DecodeString(passID)
+	if err != nil {
+		log.Println("Pass Id is not base64")
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
+		return
+	}
+
+	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
+	userID := c.Env["jwt-userid"].(string)
+
+	newPass := pass{}
+	//is this a good idea? Should verify first...?
+	if !db.FindById("pass", passID, &newPass) {
+		log.Println("Pass not found")
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
+		return
+	}
+
+	//id is a token, verify it
+	err = verifyToken(newPass.Id, newPass.Name, userID)
+	if err != nil {
+		utils.JsonErrorResponse(res, err, http.StatusBadRequest)
+		return
+	}
+
+	if newPass.Status != "api" {
+		log.Println("requested Pass is not ready or configurable")
+		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready or  configurable"), http.StatusNotFound)
+		return
+	}
+
+	var customVars map[string]string //a map of custom variables to change in the pass
+	//read json doc of variables to change
+	if err := utils.ReadJson(req, &customVars); err != nil {
+		log.Printf("read json error: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("the submitted data is malformed"), http.StatusBadRequest)
+		return
+	}
+
+	err = updatePassVariables(&newPass, customVars) //swap in variable values from req into variable placeholders in pass
+	if err != nil {
+		utils.JsonErrorResponse(res, err, http.StatusBadRequest)
+		return
+	}
+
+	newPassNum := generateFnvHashID(newPass.Name, time.Now().String())
+	newPassID := fmt.Sprintf("%x", newPassNum)
+	newPass.Id = newPassID
+	newPass.FileName = newPass.FileName + "-" + newPassID
+
+	if !db.Add("passCustom", newPass) {
+		log.Println("db Add Pass Error")
+		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
+		return
+	}
+
+	passURL := downloadServer + newPass.FileName
+	log.Println(passURL)
+
+	receipt := map[string]string{"name": newPass.Name, "url": passURL}
 	err = utils.WriteJson(res, receipt, true)
 	utils.Check(err)
 
@@ -314,34 +392,28 @@ func handleGetPass(c web.C, res http.ResponseWriter, req *http.Request) {
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
 
-	passId := c.URLParams["id"] //get id from url
-	if !govalidator.IsBase64(passId) {
+	passID := c.URLParams["id"] //get id from url
+	if !govalidator.IsBase64(passID) {
 		log.Println("Pass Id is not base64")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
 		return
 	}
 
 	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
-	userId := c.Env["jwt-userid"].(string)
+	userID := c.Env["jwt-userid"].(string)
 
 	newPass := pass{}
 	//is this a good idea? Should verify first...
-	if !db.FindByID("pass", passId, &newPass) {
+	if !db.FindById("pass", passID, &newPass) {
 		log.Println("Pass not found")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
 		return
 	}
 
 	//id is a token, verify it
-	ok, err := utils.VerifyToken(passTokenKey, passId, newPass.Name, userId) //TODO: we dont have a pass name here??
+	err = verifyToken(newPass.Id, newPass.Name, userID)
 	if err != nil {
-		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
-		return
-	}
-	if !ok {
-		log.Println("Token Failed to verify!")
-		utils.JsonErrorResponse(res, fmt.Errorf("Pass not found"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, err, http.StatusBadRequest)
 		return
 	}
 
@@ -365,7 +437,7 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	newPass := pass{}
 	if err := utils.ReadJson(req, &newPass); err != nil {
 		log.Printf("read json error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("the submitted pass data is malformed"), http.StatusBadRequest)
 		return
 	}
 
@@ -373,22 +445,22 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	result, err := govalidator.ValidateStruct(newPass)
 	if err != nil {
 		log.Printf("validated: %t - validation error: %s", result, err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("the submitted pass data is malformed"), http.StatusBadRequest)
 		return
 	}
 
 	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
-	userId := c.Env["jwt-userid"].(string)
+	userID := c.Env["jwt-userid"].(string)
 
 	//pass is new, generate a token id
-	newPass.Id = utils.GenerateToken(passTokenKey, newPass.Name, userId) //get id as token from base64 hmac
+	newPass.Id = utils.GenerateToken(passTokenKey, newPass.Name, userID) //get id as token from base64 hmac
 	newPass.Updated = time.Now()
-	newPass.UserId = userId
-	log.Println(userId)
+	newPass.UserId = userID
+	log.Println(userID)
 
 	if !db.Add("pass", newPass) {
 		log.Println("db Add Pass Error")
-		utils.JsonErrorResponse(res, fmt.Errorf("A conflict has occured creating the pass."), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
 		return
 	}
 
@@ -410,64 +482,58 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
 
-	passId := c.URLParams["id"]
+	passID := c.URLParams["id"]
 
 	//TODO make a URLEncoding base64 validator!
-	_, err = base64.URLEncoding.DecodeString(passId)
+	_, err = base64.URLEncoding.DecodeString(passID)
 	if err != nil {
-		log.Println("Pass Id is not base64")
-		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		log.Println("Pass ID is not base64")
+		utils.JsonErrorResponse(res, fmt.Errorf("the submitted pass data is malformed"), http.StatusBadRequest)
 		return
 	}
 
 	newPass := pass{}
 	if err := utils.ReadJson(req, &newPass); err != nil {
 		log.Printf("read json error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("the submitted pass data is malformed"), http.StatusBadRequest)
 		return
 	}
 
-	newPass.Id = passId //add the id in url to the pass - validate it below
+	newPass.Id = passID //add the id in url to the pass - validate it below
 
 	//validate the struct before adding it to the dB
 	result, err := govalidator.ValidateStruct(newPass)
 	if err != nil {
 		log.Printf("validated: %t - validation error: %s", result, err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("the submitted pass data is malformed"), http.StatusBadRequest)
 		return
 	}
 
 	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
-	userId := c.Env["jwt-userid"].(string)
-
-	ok, err := utils.VerifyToken(passTokenKey, newPass.Id, newPass.Name, userId) //id is a token, verify it
+	userID := c.Env["jwt-userid"].(string)
+	err = verifyToken(newPass.Id, newPass.Name, userID)
 	if err != nil {
-		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
-		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
-		return
-	}
-	if !ok {
-		log.Println("Token Failed to verify!")
-		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass data is malformed."), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, err, http.StatusBadRequest)
 		return
 	}
 
 	newPass.Updated = time.Now() //update the timestamp
 
-	if !db.Merge("pass", "id", newPass.Id, newPass) {
-		log.Println("db Merge Error")
-		utils.JsonErrorResponse(res, fmt.Errorf("A conflict has occured updating the pass."), http.StatusInternalServerError)
-		return
-	}
-
 	//TODO: set status to "ready" here rather than in frontend. Also finalize all required data
-	if newPass.Status == "ready" {
+	if newPass.Status == "ready" || newPass.Status == "api" {
 		//Unique PassTypeId for the db and the pass file name
-		idHash := generateFnvHashId(newPass.Name, time.Now().String()) //generate a hash using pass orgname + color + time
+		idHash := generateFnvHashID(newPass.Name, time.Now().String()) //generate a hash using pass orgname + color + time
 		passName := strings.Replace(newPass.Name, " ", "-", -1)        //remove spaces from organization name
 		fileName := fmt.Sprintf("%s-%d", passName, idHash)
 		newPass.FileName = govalidator.SafeFileName(fileName)
+		log.Println(newPass.FileName)
 
+	}
+
+	if !db.Merge("pass", "id", newPass.Id, newPass) {
+		log.Println("db Merge Error")
+		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured updating the pass"), http.StatusInternalServerError)
+		return
 	}
 
 	receipt := map[string]string{"id": newPass.Id, "time": newPass.Updated.String()}
@@ -493,7 +559,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	provider, err := goth.GetProvider(c.URLParams["provider"])
 	if err != nil {
 		log.Printf("provider oauth error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("ninja fail, bad request"), http.StatusBadRequest)
 		return
 	}
 
@@ -511,7 +577,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	_, err = sess.Authorize(provider, req.URL.Query())
 	if err != nil {
 		log.Printf("session authorize error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Bad Request!"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("ninja fail, bad request"), http.StatusBadRequest)
 		return
 	}
 
@@ -519,7 +585,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	user, err := provider.FetchUser(sess)
 	if err != nil {
 		log.Printf("complete oauth error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("Ninja fail, Server Error!"), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("ninja fail, server error"), http.StatusInternalServerError)
 		return
 	}
 
@@ -536,22 +602,22 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 		          }
 		*/
 
-		if !db.FindByID("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
-			utils.JsonErrorResponse(res, fmt.Errorf("User not found"), http.StatusBadRequest)
+		if !db.FindById("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
+			utils.JsonErrorResponse(res, fmt.Errorf("user not found"), http.StatusBadRequest)
 			return
 		}
 
-		tokenMap, err := createJWToken(newUser.Id)
+		tokenMap, err := createJWToken(newUser.ID)
 		utils.Check(err)
 		err = utils.WriteJson(res, tokenMap, true)
 		utils.Check(err)
 
 	} else { //3b. Create a new user account or return an existing one.
 
-		if !db.FindByID("users", user.UserID, &newUser) { //if user not found
+		if !db.FindById("users", user.UserID, &newUser) { //if user not found
 
 			//add new user
-			newUser.Id = user.UserID
+			newUser.ID = user.UserID
 			newUser.Email = user.Email
 			newUser.OAuthProvider = provider.Name()
 			newUser.User = user //all details from oauth login
@@ -559,13 +625,13 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
 			if ok := db.Add("users", newUser); !ok {
 				log.Println("Add User Error")
-				utils.JsonErrorResponse(res, fmt.Errorf("This user account already exists."), http.StatusConflict)
+				utils.JsonErrorResponse(res, fmt.Errorf("this user account already exists"), http.StatusConflict)
 				return
 			}
 
 		}
 		//http.Redirect(res, req, "/accounts/", http.StatusFound)
-		tokenMap, err := createJWToken(newUser.Id)
+		tokenMap, err := createJWToken(newUser.ID)
 		utils.Check(err)
 		err = utils.WriteJson(res, tokenMap, true)
 		utils.Check(err)
@@ -590,13 +656,13 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	})
 	if err != nil || !jwtoken.Valid {
 		log.Println("Current user not connected")
-		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), 401)
+		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), 401)
 		return
 	}
 
 	newUser := &userModel{}
-	if !db.FindByID("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
-		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), http.StatusBadRequest)
+	if !db.FindById("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
+		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), http.StatusBadRequest)
 		return
 	}
 
@@ -607,7 +673,7 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Println("Failed to revoke token for a given user")
-		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), 400)
+		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), 400)
 		return
 	}
 	defer resp.Body.Close()
@@ -616,9 +682,9 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	newUser.OAuthProvider = ""
 	newUser.User = goth.User{}
 
-	if !db.Merge("users", "id", newUser.Id, newUser) {
+	if !db.Merge("users", "id", newUser.ID, newUser) {
 		log.Println("db Merge Error")
-		utils.JsonErrorResponse(res, fmt.Errorf("Oauth provider unlink failed."), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), http.StatusInternalServerError)
 		return
 	}
 
@@ -700,6 +766,10 @@ func addValidators() {
 	textAlignTypes := []string{"PKTextAlignmentLeft", "PKTextAlignmentCenter", "PKTextAlignmentRight", "PKTextAlignmentNatural"}
 	addListValidator("align", textAlignTypes)
 
+	//check barcode format is 1 of 3 types
+	passTypes := []string{"boardingPass", "coupon", "eventTicket", "generic", "storeCard"}
+	addListValidator("passtypes", passTypes)
+
 	//check to make sure its a valid currency code: USD,GBP etc
 	govalidator.TagMap["iso4217"] = govalidator.Validator(func(str string) bool {
 
@@ -710,6 +780,37 @@ func addValidators() {
 			return false
 		}
 		return govalidator.IsAlpha(str)
+
+	})
+
+	//check to make sure its a valid png image datauri
+	govalidator.TagMap["imagepng"] = govalidator.Validator(func(str string) bool {
+
+		dataStr := strings.SplitN(str, ",", 2) //seperate data:image/png;base64, from the DataURI
+
+		if !strings.Contains(dataStr[0], "image") {
+			return false
+		}
+
+		if !strings.Contains(dataStr[0], "png") {
+			return false
+		}
+
+		if !govalidator.IsDataURI(str) {
+			return false
+		}
+
+		//decode the data and see if its truely a png, by getting the color space and width/height
+		data, err := base64.StdEncoding.DecodeString(dataStr[1]) // [] byte
+		utils.Check(err)
+		r := bytes.NewReader(data)
+		_, err = png.DecodeConfig(r)
+		if err != nil {
+			log.Printf("png decodeConfig error:%s", err.Error())
+			return false
+		}
+
+		return true
 
 	})
 
@@ -764,6 +865,91 @@ func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token,
 
 }
 
+func updatePassVariables(newPass *pass, customVars map[string]string) error {
+
+	var passDoc *passStructure
+
+	log.Println(newPass.PassType)
+
+	//get the correct keydoc passtructure
+	switch newPass.PassType {
+	case "boardingPass":
+		passDoc = newPass.KeyDoc.BoardingPass
+	case "coupon":
+		passDoc = newPass.KeyDoc.Coupon
+	case "eventTicket":
+		passDoc = newPass.KeyDoc.EventTicket
+	case "generic":
+		passDoc = newPass.KeyDoc.Generic
+	case "storeCard":
+		passDoc = newPass.KeyDoc.StoreCard
+	default:
+		log.Println("Pass type not found")
+		return fmt.Errorf("the submitted data is malformed")
+	}
+
+	//loop over every custom variable key/value pair
+	for key, value := range customVars {
+		fmt.Printf("%s -> %s\n", key, value)
+
+		//match against each field slice : TODO, this is dumb
+		for i, field := range passDoc.AuxiliaryFields {
+			if field.Key == key {
+				passDoc.AuxiliaryFields[i].Value = value
+			}
+		}
+
+		for i, field := range passDoc.BackFields {
+			if field.Key == key {
+				passDoc.BackFields[i].Value = value
+			}
+		}
+
+		for i, field := range passDoc.HeaderFields {
+			if field.Key == key {
+				passDoc.HeaderFields[i].Value = value
+			}
+		}
+
+		for i, field := range passDoc.PrimaryFields {
+			if field.Key == key {
+				passDoc.PrimaryFields[i].Value = value
+			}
+		}
+
+		for i, field := range passDoc.SecondaryFields {
+			if field.Key == key {
+				passDoc.SecondaryFields[i].Value = value
+			}
+		}
+
+	}
+
+	return nil
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func verifyToken(token string, seeds ...string) error {
+
+	//id is a token, verify it
+	ok, err := utils.VerifyToken(passTokenKey, token, seeds...)
+	if err != nil {
+		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
+		return fmt.Errorf("pass not found")
+	}
+	if !ok {
+		log.Println("token Failed to verify!")
+		return fmt.Errorf("pass not found")
+	}
+
+	return nil
+}
+
 //////////////////////////////////////////////////////////////////////////
 //
 //
@@ -790,34 +976,11 @@ func createJWToken(subClaim string) (map[string]string, error) {
 
 //////////////////////////////////////////////////////////////////////////
 //
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func createRawURL(token string, userEmail string, expires string) string {
-
-	u := url.URL{}
-	u.Scheme = "https"
-	u.Host = "pass.ninja"
-	u.Path = "verify"
-	q := u.Query()
-	q.Add("email", userEmail)
-	q.Add("expires", expires)
-
-	q.Add("token", token)
-	u.RawQuery = q.Encode()
-
-	return u.String()
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
 //	generate a hash fnv1a hash. Fast, unique, but insecure! use only for ids and such.
 //  https://programmers.stackexchange.com/questions/49550/which-hashing-algorithm-is-best-for-uniqueness-and-speed
 //
 //////////////////////////////////////////////////////////////////////////
-func generateFnvHashId(hashSeeds ...string) uint32 {
+func generateFnvHashID(hashSeeds ...string) uint32 {
 
 	inputString := strings.Join(hashSeeds, "")
 

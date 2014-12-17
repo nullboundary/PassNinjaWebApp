@@ -18,16 +18,18 @@ type device struct {
 }
 
 type pass struct {
-	Id          string            `json:"id" gorethink:"id" valid:"required"`                //Pass ID - used for updating, but not sharing
-	Name        string            `json:"name" gorethink:"name" valid:"required"`            //Pass name for user identification
-	FileName    string            `json:"filename,omitempty" gorethink:"filename,omitempty"` //A generated filename for the pass for downloading and sharing
-	UserId      string            `json:"_" gorethink:"userid"`                              //The Id of the pass creator
-	KeyDoc      *passKeys         `json:"keyDoc,omitempty" gorethink:"keyDoc,omitempty"`     //The pass.json file, all the structs used to create it
-	Images      []passImage       `json:"images,omitempty" gorethink:"images,omitempty"`     //All the images needed for a pass
-	ManifestDoc map[string]string `json:"manifest,omitempty" gorethink:"manifest,omitempty"` //The manifest.json file, used to verify the content of a pass
-	Updated     time.Time         `json:"updated" gorethink:"updated" valid:"required"`      //when the pass was last updated or created
-	Status      string            `json:"status" gorethink:"status" valid:"required"`        //Is the pass ready for distribution, in process, or expired
-	CertId      string            `json:"cert,omitempty" gorethink:"cert,omitempty"`         //Id to the certificate used to sign the pass
+	Id          string            `json:"id" gorethink:"id" valid:"required"`                                  //Pass ID - used for updating, but not sharing
+	Name        string            `json:"name" gorethink:"name" valid:"required"`                              //Pass name for user identification
+	FileName    string            `json:"filename,omitempty" gorethink:"filename,omitempty"`                   //A generated filename for the pass for downloading and sharing
+	UserId      string            `json:"_" gorethink:"userid"`                                                //The Id of the pass creator
+	PassType    string            `json:"passtype,omitempty" gorethink:"passtype,omitempty" valid:"passtypes"` //The pass type, boardingpass, coupon, etc.
+	KeyDoc      *passKeys         `json:"keyDoc,omitempty" gorethink:"keyDoc,omitempty"`                       //The pass.json file, all the structs used to create it
+	Images      []passImage       `json:"images,omitempty" gorethink:"images,omitempty"`                       //All the images needed for a pass
+	ManifestDoc map[string]string `json:"manifest,omitempty" gorethink:"manifest,omitempty"`                   //The manifest.json file, used to verify the content of a pass
+	Updated     time.Time         `json:"updated" gorethink:"updated" valid:"required"`                        //when the pass was last updated or created
+	Status      string            `json:"status" gorethink:"status" valid:"required"`                          //Is the pass ready for distribution, in process, or expired
+	CertId      string            `json:"cert,omitempty" gorethink:"cert,omitempty"`                           //Id to the certificate used to sign the pass
+	SVG         string            `json:"svg,omitempty" gorethink:"svg,omitempty"`                             //the svg data to use as a thumbnail image, in pass gallery
 }
 
 /*************************************************************************
@@ -36,7 +38,7 @@ type pass struct {
 
 ************************************************************************/
 type passImage struct {
-	ImageData string `json:"image,omitempty" gorethink:"image,omitempty" valid:"datauri"`
+	ImageData string `json:"image,omitempty" gorethink:"image,omitempty" valid:"imagepng"`
 	ImageName string `json:"name,omitempty" gorethink:"name,omitempty"`
 }
 
