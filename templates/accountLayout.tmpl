@@ -19,7 +19,6 @@
     <!--[if gt IE 8]><!-->
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
     <!--<![endif]-->
-    <link href="/assets/css/plugin/modal.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -47,6 +46,33 @@
        <!-- ============================================================ -->
         <!-- Contents (below Nav bar)
         ================================================================= -->
+        <template id="test-item" >
+          <li>
+            hi
+          </li>
+        </template>
+        <template id="pass-grid">
+
+        <div class="container">
+
+          <div class="pure-g">
+            <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+            <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+              <h1>Your Passes</h1>
+              <h2>Click to update and share them with your customers!</h2>
+            </div>
+            <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          </div>
+
+          <div class="main">
+            <ul id="og-grid" class="og-grid">
+            </ul>
+          </div>
+
+        </div><!-- /container -->
+
+      </template>
+        <template id="pass-builder">
         <div class="wrapper">
           <div class="main">
             <!-- Page 1 ================== -->
@@ -186,8 +212,13 @@
                     <form id="image-upload" class="pure-form">
                       <fieldset>
                         <legend>No image selected</legend>
+                        <div class="pure-control-group">
                         <input id="image-input" type="file" accept="image/png" disabled>
-                        <button class="pure-button" id="image-upload-btn" disabled>Upload</button>
+                        <button class="pure-button" id="image-upload-btn" disabled>Add Image</button>
+                        </div>
+                        <div class="pure-control-group">
+                          <button class="pure-button" id="btn-del-image" disabled><i class="fa fa-minus-circle"></i> Delete Image</button>
+                        </div>
                       </fieldset>
                     </form>
                   </div>
@@ -261,29 +292,32 @@
                         <div class="pure-control-group">
                           <label for="popValue">Field Value</label>
                           <select id="value-format" disabled>
-                            <option>Text</option>
-                            <option>Number</option>
-                            <option>Time</option>
-                            <option>Date</option>
-                            <option>Currency</option>
+                            <option selected="selected">Text</option>
+                            <option value="Number">Number</option>
+                            <option value="Time">Time</option>
+                            <option value="Date">Date</option>
+                            <option value="Currency">Currency</option>
                           </select>
                         </div>
                         <div class="pure-control-group" id="format-control">
                           <input id="popValue" type="text" disabled>
                            <select id="timeDate-format" style="display: none">
-                            <option>None</option>
-                            <option>Short</option>
-                            <option>Medium</option>
-                            <option>Long</option>
-                            <option>Full</option>
+                            <option value="PKDateStyleNone">None</option>
+                            <option value="PKDateStyleShort" selected="selected">Short</option>
+                            <option value="PKDateStyleMedium">Medium</option>
+                            <option value="PKDateStyleLong">Long</option>
+                            <option value="PKDateStyleFull">Full</option>
                           </select>
                            <select id="number-format" style="display: none">
-                            <option>None</option>
-                            <option>Decimal</option>
-                            <option>Percent</option>
-                            <option>Scientific</option>
-                            <!--<option>Spell Out</option>-->
+                            <option value="None">None</option>
+                            <option value="PKNumberStyleDecimal" selected="selected">Decimal</option>
+                            <option value="PKNumberStylePercent">Percent</option>
+                            <option value="PKNumberStyleScientific">Scientific</option>
+                            <!--<option value="PKNumberStyleSpellOut">Spell Out</option>-->
                           </select>
+                          <label for="var-field" class="pure-checkbox">
+                            <input id="var-field" type="checkbox"> Set via API
+                          </label>
                         </div>
                         <div class="pure-control-group">
                           <button class="pure-button" id="btn-del-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
@@ -484,7 +518,7 @@
                        <div class="pure-control-group">
                         <label for="cert-select">Select a signing certificate</label>
                         <select id="cert-select">
-                            <option>Pass Ninja certificate</option>
+                            <option selected="selected">Pass Ninja certificate</option>
                         </select>
                       </div>
                        <div class="pure-control-group">
@@ -510,9 +544,16 @@
                 <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
                    <!-- Pass content -->
                   <div class="fake-content">
+                    <div id="back-content"></div>
+                    <div id="front-content"></div>
                   </div>
                   <div class="control ninja-theme">
-                  <a id="passurl" href="#"></a>
+                  <canvas id="pass-qr"></canvas>
+                  <form class="pure-form">
+                    <pre><code id="pass-api"></code></pre>
+                    <input class="pure-input-1" id="pass-copy" type="text" value="" placeholder="Pass URL" readonly>
+                  </form>
+                  <a id="pass-link" href="#"></a>
                 </div>
 
                 </div>
@@ -522,6 +563,7 @@
 
           </div> <!-- / "main" div -->
         </div> <!-- / "wrapper" div -->
+      </template>
 
               <!-- Message alert -->
                   <div class="alert alert-dismissable" style="display: none">
@@ -545,6 +587,7 @@
 
               <!-- JavaScript
               ================================================== -->
+              <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents-lite.min.js"></script>
               <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/jquery.onepage-scroll.js"></script>
@@ -554,6 +597,7 @@
               <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/l.control.geosearch.js"></script>
 	            <script type="text/javascript" src="/assets/js/plugin/l.geosearch.provider.google.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/qr.js"></script>
               <script type="text/javascript" src="/assets/js/app/images.js"></script>
               <script type="text/javascript" src="/assets/js/app/cert.js"></script>
               <script type="text/javascript" src="/assets/js/app/share.js"></script>

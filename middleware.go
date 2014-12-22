@@ -20,12 +20,13 @@ import (
 func passReadVerify(c *web.C, h http.Handler) http.Handler {
 	handler := func(res http.ResponseWriter, req *http.Request) {
 
+		malformError := fmt.Errorf("the submitted pass data is malformed")
 		passID := getIDType(*c) //get passID from passIDVerify middleware
 
 		passInput := pass{}
 		if err := utils.ReadJson(req, &passInput); err != nil {
 			log.Printf("read json error: %s", err.Error())
-			utils.JsonErrorResponse(res, fmt.Errorf("the submitted pass data is malformed"), http.StatusBadRequest)
+			utils.JsonErrorResponse(res, malformError, http.StatusBadRequest)
 			return
 		}
 
@@ -37,7 +38,7 @@ func passReadVerify(c *web.C, h http.Handler) http.Handler {
 		result, err := govalidator.ValidateStruct(passInput)
 		if err != nil {
 			log.Printf("validated: %t - validation error: %s", result, err.Error())
-			utils.JsonErrorResponse(res, fmt.Errorf("the submitted pass data is malformed"), http.StatusBadRequest)
+			utils.JsonErrorResponse(res, malformError, http.StatusBadRequest)
 			return
 		}
 
@@ -57,6 +58,7 @@ func passReadVerify(c *web.C, h http.Handler) http.Handler {
 func passIDVerify(c *web.C, h http.Handler) http.Handler {
 	handler := func(res http.ResponseWriter, req *http.Request) {
 
+		notFoundError := fmt.Errorf("pass not found")
 		db, err := utils.GetDbType(*c)
 		utils.Check(err)
 
@@ -65,7 +67,7 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 		_, err = base64.URLEncoding.DecodeString(passID)
 		if err != nil {
 			log.Println("Pass ID is not base64")
-			utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
+			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return
 		}
 
@@ -75,14 +77,14 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 		passData := pass{}
 		//checks to make sure the pass exists in the db, the id is real
 		if !db.FindById("pass", passID, &passData) {
-			log.Println("Pass not found")
-			utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
+			log.Println("Pass ID not found in DB")
+			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return
 		}
 
 		//id is a token, verify it - checks to make sure the correct user is matching the pass id
 		if verifyToken(passID, passData.Name, userID) != nil {
-			utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
+			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return
 		}
 

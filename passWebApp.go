@@ -42,11 +42,11 @@ type userModel struct {
 	PassList      []string  `form:"_" gorethink:"passList,omitempty"`                //A list of the pass Ids this users has made
 }
 
-//var emailTokenKey = "something-secret" //key for email verification hmac
-var passTokenKey = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
-var jWTokenKey = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`)   //TODO: lets make a new key and put this somewhere safer!
-
-var downloadServer = "http://local.pass.ninja:8001/pass/1/passes/"
+var (
+	passTokenKey   = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
+	jWTokenKey     = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`) //TODO: lets make a new key and put this somewhere safer!
+	downloadServer = "http://local.pass.ninja:8001/pass/1/passes/"
+)
 
 func init() {
 
@@ -289,9 +289,10 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	passData := c.Env["passData"].(pass) //get pass from passIDVerify middleware
 
+	//pass ready to be mutated? Or of the wrong type
 	if passData.Status != "api" {
 		log.Println("requested Pass is not ready or configurable")
-		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready or  configurable"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready or configurable"), http.StatusNotFound)
 		return
 	}
 
@@ -303,8 +304,8 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = updatePassVariables(&passData, customVars) //swap in variable values from req into variable placeholders in pass
-	if err != nil {
+	//swap in variable values from req into variable placeholders in pass
+	if updatePassVariables(&passData, customVars) != nil {
 		utils.JsonErrorResponse(res, err, http.StatusBadRequest)
 		return
 	}
@@ -391,7 +392,13 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	db, err := utils.GetDbType(c)
 	utils.Check(err)
 
-	passInputFrag := c.Env["passInput"].(pass) //get the input fragment data from jsonReadVerify middleware
+	passInputFrag := c.Env["passInput"].(pass) //get the input fragment data from passReadVerify middleware
+
+	//read the frag check for a mutateList, if there append it from the previous mutate list.
+	if len(passInputFrag.MutateList) > 0 {
+		passData := c.Env["passData"].(pass)                                                //get the whole pass data doc from passIDVerify middleware
+		passInputFrag.MutateList = append(passData.MutateList, passInputFrag.MutateList...) //appending arrays on update in rethinkdb is troublesome. Append here instead.
+	}
 
 	passInputFrag.Updated = time.Now() //update the timestamp
 
@@ -706,6 +713,12 @@ func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token,
 
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
 func updatePassVariables(newPass *pass, customVars map[string]string) error {
 
 	var passDoc *passStructure
@@ -725,42 +738,57 @@ func updatePassVariables(newPass *pass, customVars map[string]string) error {
 	case "storeCard":
 		passDoc = newPass.KeyDoc.StoreCard
 	default:
-		log.Println("Pass type not found")
+		log.Printf("Pass type %s not found", newPass.PassType)
 		return fmt.Errorf("the submitted data is malformed")
 	}
 
-	//loop over every custom variable key/value pair
-	for key, value := range customVars {
-		fmt.Printf("%s -> %s\n", key, value)
+	//loop over every mutate variable key in pass
+mutateLoop:
+	for _, key := range newPass.MutateList {
+		value, ok := customVars[key]
+		if !ok {
+			log.Printf("mutate key not found:%s", key)
+			return fmt.Errorf("the submitted data is malformed")
+		}
 
-		//match against each field slice : TODO, this is dumb
+		fmt.Printf("%s -> %s\n", key, value)
+		//sKey := []rune(key)           //aux4: starts as
+		//fieldType := sKey[:len(sKey)] //aux: first part
+		//index := sKey[len(sKey):]     //4: second part
+
+		//match against each field slice : TODO, is this ideal?
 		for i, field := range passDoc.AuxiliaryFields {
 			if field.Key == key {
 				passDoc.AuxiliaryFields[i].Value = value
-			}
-		}
-
-		for i, field := range passDoc.BackFields {
-			if field.Key == key {
-				passDoc.BackFields[i].Value = value
-			}
-		}
-
-		for i, field := range passDoc.HeaderFields {
-			if field.Key == key {
-				passDoc.HeaderFields[i].Value = value
-			}
-		}
-
-		for i, field := range passDoc.PrimaryFields {
-			if field.Key == key {
-				passDoc.PrimaryFields[i].Value = value
+				continue mutateLoop
 			}
 		}
 
 		for i, field := range passDoc.SecondaryFields {
 			if field.Key == key {
 				passDoc.SecondaryFields[i].Value = value
+				continue mutateLoop
+			}
+		}
+
+		for i, field := range passDoc.BackFields {
+			if field.Key == key {
+				passDoc.BackFields[i].Value = value
+				continue mutateLoop
+			}
+		}
+
+		for i, field := range passDoc.HeaderFields {
+			if field.Key == key {
+				passDoc.HeaderFields[i].Value = value
+				continue mutateLoop
+			}
+		}
+
+		for i, field := range passDoc.PrimaryFields {
+			if field.Key == key {
+				passDoc.PrimaryFields[i].Value = value
+				continue mutateLoop
 			}
 		}
 

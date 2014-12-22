@@ -29,7 +29,7 @@ type pass struct {
 	Updated     time.Time         `json:"updated" gorethink:"updated" valid:"required"`                        //when the pass was last updated or created
 	Status      string            `json:"status" gorethink:"status" valid:"required"`                          //Is the pass ready for distribution, in process, or expired
 	CertId      string            `json:"cert,omitempty" gorethink:"cert,omitempty"`                           //Id to the certificate used to sign the pass
-	SVG         string            `json:"svg,omitempty" gorethink:"svg,omitempty"`                             //the svg data to use as a thumbnail image, in pass gallery
+	MutateList  []string          `json:"mutatelist,omitempty" gorethink:"mutatelist,omitempty"`               //List of key/value pairs used to change the pass via the api upon issuing
 }
 
 /*************************************************************************
