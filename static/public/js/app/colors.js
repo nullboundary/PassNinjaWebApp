@@ -1,4 +1,4 @@
-(function (pb, $, undefined) {
+(function (tk, pb, $, undefined) {
 
   'use strict';
 
@@ -40,9 +40,9 @@
           var topColor = color.tiny.brighten(15).toRgbString();
           var bottomColor = color.tiny.darken(30).toRgbString(); //lightens or darkens color obj, so darken needs to add back after lighten.
 
-          d3.select('.pass-bg-lite').style('stop-color', topColor);
-          d3.select(changeClass).style('stop-color', centerColor);
-          d3.select('.pass-bg-dark').style('stop-color', bottomColor);
+          pb.svg().select('.pass-bg-lite').style('stop-color', topColor);
+          pb.svg().select(changeClass).style('stop-color', centerColor);
+          pb.svg().select('.pass-bg-dark').style('stop-color', bottomColor);
 
         } else { //adjust values of all the other classes
           d3.selectAll(changeClass).style('fill', color.tiny.toRgbString());
@@ -79,9 +79,9 @@
     //set bg gradiant color
     var bgColor = tinycolor(pb.template().keyDoc.backgroundColor);
 
-    d3.select('.pass-bg-lite').style('stop-color', bgColor.brighten(15).toRgbString());
-    d3.select('.pass-bg').style('stop-color', bgColor.toRgbString());
-    d3.select('.pass-bg-dark').style('stop-color', bgColor.darken(15).toRgbString());
+    pb.svg().select('.pass-bg-lite').style('stop-color', bgColor.brighten(15).toRgbString());
+    pb.svg().select('.pass-bg').style('stop-color', bgColor.toRgbString());
+    pb.svg().select('.pass-bg-dark').style('stop-color', bgColor.darken(15).toRgbString());
 
 
 
@@ -93,9 +93,9 @@
  	***********************************************************/
   function updateText() {
 
-    console.log(d3.select('.value-text').style('fill'));
-    d3.selectAll('.value-text').style('fill', pb.template().keyDoc.foregroundColor);
-    d3.selectAll('.label-text').style('fill', pb.template().keyDoc.labelColor);
+    console.log(pb.svg().select('.value-text').style('fill'));
+    pb.svg().selectAll('.value-text').style('fill', pb.template().keyDoc.foregroundColor);
+    pb.svg().selectAll('.label-text').style('fill', pb.template().keyDoc.labelColor);
   }
 
 
@@ -122,9 +122,9 @@
   function resetRectStroke() {
 
     //reset text rect stroke color
-    d3.selectAll('rect.text-btn-rect').style('stroke', null);
+    pb.svg().selectAll('rect.text-btn-rect').style('stroke', null);
     //reset image rect stroke color
-    d3.selectAll('rect.img-btn-rect').style('stroke', null);
+    pb.svg().selectAll('rect.img-btn-rect').style('stroke', null);
   }
 
 
@@ -136,9 +136,9 @@
 
     console.log('colorSave');
 
-    var bgColor = d3.selectAll('.pass-bg').style('stop-color');
-    var labelColor = d3.selectAll('.label-text').style('fill');
-    var valueColor = d3.selectAll('.value-text').style('fill');
+    var bgColor = pb.svg().selectAll('.pass-bg').style('stop-color');
+    var labelColor = pb.svg().selectAll('.label-text').style('fill');
+    var valueColor = pb.svg().selectAll('.value-text').style('fill');
 
     //set colors in keyDoc
     pb.template().keyDoc.foregroundColor = valueColor;
@@ -215,4 +215,4 @@
 
   //return passColors; //return the colors object
 
-}(passBuilder = window.passBuilder || {}, jQuery));
+}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));

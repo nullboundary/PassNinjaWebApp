@@ -1,4 +1,4 @@
-(function (pb, $, undefined) {
+(function (tk, pb, $, undefined) {
 
   'use strict';
 
@@ -82,13 +82,23 @@
    ***********************************************************/
   function initMap() {
 
+      console.log('init Map');
+
       map = L.map('loc-map').setView([51.505, -0.09], 16); //default to london
 
+      var CartoDB_Positron = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 18
+      }).addTo(map);
+
+      /* toolserver.org is down. Can't find new link.
       var OpenStreetMap_BlackAndWhite = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http: //openstreetmap.org">OpenStreetMap</a>',
         detectRetina: true,
         maxZoom: 16
-      }).addTo(map);
+      }).addTo(map);*/
 
       // create the geocoding control and add it to the map
       var geocode = new L.Control.GeoSearch({
@@ -102,7 +112,7 @@
       //set geoencoder search box placeholder text and disable
       d3.select('leaflet-control-geosearch-qry')
         .property('placeholder', 'search address')
-        .call(pb.disable);
+        .call(tk.disable);
 
       //try to use browser location to set map
       map.locate({
@@ -413,9 +423,9 @@
       disableLoc();
 
       //set input value properties
-      pb.setValue('input#beacon-uuid', data.proximityUUID);
-      pb.setValue('input#beacon-major', data.major);
-      pb.setValue('input#beacon-minor', data.minor);
+      tk.setValue('input#beacon-uuid', data.proximityUUID);
+      tk.setValue('input#beacon-major', data.major);
+      tk.setValue('input#beacon-minor', data.minor);
 
       if (data.proximityUUID && data.relevantText) { //because there are 2 relevantText loc or beacon
         d3.select('input#beacon-relevant')
@@ -623,10 +633,10 @@
    ***********************************************************/
   function enableLoc() {
       map.on('click', onMapClick);
-      d3.select('leaflet-control-geosearch-qry').call(pb.enable).property('value', '');
-      d3.select('input#loc-latlong').call(pb.enable).property('value', '');
-      d3.select('input#loc-relevant').call(pb.enable).property('value', '');
-      d3.select('button#btn-del-loc').call(pb.enable);
+      d3.select('leaflet-control-geosearch-qry').call(tk.enable).property('value', '');
+      d3.select('input#loc-latlong').call(tk.enable).property('value', '');
+      d3.select('input#loc-relevant').call(tk.enable).property('value', '');
+      d3.select('button#btn-del-loc').call(tk.enable);
     }
     /***********************************************************
 
@@ -635,10 +645,10 @@
 
   function disableLoc() {
     map.off('click', onMapClick);
-    d3.select('leaflet-control-geosearch-qry').call(pb.disable).property('value', '');
-    d3.select('input#loc-latlong').call(pb.disable).property('value', '');
-    d3.select('input#loc-relevant').call(pb.disable).property('value', '')
-    d3.select('button#btn-del-loc').call(pb.disable);
+    d3.select('leaflet-control-geosearch-qry').call(tk.disable).property('value', '');
+    d3.select('input#loc-latlong').call(tk.disable).property('value', '');
+    d3.select('input#loc-relevant').call(tk.disable).property('value', '')
+    d3.select('button#btn-del-loc').call(tk.disable);
   }
 
   /***********************************************************
@@ -647,11 +657,11 @@
    ***********************************************************/
   function disableBeacon() {
 
-    d3.select('input#beacon-uuid').call(pb.disable).property('value', '');
-    d3.select('input#beacon-major').call(pb.disable).property('value', '');
-    d3.select('input#beacon-minor').call(pb.disable).property('value', '');
-    d3.select('input#beacon-relevant').call(pb.disable).property('value', '');
-    d3.select('button#btn-del-beacon').call(pb.disable);
+    d3.select('input#beacon-uuid').call(tk.disable).property('value', '');
+    d3.select('input#beacon-major').call(tk.disable).property('value', '');
+    d3.select('input#beacon-minor').call(tk.disable).property('value', '');
+    d3.select('input#beacon-relevant').call(tk.disable).property('value', '');
+    d3.select('button#btn-del-beacon').call(tk.disable);
   }
 
   /***********************************************************
@@ -659,11 +669,11 @@
 
    ***********************************************************/
   function enableBeacon() {
-    d3.select('input#beacon-uuid').call(pb.enable).property('value', '');
-    d3.select('input#beacon-major').call(pb.enable).property('value', '');
-    d3.select('input#beacon-minor').call(pb.enable).property('value', '');
-    d3.select('input#beacon-relevant').call(pb.enable).property('value', '');
-    d3.select('button#btn-del-beacon').call(pb.enable);
+    d3.select('input#beacon-uuid').call(tk.enable).property('value', '');
+    d3.select('input#beacon-major').call(tk.enable).property('value', '');
+    d3.select('input#beacon-minor').call(tk.enable).property('value', '');
+    d3.select('input#beacon-relevant').call(tk.enable).property('value', '');
+    d3.select('button#btn-del-beacon').call(tk.enable);
   }
 
   /***********************************************************
@@ -861,4 +871,4 @@
 
   };
 
-}(passBuilder = window.passBuilder || {}, jQuery));
+}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));

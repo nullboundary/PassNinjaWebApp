@@ -28,18 +28,18 @@ import (
 
 //userModel can be any struct that represents a user in a system
 type userModel struct {
-	ID            string    `form:"id" gorethink:"id"`
-	Email         string    `form:"email" gorethink:"email"`                         //Email is ID of user
-	User          goth.User `form:"user" gorethink:"user"`                           //Detailed User info from oauth login
-	Organization  string    `form:"organization" gorethink:"organization,omitempty"` //User organization name
-	OAuthProvider string    `form:"_" gorethink:"oauth"`                             //User is using OAuth login, not email
-	Created       time.Time `form:"_" gorethink:"created,omitempty"`                 //Account Created time/date
-	LastLogin     time.Time `form:"-" gorethink:"lastLogin,omitempty"`               //Last login time
-	Subscriber    bool      `form:"_" gorethink:"subscriber,omitempty"`              //subscriber: true or false? (false could be free trial users)
-	SubStart      time.Time `form:"_" gorethink:"subStart,omitempty"`                //Subscription start date
-	SubExpiration time.Time `form:"_" gorethink:"subExpire,omitempty"`               //Subscription expiration date
-	SubPlan       string    `form:"_" gorethink:"subPlan,omitempty"`                 //Subscription plan for this user
-	PassList      []string  `form:"_" gorethink:"passList,omitempty"`                //A list of the pass Ids this users has made
+	ID            string    `gorethink:"id"`
+	Email         string    `gorethink:"email"`                  //Email is ID of user
+	User          goth.User `gorethink:"user"`                   //Detailed User info from oauth login
+	Organization  string    `gorethink:"organization,omitempty"` //User organization name
+	OAuthProvider string    `gorethink:"oauth"`                  //User is using OAuth login, not email
+	Created       time.Time `gorethink:"created,omitempty"`      //Account Created time/date
+	LastLogin     time.Time `gorethink:"lastLogin,omitempty"`    //Last login time
+	Subscriber    bool      `gorethink:"subscriber,omitempty"`   //subscriber: true or false? (false could be free trial users)
+	SubStart      time.Time `gorethink:"subStart,omitempty"`     //Subscription start date
+	SubExpiration time.Time `gorethink:"subExpire,omitempty"`    //Subscription expiration date
+	SubPlan       string    `gorethink:"subPlan,omitempty"`      //Subscription plan for this user
+	PassList      []string  `gorethink:"passList,omitempty"`     //A list of the pass Ids this users has made
 }
 
 var (
@@ -78,27 +78,30 @@ func main() {
 	goji.Get("/", handleTemplates)
 	goji.Get("/assets/*", handleStatic)
 
-	//login pages
+	//web app login pages
 	accounts := web.New()
-	goji.Handle("/accounts/*", accounts) //handle all things that require login
-	accounts.Use(requireLogin)           //login check middleware
+	goji.Handle("/accounts/*", accounts)                           //handle all things that require login
+	accounts.Use(requireLogin)                                     //login check middleware
+	accounts.Get("/accounts/home", handlePassListPage)             //seperate assets for accounts - TODO add back to non accounts
+	accounts.Get("/accounts/template/:passType", handlePassSample) //return a sample json object of the pass type
 
-	accounts.Get("/accounts/assets/*", handleAccountStatic) //seperate assets for accounts - TODO add back to non accounts
+	//accounts.Get("/accounts/passes/", handleAccountStatic)
 
 	//login root, view current passes - TODO: now its set as builder! - TODO: Make static
-	accounts.Get("/accounts/index.html", handleAccountTemplates)
-	accounts.Get("/accounts/", handleAccountTemplates)
-	accounts.Get("/accounts/builder.html", handleAccountTemplates) //make a pass
+	//accounts.Get("/accounts/index.html", handlePageStatic) //handleAccountTemplates)
+	//accounts.Get("/accounts/", handlePageStatic)           //handleAccountTemplates)
+	//accounts.Get("/accounts/builder.html", handleAccountTemplates) //make a pass
 
 	//API
-	accounts.Get("/accounts/template/:passType", handleAccountPassStructure) //return a json object of the pass type
-	//accounts.Get("/accounts/passes/", handleListPasses)                      //get a list of all the users passes
-	accounts.Get("/accounts/passes/:id", cji.Use(passIDVerify).On(handleGetPass)) //get a specific pass data object
-
-	accounts.Get("/accounts/passes/:id/link", cji.Use(passIDVerify).On(handleGetPassLink))             //get a public link to a pass - or update pass variables.
-	accounts.Post("/accounts/passes/", cji.Use(passReadVerify).On(handleCreatePass))                   //creates a new pass
-	accounts.Patch("/accounts/passes/:id/link", cji.Use(passIDVerify).On(handleMutatePass))            //update pass variables.
-	accounts.Patch("/accounts/passes/:id", cji.Use(passIDVerify, passReadVerify).On(handleUpdatePass)) //partial update of pass data
+	api := web.New()
+	goji.Handle("/api/*", api)                                                                  //handle all things that require login
+	api.Use(requireLogin)                                                                       //login check middleware
+	api.Get("/api/v1/passes/", handleGetAllPass)                                                //get a list of all the users passes
+	api.Get("/api/v1/passes/:id", cji.Use(passIDVerify).On(handleGetPass))                      //get a specific pass data object
+	api.Get("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleGetPassLink))             //get a public link to a pass - or update pass variables.
+	api.Post("/api/v1/passes/", cji.Use(passReadVerify).On(handleCreatePass))                   //creates a new pass
+	api.Patch("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleMutatePass))            //update pass variables.
+	api.Patch("/api/v1/passes/:id", cji.Use(passIDVerify, passReadVerify).On(handleUpdatePass)) //partial update of pass data
 
 	goji.NotFound(handleNotFound)
 
@@ -185,6 +188,20 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
+func handlePassListPage(c web.C, res http.ResponseWriter, req *http.Request) {
+
+	log.Printf("handlePassListPage %s", req.URL.Path[1:])
+
+	http.ServeFile(res, req, "static/auth/accounts.html")
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
 func handleAccountStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("handleAccountStatic %s", req.URL.Path[1:])
@@ -204,8 +221,8 @@ func handleAccountStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleAccountPassStructure(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleAccountPassStructure")
+func handlePassSample(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handlePassSample")
 
 	var templateID string
 
@@ -342,6 +359,36 @@ func handleGetPass(c web.C, res http.ResponseWriter, req *http.Request) {
 	passData := c.Env["passData"].(pass) //get pass from passIDVerify middleware
 
 	err := utils.WriteJson(res, passData, true)
+	utils.Check(err)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	handleGetAllPass returns all pass data objects for the user.
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func handleGetAllPass(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("handleGetAllPass")
+
+	db, err := utils.GetDbType(c)
+	utils.Check(err)
+
+	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
+	userID := c.Env["jwt-userid"].(string)
+	passList := []pass{}
+
+	log.Println(userID)
+	filter := map[string]string{"field": "userid", "value": userID}
+
+	if !db.FindAllEq("pass", filter, &passList) {
+		log.Println("db FindAllEq Error")
+		utils.JsonErrorResponse(res, fmt.Errorf("an error has occured retrieving pass data"), http.StatusInternalServerError)
+		return
+	}
+
+	err = utils.WriteJson(res, passList, true)
 	utils.Check(err)
 
 }

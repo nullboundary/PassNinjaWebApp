@@ -1,4 +1,4 @@
-(function (pb, $, undefined) {
+(function (tk, pb, $, undefined) {
 
   'use strict';
 
@@ -7,7 +7,19 @@
     'index': '' //keydoc array index value
   };
 
+  var backSVG;
+  var svgWidth;
+  var svgHeight;
+
+  /***********************************************************
+
+
+  ***********************************************************/
   function init() {
+
+    backSVG = d3.select('svg.back');
+    svgWidth = parseFloat(backSVG.attr('width'));
+    svgHeight = parseFloat(backSVG.attr('height'));
 
     //set the input box handler for the label
     //  d3.select('#back-label')
@@ -39,91 +51,18 @@
    ***********************************************************/
   function addHandlers() {
 
-      var backBBox = d3.select('g#back-fields').node().getBBox(); //calculated BBox of back fields group
-      //console.log(backBBox);
-      var backSVG = d3.select('svg.back');
-      var svgWidth = parseFloat(backSVG.attr('width'));
-      var svgHeight = parseFloat(backSVG.attr('height'));
-
+      //setup scrolling for the backfields
       var zoom = d3.behavior.zoom()
         .scaleExtent([1, 10])
-        .on('zoom', function () {
-
-          //move back-fields group
-          d3.select('g#back-fields').attr('transform', 'translate(0,' + d3.event.translate[1] + ')');
-
-          backBBox = d3.select('g#back-fields').node().getBBox();
-          var topYLoc = zoom.translate()[1]; //get the Y translate of pan (mouse/touch loc)
-          var bottomYLoc = topYLoc + backBBox.height; //the bottom edge of the back-fields group
-          var scale = svgHeight / backBBox.height;
-          var length = svgHeight * scale; //length of scroll bar
-
-          updateScrollBar(topYLoc, backBBox.height);
-
-          if (topYLoc > -10) { //limit pull down.
-
-            //create linear scale range to adjust scrollbar length
-            var lineScale = d3.scale.linear()
-              .domain([80, -10]) //input
-              .range([15, length]) //minium length to maximum length of scrollbar.
-              .clamp(true);
-
-            limitScroll(lineScale, topYLoc, 10, length, svgHeight);
-
-          } else if ((bottomYLoc) < (svgHeight - 40)) { //limit pull up
-
-            var lineScale = d3.scale.linear()
-              .domain([(backBBox.height - 80), (backBBox.height - 10)])
-              .range([svgHeight - 15, svgHeight - length]) //minium length to maximum length of scrollbar.
-              .clamp(true);
-
-            limitScroll(lineScale, bottomYLoc, svgHeight - 10, length, svgHeight);
-
-          }
-
-          if (d3.event.sourceEvent != null) {
-            d3.event.sourceEvent.stopPropagation(); //don't let onepage scroll to the next page.
-          }
-
-
-        })
+        .on('zoom', onScroll) //scroll move behavior
         .on('zoomstart', function () {
 
-          backBBox = d3.select('g#back-fields').node().getBBox();
+          var backBBox = d3.select('g#back-fields').node().getBBox();
           var topYLoc = zoom.translate()[1];
           updateScrollBar(topYLoc, backBBox.height);
 
         })
-        .on('zoomend', function () {
-
-          backBBox = d3.select('g#back-fields').node().getBBox();
-          var topYLoc = zoom.translate()[1];
-          var bottomYLoc = topYLoc + backBBox.height; //the bottom edge of the back-fields group
-          console.log(' bbOx:' + backBBox.height);
-
-          if (topYLoc > 0) { //return to zero after pull down.
-
-            zoom.translate([0, 0]);
-            d3.select('g#back-fields').transition().ease('cubic').attr('transform', 'translate(0,' + 0 + ')');
-
-          } else if (bottomYLoc < (svgHeight - 30)) { //return to zero after pull up.
-            var defaultY = (svgHeight - 60) - backBBox.height;
-            zoom.translate([0, defaultY]);
-            d3.select('g#back-fields').transition().ease('cubic').attr('transform', 'translate(0,' + defaultY +
-              ')');
-          }
-
-
-          updateScrollBar(topYLoc, backBBox.height);
-
-          //hide srollbar
-          d3.select('line#scroll-bar')
-            .transition()
-            .delay(1000)
-            .style('display', 'none')
-
-
-        });
+        .on('zoomend', onScrollEnd);
 
       //activate zoom/pan events
       d3.select('svg.back')
@@ -166,7 +105,6 @@
       if (scale < 1) {
 
         var length = 401 * scale; //length of scroll bar
-
         var lineStart = d3.scale.linear()
           .domain([-gHeight, 0])
           .range([401, 0])
@@ -196,6 +134,85 @@
       .attr('stroke', 'rgb(148,148,148)')
       .attr('stroke-linecap', 'round')
       .attr('stroke-width', 4);
+
+  }
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function onScroll() {
+
+      //move back-fields group to mouse position
+      d3.select('g#back-fields').attr('transform', 'translate(0,' + d3.event.translate[1] + ')');
+
+      var backBBox = d3.select('g#back-fields').node().getBBox();
+      var topYLoc = d3.event.translate[1]; //get the Y translate of pan (mouse/touch loc)
+      var bottomYLoc = topYLoc + backBBox.height; //the bottom edge of the back-fields group
+      var scale = svgHeight / backBBox.height;
+      var length = svgHeight * scale; //length of scroll bar
+
+      updateScrollBar(topYLoc, backBBox.height);
+
+      if (topYLoc > -10) { //limit pull down.
+
+        //create linear scale range to adjust scrollbar length
+        var lineScale = d3.scale.linear()
+          .domain([80, -10]) //input
+          .range([15, length]) //minium length to maximum length of scrollbar.
+          .clamp(true);
+
+        limitScroll(lineScale, topYLoc, 10, length, svgHeight);
+
+      } else if ((bottomYLoc) < (svgHeight - 40)) { //limit pull up
+
+        var lineScale = d3.scale.linear()
+          .domain([(backBBox.height - 80), (backBBox.height - 10)])
+          .range([svgHeight - 15, svgHeight - length]) //minium length to maximum length of scrollbar.
+          .clamp(true);
+
+        limitScroll(lineScale, bottomYLoc, svgHeight - 10, length, svgHeight);
+
+      }
+
+      if (d3.event.sourceEvent != null) {
+        d3.event.sourceEvent.stopPropagation(); //don't let onepage scroll to the next page.
+      }
+
+    }
+    /***********************************************************
+
+
+    ***********************************************************/
+  function onScrollEnd() {
+
+    var backBBox = d3.select('g#back-fields').node().getBBox();
+    var topYLoc = d3.event.translate[1];
+    var bottomYLoc = topYLoc + backBBox.height; //the bottom edge of the back-fields group
+    console.log(' bbOx:' + backBBox.height);
+
+    if (topYLoc > 0) { //return to zero after pull down.
+
+      zoom.translate([0, 0]);
+      d3.select('g#back-fields').transition().ease('cubic').attr('transform', 'translate(0,' + 0 + ')');
+
+    } else if (bottomYLoc < (svgHeight - 30)) { //return to zero after pull up.
+      var defaultY = (svgHeight - 60) - backBBox.height;
+      d3.event.translate([0, defaultY]);
+      d3.select('g#back-fields').transition().ease('cubic').attr('transform', 'translate(0,' + defaultY +
+        ')');
+    }
+
+
+    updateScrollBar(topYLoc, backBBox.height);
+
+    //hide srcollbar
+    d3.select('line#scroll-bar')
+      .transition()
+      .delay(1000)
+      .style('display', 'none')
+
+
 
   }
 
@@ -385,9 +402,9 @@
    ***********************************************************/
   function setBackFields2() {
 
-    var backDataSet = pb.template().keyDoc[pb.passType()].backFields,
-      backFieldRect = d3.select('rect#back-fields-bg'),
-      margin = 16;
+    var backDataSet = pb.template().keyDoc[pb.passType()].backFields;
+    var backFieldRect = d3.select('rect#back-fields-bg');
+    var margin = 16;
 
     //reset backfield rect length
     backFieldRect.attr('height', 0);
@@ -400,7 +417,6 @@
     if (typeof backDataSet !== 'undefined') {
 
       var backGroup = d3.select('g#back-fields');
-
       //bind dataset
       var backFields = backGroup.selectAll('.back-field').data(backDataSet);
 
@@ -459,7 +475,6 @@
       //extend the back fields rectangle
       var backBBox = d3.select('g#back-fields').node().getBBox(); //calculated BBox of back fields group
       var textHeight = backBBox.height - parseInt(backFieldRect.attr('y'));
-
       var rectHeight = parseInt(backFieldRect.attr('height'));
       rectHeight = rectHeight + textHeight + 25;
       console.log('rectHeight:' + rectHeight + ' bbOx:' + textHeight);
@@ -606,4 +621,4 @@
 
   };
 
-}(passBuilder = window.passBuilder || {}, jQuery));
+}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));

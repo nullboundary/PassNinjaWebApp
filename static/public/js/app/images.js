@@ -1,8 +1,27 @@
-(function (pb, $, undefined) {
+(function (tk, pb, $, undefined) {
 
   'use strict';
 
-  var currentEditTarget;
+  var currentEditTarget; //id of image currently selected
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function init() {
+
+    //add handler for delete image button
+    d3.select('button#btn-del-image')
+      .call(tk.disable) //starts disabled
+      .on('click', onDelImage);
+
+    //FIXME: modify file chooser button, this doesn't work now
+    var button = document.querySelector('input#image-input');
+    var fileButtonTemplate = document.getElementById("file-button-template");
+    var shadowDom = button.createShadowRoot();
+    shadowDom.appendChild(fileButtonTemplate.content);
+
+  }
 
   /***********************************************************
 
@@ -25,7 +44,7 @@
 
     //remove all images from svg if they are part of the pass data
     for (var i = 0; i < diff.length; ++i) {
-      var imageSelection = d3.select('g.img-btn-group #' + diff[i]);
+      var imageSelection = pb.svg().select('g.img-btn-group #' + diff[i]);
       if (!imageSelection.empty()) { //remove it if its in the svg
         imageSelection.remove();
       }
@@ -33,27 +52,30 @@
 
     if (pb.template().images != null) {
       //add or replace images that exist in data
-      for (var index = 0; index < pb.template().images.length; ++index) {
+      var imageLength = pb.template().images.length;
+      for (var index = 0; index < imageLength; ++index) {
+
+        var imageObj = pb.template().images[index];
 
         //select the image id. Example: g.img-btn-group #logo
-        var imageSelection = d3.select('g.img-btn-group #' + pb.template().images[index].name);
+        var imageSelection = pb.svg().select('g.img-btn-group #' + imageObj.name);
 
         if (imageSelection.empty()) { //if group has no image, add image. svg images were removed above!
 
           //select th imageGroup specific to that image. Example: g.img-btn-group#logo-group
-          var imageGroup = d3.select('g.img-btn-group#' + pb.template().images[index].name + '-group')
+          var imageGroup = pb.svg().select('g.img-btn-group#' + imageObj.name + '-group')
 
           if (!imageGroup.empty()) { //image group exists
-
-            var rectWidth = imageGroup.select('rect.img-btn-rect').attr('width');
-            var rectHeight = imageGroup.select('rect.img-btn-rect').attr('height');
-            var rectX = imageGroup.select('rect.img-btn-rect').attr('x');
-            var rectY = imageGroup.select('rect.img-btn-rect').attr('y');
+            var imageRect = imageGroup.select('rect.img-btn-rect'),
+              rectWidth = imageRect.attr('width'),
+              rectHeight = imageRect.attr('height'),
+              rectX = imageRect.attr('x'),
+              rectY = imageRect.attr('y');
 
             imageGroup
-              .insert('image', 'rect.img-btn-rect')
-              .attr('id', pb.template().images[index].name)
-              .attr('xlink:href', pb.template().images[index].image)
+              .insert('image', 'rect.img-btn-rect') //insert before the rect
+              .attr('id', imageObj.name)
+              .attr('xlink:href', imageObj.image)
               .attr('width', rectWidth)
               .attr('height', rectHeight)
               .attr('x', rectX)
@@ -68,13 +90,35 @@
         } else { //replace image
 
           //this doesn't seem to happen, not sure when it should?
-          imageSelection.attr('xlink:href', pb.template().images[index].image);
+          imageSelection.attr('xlink:href', imageObj.image);
           d3.select(imageSelection.parentNode + ' rect.img-btn-rect').on('click', onImageRectClick);
         }
 
 
       }
     }
+  }
+
+  /***********************************************************
+  onDelImage deletes the image from the svg and the pass data
+  images array.
+
+  ***********************************************************/
+  function onDelImage() {
+    d3.event.preventDefault();
+
+    var imageSelect = pb.svg().select('#' + currentEditTarget);
+    console.log(currentEditTarget);
+    if (!imageSelect.empty()) { //remove it if its in the svg
+      console.log(imageSelect);
+      imageSelect.remove(); //remove from svg
+
+      var matchIndex = pb.template().images.map(function (e) {
+        return e.name;
+      }).indexOf(currentEditTarget); //find the index of the matching image name
+      pb.template().images.splice(matchIndex, 1); //remove the image from the array
+    }
+
   }
 
   /***********************************************************
@@ -88,7 +132,7 @@
 
       if (!$('#image-input').val()) //check empty input field
       {
-        pb.alertDisplay('error', 'no image selected');
+        tk.alertDisplay('error', 'no image selected');
         return false
       }
 
@@ -100,7 +144,7 @@
       //Allowed file size is less than 1 MB (1048576)
       if (fsize > 1048576) {
 
-        pb.alertDisplay('error', 'Image file should be less than 1MB!');
+        tk.alertDisplay('error', 'Image file should be less than 1MB!');
         return false
       }
 
@@ -109,7 +153,7 @@
     } else {
 
       //Output error to older unsupported browsers that doesn't support HTML5 File API
-      pb.alertDisplay('error', 'Please upgrade your browser!');
+      tk.alertDisplay('error', 'Please upgrade your browser!');
       return false;
     }
   }
@@ -188,20 +232,26 @@
 
     currentEditTarget = d3.select(this).attr('data-target');
 
-    d3.selectAll('rect').attr('class', 'img-btn-rect');
+    pb.svg().selectAll('rect').attr('class', 'img-btn-rect');
     d3.select(this).attr('class', 'img-btn-rect select');
 
     //update the legend in popover to display the id of the field
     d3.select('form#image-upload legend')
       .text(currentEditTarget + '.png Image');
 
+    //enable image input
     d3.select('#image-input')
-      .attr('disabled', null);
+      .call(tk.enable);
 
+    //enable image add button
     d3.select('button#image-upload-btn')
       .on('click', null)
-      .attr('disabled', null)
+      .call(tk.enable)
       .on('click', onImageUpload);
+
+    //enable delete image button
+    d3.select('button#btn-del-image')
+      .call(tk.enable);
 
   }
 
@@ -231,7 +281,7 @@
 
         if (errorMessage != '') {
 
-          pb.alertDisplay('error', errorMessage);
+          tk.alertDisplay('error', errorMessage);
 
         } else { //--------------success
 
@@ -309,7 +359,9 @@
     set: function () {
       setPassImages();
     },
-
+    init: function () {
+      init();
+    },
     onRectClick: function () {
       onImageRectClick();
     },
@@ -330,4 +382,4 @@
   };
   //return passImages; //return the image object
 
-}(passBuilder = window.passBuilder || {}, jQuery));
+}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pass Ninja</title>
+    <meta name="description" content="Passbook Builder">
+    <meta name="keywords" content="passbook, pass, pass ninja, wallet, ibeacon, mobile pass, coupon">
+    <meta name="author" content="Pass Ninja">
+    <link rel="shortcut icon" href="/assets/img/favicon_ticket.ico">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <!--<![endif]-->
+    <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/global.css" rel="stylesheet" type="text/css">
+  <!--  <link rel="stylesheet" type="text/css" href="/assets/css/grid_default.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/grid_component.css" /> -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" type="text/css">
+    <link rel="stylesheet" href="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-geocoder.css" type="text/css">
+    <link href="/assets/css/plugin/onepage-scroll.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/builder.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
+
+    <template id="file-button-template">
+    <style>
+    div {
+      padding: 6px;
+      border: 1px solid grey;
+      border-radius: 4px;
+      box-shadow: 1px 1px 4px grey;
+      background-color: lightgrey;
+      width: 30px;
+      cursor: pointer;
+    }
+    div:hover {
+      background-color: whitesmoke;
+    }
+    </style>
+    <div>
+      <i class="fa fa-file-image-o"></i>Choose File
+    </div>
+  </template>
+
+  <template id="pass-builder">
+
+    <!--<div class="wrapper">-->
+    <div class="main">
+      <!-- Page 1 ================== -->
+      <template id="page1-builder">
+        <section class="page1">
+
+          <div class="pure-g">
+            <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+            <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+              <h1>Pass Type</h1>
+              <h2>Select the type of pass you want to create! </h2>
+            </div>
+            <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3 "></div>
+          </div>
+          <!-- Thumbnail Grid of Pass Type Selection -->
+          <div class="passtype-grid pure-g">
+            <div class="pure-u-1-3 pure-u-md-1-5">
+              <figure>
+                <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/assets/img/boarding_01_thumb.png" alt="Boarding Pass" width="226" height="290">
+                <figcaption class="passtype-label">
+                  Boarding Pass
+                </figcaption>
+              </figure>
+            </div>
+            <div class="pure-u-1-3 pure-u-md-1-5">
+              <figure>
+                <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/assets/img/coupon_03_thumb.png" alt="Coupon" width="226" height="290">
+                <figcaption class="passtype-label">
+                  Coupon
+                </figcaption>
+              </figure>
+            </div>
+            <div class="pure-u-1-3 pure-u-md-1-5">
+              <figure>
+                <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_strip_thumb.png" alt="Event Ticket" width="226" height="290">
+                <figcaption class="passtype-label">
+                  Event Ticket
+                </figcaption>
+              </figure>
+            </div>
+            <div class="pure-u-1-3 pure-u-md-1-5">
+              <figure>
+                <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/assets/img/store_01_thumb.png" alt="Store Card" width="226" height="290">
+                <figcaption class="passtype-label">
+                  Store Card
+                </figcaption>
+              </figure>
+            </div>
+            <div class="pure-u-1-3 pure-u-md-1-5">
+              <figure>
+                <img id="generic" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_fullbg_thumb.png" alt="Generic" width="226" height="290">
+                <figcaption class="passtype-label">
+                  Generic
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
+        </section>
+      </template>
+      <!-- Page 2 ================== -->
+      <section class="page2">
+        <!-- Fields -->
+        <div class="pure-g">
+          <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+            <h1>Get Started!</h1>
+            <h2>Fill out the name of the pass template and organization!</h2>
+            <form class="pure-form">
+              <fieldset class="pure-group">
+                <input type="text" class="pure-input-1" id="pass-name" placeholder="Pass Name" required>
+                <input type="text" class="pure-input-1" id="pass-desc" placeholder="Pass Description">
+              </fieldset>
+              <fieldset>
+                <input type="text" class="pure-input-1" id="org-name" placeholder="Organization Name" required>
+              </fieldset>
+            </form>
+          </div>
+          <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+        </div>
+      </section>
+      <!-- Page 3 ================== -->
+      <section class="page3">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Pass Color</h1>
+            <h2>Change background colors.</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- label color slider -->
+            <div class="color-select">
+              <div class="rgb-background"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Page 4 ================== -->
+      <section class="page4">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Label Color</h1>
+            <h2>Change label text colors.</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- label color slider -->
+            <div class="color-select">
+              <div class="rgb-label"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Page 5 ================== -->
+      <section class="page5">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Value Color</h1>
+            <h2>Change value text colors.</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- value color slider -->
+            <div class="color-select">
+              <div class="rgb-value"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Page 6 ================== -->
+      <section class="page6">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Images</h1>
+            <h2>Select an image to change it.</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- Image Upload Control -->
+            <div class="control ninja-theme">
+              <form id="image-upload" class="pure-form">
+                <fieldset>
+                  <legend>No image selected</legend>
+                  <div class="pure-control-group">
+                    <input id="image-input" type="file" accept="image/png" disabled>
+                    <button class="pure-button" id="image-upload-btn" disabled>Add Image</button>
+                  </div>
+                  <div class="pure-control-group">
+                    <button class="pure-button" id="btn-del-image" disabled><i class="fa fa-minus-circle"></i> Delete Image</button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Page 7 ================== -->
+      <section class="page7">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Barcode</h1>
+            <h2>Choose the barcode type.</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- Barcode Control -->
+            <div class="control ninja-theme">
+              <form id="barcode" class="pure-form pure-form-aligned">
+                <fieldset class="pure-group">
+                  <input id="bar-message" type="text" class="pure-input-1" placeholder="Barcode Message">
+                  <input id="bar-alt" type="text" class="pure-input-1"  placeholder="Alternative Text">
+                </fieldset>
+                <fieldset>
+                  <div class="pure-control-group">
+                    <label for="bar-encode">Message Encoding</label>
+                    <input id="bar-encode" type="text" value="iso-8859-1">
+                  </div>
+                  <div class="pure-control-group">
+                    <label for="bar-format">Barcode Format</label>
+                    <select id="bar-format">
+                      <option>PDF417</option>
+                      <option>Aztec</option>
+                      <option>QR</option>
+                      <option>No Barcode</option>
+                    </select>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Page 8 ================== -->
+      <section class="page8">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Info Fields</h1>
+            <h2>Select a field to change it.</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- Text Popover -->
+            <div class="control ninja-theme">
+              <form id="pop-text" class="pure-form pure-form-aligned">
+                <fieldset>
+                  <legend>
+                    <div id="legend-header">
+                      No field selected
+                    </div>
+                    <div id="legend-add">
+                      <button class="pure-button" id="btn-add-field" disabled><i class="fa fa-plus-circle"></i> New Field</button>
+                    </div>
+                  </legend>
+                </fieldset>
+
+                <fieldset>
+                  <div class="pure-control-group">
+                    <label for="popLabel">Field Label</label>
+                    <input id="popLabel" type="text" disabled>
+                  </div>
+                  <div class="pure-control-group">
+                    <label for="popValue">Field Value</label>
+                    <select id="value-format" disabled>
+                      <option selected="selected">Text</option>
+                      <option value="Number">Number</option>
+                      <option value="Time">Time</option>
+                      <option value="Date">Date</option>
+                      <option value="Currency">Currency</option>
+                    </select>
+                  </div>
+                  <div class="pure-control-group" id="format-control">
+                    <input id="popValue" type="text" disabled>
+                    <select id="timeDate-format" style="display: none">
+                      <option value="PKDateStyleNone">None</option>
+                      <option value="PKDateStyleShort" selected="selected">Short</option>
+                      <option value="PKDateStyleMedium">Medium</option>
+                      <option value="PKDateStyleLong">Long</option>
+                      <option value="PKDateStyleFull">Full</option>
+                    </select>
+                    <select id="number-format" style="display: none">
+                      <option value="None">None</option>
+                      <option value="PKNumberStyleDecimal" selected="selected">Decimal</option>
+                      <option value="PKNumberStylePercent">Percent</option>
+                      <option value="PKNumberStyleScientific">Scientific</option>
+                      <!--<option value="PKNumberStyleSpellOut">Spell Out</option>-->
+                    </select>
+                    <label for="var-field" class="pure-checkbox">
+                      <input id="var-field" type="checkbox"> Set via API
+                    </label>
+                  </div>
+                  <div class="pure-control-group">
+                    <button class="pure-button" id="btn-del-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Page 9 ================== -->
+      <section class="page9">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Back Info</h1>
+            <h2>Enter your data for the back of the pass.</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- Pass content -->
+            <div class="control ninja-theme">
+              <form class="pure-form pure-form-aligned">
+                <fieldset>
+                  <legend>
+                    <div id="back-legend">
+                      No field selected
+                    </div>
+                    <div id="back-new">
+                      <button class="pure-button" id="btn-add-back-field"><i class="fa fa-plus-circle"></i> New Field</button>
+                    </div>
+                  </legend>
+                </fieldset>
+                <fieldset>
+                  <div class="pure-control-group">
+                    <label for="back-label">Field Label</label>
+                    <input id="back-label" type="text" required>
+                  </div>
+                  <div class="pure-control-group">
+                    <label for="back-text">Field Value</label>
+                    <textarea id="back-text" name="back-text" rows="5" cols="48" required></textarea>
+                  </div>
+                  <div class="pure-control-group">
+                    <button class="pure-button" id="btn-del-back-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
+                    <button class="pure-button" id="btn-update-back-field"><i class="fa fa-plus-circle"></i> Update Field</button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <!-- Page 10 ================== -->
+      <section class="page10">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Location</h1>
+            <h2>Set the activation location</h2>
+
+            <!-- Pass content -->
+            <div id="settings-content">
+              <h3>Relevant Time</h3>
+              <table id="time-table" class="pure-table pure-table-horizontal">
+                <tbody>
+                  <tr>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Location Table</h3>
+              <table id="loc-table" class="pure-table pure-table-horizontal">
+                <thead>
+                  <tr>
+                    <th>Altitude</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Relevant Text</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+              <h3>Beacon Table</h3>
+              <table id="beacon-table" class="pure-table pure-table-horizontal">
+                <thead>
+                  <tr>
+                    <th>UUID</th>
+                    <th>Major</th>
+                    <th>Minor</th>
+                    <th>Relevant Text</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+
+            <div class="control">
+              <ul class="loc-tabs">
+                <li>
+                  <input type="radio" checked name="loc-tabs" id="tab1">
+                  <label class="tab-label" for="tab1">Location</label>
+                  <div id="tab-content1" class="tab-content ninja-theme">
+
+                    <form class="pure-form pure-form-aligned">
+                      <fieldset>
+                        <div class="pure-control-group">
+                          <div id="loc-map"></div>
+                        </div>
+                        <div class="pure-control-group">
+                          <input class="pure-input-1" id="loc-latlong" type="text" placeholder="Latitude,Longitude" disabled>
+                        </div>
+                        <div class="pure-control-group">
+                          <label for="loc-relevant">Relevant Text</label>
+                          <input id="loc-relevant" type="text" placeholder="Lock screen text" disabled>
+                        </div>
+                        <div class="pure-control-group">
+                          <button class="pure-button" id="btn-del-loc" disabled><i class="fa fa-minus-circle"></i> Delete</button>
+                          <button class="pure-button" id="btn-add-loc"><i class="fa fa-plus-circle"></i> New</button>
+                        </div>
+                      </fieldset>
+                    </form>
+
+                  </div>
+                </li>
+                <li>
+                  <input type="radio" name="loc-tabs" id="tab2">
+                  <label class="tab-label" for="tab2">Beacon</label>
+                  <div id="tab-content2" class="tab-content ninja-theme">
+
+                    <form class="pure-form pure-form-aligned">
+                      <fieldset class="pure-group">
+                        <input class="pure-input-1" id="beacon-uuid" type="text" placeholder="Beacon UUID" disabled>
+                        <input class="pure-input-1" id="beacon-major" type="text" placeholder="Major #" disabled>
+                        <input class="pure-input-1" id="beacon-minor" type="text" placeholder="Minor #" disabled>
+                      </fieldset>
+                      <fieldset>
+                        <div class="pure-control-group">
+                          <label for="beacon-relevant">Relevant Text</label>
+                          <input id="beacon-relevant" type="text" placeholder="Lock screen text" disabled>
+                        </div>
+                        <div class="pure-control-group">
+                          <button class="pure-button" id="btn-del-beacon" disabled><i class="fa fa-minus-circle"></i> Delete</button>
+                          <button class="pure-button" id="btn-add-beacon"><i class="fa fa-plus-circle"></i> New</button>
+                        </div>
+                      </fieldset>
+                    </form>
+
+                  </div>
+                </li>
+                <li>
+                  <input type="radio" name="loc-tabs" id="tab3">
+                  <label class="tab-label" for="tab3">Time</label>
+                  <div id="tab-content3" class="tab-content ninja-theme">
+                    <form class="pure-form pure-form-aligned">
+                      <fieldset>
+                        <div class="pure-control-group">
+                          <label for="time-date">Date &amp; Time</label>
+                          <input id="time-date" type="text" required>
+                        </div>
+                        <div class="pure-control-group">
+                          <label for="time-zone">Time Zone</label>
+                          <input id="time-zone" type="text">
+                        </div>
+                        <div class="pure-control-group">
+                          <button class="pure-button" id="btn-del-time"><i class="fa fa-minus-circle"></i> Clear</button>
+                          <button class="pure-button" id="btn-add-time"><i class="fa fa-plus-circle"></i> Set</button>
+                        </div>
+                      </fieldset>
+                    </form>
+                  </div>
+                </li>
+              </ul>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <!-- Page 11 ================== -->
+      <section class="page11">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Sign It</h1>
+            <h2>Sign your pass with a certificate</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- Pass content -->
+            <div class="control ninja-theme">
+              <form id="cert-sign" class="pure-form">
+                <fieldset>
+                  <div class="pure-control-group">
+                    <label for="cert-select">Select a signing certificate</label>
+                    <select id="cert-select">
+                      <option selected="selected">Pass Ninja certificate</option>
+                    </select>
+                  </div>
+                  <div class="pure-control-group">
+                    <label for="cert-input">Use your own apple developer certificate</label>
+                    <input id="cert-input" type="file" accept="application/x-pkcs12">
+                    <button class="pure-button" id="cert-btn" disabled>Upload</button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      <!-- Page 12 ================== -->
+      <section class="page12">
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+            <h1>Share it</h1>
+            <h2>Your done! Distribute your pass!</h2>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+            <!-- Pass content -->
+            <div class="fake-content">
+              <div id="back-content"></div>
+              <div id="front-content"></div>
+            </div>
+            <div class="control ninja-theme">
+              <canvas id="pass-qr"></canvas>
+              <form class="pure-form">
+                <pre><code id="pass-api"></code></pre>
+                <input class="pure-input-1" id="pass-copy" type="text" value="" placeholder="Pass URL" readonly>
+              </form>
+              <a id="pass-link" href="#"></a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+
+    </div> <!-- / "main" div -->
+    <!--</div>  / "wrapper" div -->
+
+    <!-- Next Page Button -->
+    <a class="next">
+      <div class="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+      </div>
+      <button type="button" class="pure-button btn" id="next-button">
+        <i class="fa fa-angle-down"></i>
+      </button>
+    </a>
+  </template>
+
+  <template id="pass-grid">
+
+    <div class="container">
+
+      <div class="pure-g">
+        <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+        <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+          <h1>Your Passes</h1>
+          <h2>Click to update and share them with your customers!</h2>
+        </div>
+        <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+      </div>
+
+      <div class="main">
+        <button type="button" class="pure-button btn" id="new-pass">
+          <i class="fa fa-plus-square fa-5x"></i>
+        </button>
+        <ul id="og-grid" class="og-grid">
+
+        </ul>
+      </div>
+
+    </div><!-- /container -->
+
+
+  </template>
+
+  </head>
+  <body>
+        <!-- ============================================================ -->
+        <!-- Nav bar
+        ================================================================= -->
+        <nav class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
+          <a href="#" class="pure-menu-heading" id="header">
+            <img src="/assets/img/logo.svg" alt="Pass Ninja">
+          </a>
+          <ul>
+            <li><button>Support</button></li>
+            <li><form method="post" action="/logout"><button type="submit">Logout</button></form></li>
+          </ul>
+        </nav>
+       <!-- ============================================================ -->
+        <!-- Contents (below Nav bar)
+        ================================================================= -->
+
+
+            <!-- Message alert -->
+            <div class="alert alert-dismissable" style="display: none">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+
+            </div>
+              <!-- JavaScript
+              ================================================== -->
+              <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents.min.js"></script>
+            <!--  <script src="/assets/js/plugin/NodeBind.js"></script>
+              <script src="/assets/js/plugin/observe.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/TemplateBinding.js"></script>
+              <script src="/assets/js/plugin/polymer-expressions.js"></script> -->
+              <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+              <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/jquery.onepage-scroll.js"></script>
+
+            <!--  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/grid.js"></script>  -->
+              <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.0.0/tinycolor.min.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/jquery.colorpickersliders.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/jquery.datetimepicker.js"></script>
+              <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/l.control.geosearch.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/l.geosearch.provider.google.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/qr.js"></script>
+
+              <script type="text/javascript" src="/assets/js/app.js"></script>
+              <script type="text/javascript" src="/assets/js/app/toolkit.js"></script>
+              <script type="text/javascript" src="/assets/js/passbuilder.js"></script>
+              <script type="text/javascript" src="/assets/js/app/backfields.js"></script>
+              <script type="text/javascript" src="/assets/js/app/start.js"></script>
+              <script type="text/javascript" src="/assets/js/app/images.js"></script>
+              <script type="text/javascript" src="/assets/js/app/cert.js"></script>
+              <script type="text/javascript" src="/assets/js/app/share.js"></script>
+              <script type="text/javascript" src="/assets/js/app/location.js"></script>
+              <script type="text/javascript" src="/assets/js/app/fields.js"></script>
+              <script type="text/javascript" src="/assets/js/app/colors.js"></script>
+              <script type="text/javascript" src="/assets/js/app/barcode.js"></script>
+
+
+
+            </body>
+
+          </html>

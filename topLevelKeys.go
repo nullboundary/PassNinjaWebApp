@@ -21,7 +21,7 @@ type pass struct {
 	Id          string            `json:"id" gorethink:"id" valid:"required"`                                  //Pass ID - used for updating, but not sharing
 	Name        string            `json:"name" gorethink:"name" valid:"required"`                              //Pass name for user identification
 	FileName    string            `json:"filename,omitempty" gorethink:"filename,omitempty"`                   //A generated filename for the pass for downloading and sharing
-	UserId      string            `json:"_" gorethink:"userid"`                                                //The Id of the pass creator
+	UserId      string            `json:"-" gorethink:"userid,omitempty"`                                      //The Id of the pass creator
 	PassType    string            `json:"passtype,omitempty" gorethink:"passtype,omitempty" valid:"passtypes"` //The pass type, boardingpass, coupon, etc.
 	KeyDoc      *passKeys         `json:"keyDoc,omitempty" gorethink:"keyDoc,omitempty"`                       //The pass.json file, all the structs used to create it
 	Images      []passImage       `json:"images,omitempty" gorethink:"images,omitempty"`                       //All the images needed for a pass

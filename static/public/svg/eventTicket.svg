@@ -1,0 +1,100 @@
+<svg version="1.1" id="eventTicket" class="pass-template front" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
+<style type="text/css">
+<![CDATA[
+	svg#eventTicket .bg-grad{fill:url(#linear-grad);}
+	svg#eventTicket .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	svg#eventTicket .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
+	svg#eventTicket .label-text{font-size:11px; font-family:'Helvetica-Bold';}
+	svg#eventTicket .value-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg#eventTicket .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
+	svg#eventTicket .primaryFields.value-text{font-size:42.8386px;}
+	svg#eventTicket .barcode{font-size:36px;}
+	svg#eventTicket .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+]]>
+</style>
+<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.7495" y1="-0.5005" x2="157.7495" y2="401.4995">
+	<stop  class="pass-bg-lite" offset="0" style="stop-color:rgb(40, 38, 59);"/>
+	<stop  class="pass-bg" offset="0.5" style="stop-color:rgb(40, 38, 59);"/>
+	<stop  class="pass-bg-dark" offset="1" style="stop-color:rgb(8, 8, 12);"/>
+</linearGradient>
+<path class="bg-grad" d="M188.24-0.5c0,11.5-14.39,20.81-32.18,20.81l0.32,0c-16.66,0-30.14-9.31-30.14-20.81l0.01,0h-126l0.67,402H0.25
+	h315l-0.67-402l0.67,0L188.24-0.5"/>
+
+<g class="pass-group">
+	<!-- image groups -->
+	<g class="img-btn-group" id="strip-group">
+		<image id="strip" style="overflow:visible;" width="320" height="84" transform="scale(0.9842,1)" x="0" y="65"></image>
+		<rect data-target="strip" transform="scale(0.9842,1)" x="0" y="65" width="320" height="84" class="img-btn-rect"/>
+	</g>
+
+	<g class="img-btn-group" id="logo-group">
+		<image id="logo" style="overflow:visible;" width="41.43" height="39.42" x="16.0249" y="12.5083"></image>
+		<rect data-target="logo" width="41.43" height="39.42" x="16.0249" y="12.5083" class="img-btn-rect"/>
+	</g>
+	<!-- text field groups -->
+	<g id="logo1" class="text-btn-group logo" transform="translate(86.666,38.668)">
+		<text class="logo-text value-text">Angry Velocity</text>
+	</g>
+	<g id="header1" class="text-btn-group header" transform="translate(265,24.335)">
+		<text class="label-text">PRICE</text>
+		<text class="value-text">$35</text>
+	</g>
+	<g id="primary1" class="text-btn-group primary" transform="translate(16.6055,84.002)">
+		<text class="label-text">LIVE CONCERT</text>
+		<text class="value-text">Angry Velocity</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="second1" class="text-btn-group second" transform="translate(15.542,245.8359)">
+		<text class="label-text">DATE</text>
+		<text class="value-text">Tue Jul 29, 2014</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="second2" class="text-btn-group second" transform="translate(170.334,245.8359)">
+		<text class="label-text">TIME</text>
+		<text class="value-text">8:00 PM</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="second3" class="text-btn-group second" transform="translate(253.334,245.8359)">
+		<text class="label-text">TICKET#</text>
+		<text class="value-text">3429</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux1" class="text-btn-group aux" transform="translate(15.2725,205.6689)">
+		<text class="label-text">SECTION</text>
+		<text class="value-text">9</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux2" class="text-btn-group aux" transform="translate(110.6055,205.6689)">
+		<text class="label-text">ROW</text>
+		<text class="value-text">H</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux3" class="text-btn-group aux" transform="translate(176.334,205.6689)">
+		<text class="label-text">SEAT</text>
+		<text class="value-text">11</text>
+		<rect class="text-btn-rect"/>
+	</g>
+	<g id="aux4" class="text-btn-group aux" transform="translate(242.334,205.6689)">
+		<text class="label-text">LOCATION</text>
+		<text class="value-text">City Park</text>
+		<rect class="text-btn-rect"/>
+	</g>
+</g>
+
+<!-- left and right icons -->
+<rect x="10.16" y="377.17" class="icon-line" width="11.5" height="14.5"/>
+<line class="icon-line" x1="15.91" y1="371.57" x2="15.91" y2="384.92"/>
+<line class="icon-line" x1="13.41" y1="375.17" x2="15.91" y2="371.57"/>
+<line class="icon-line" x1="15.91" y1="371.57" x2="18.16" y2="375.17"/>
+<g>
+	<circle class="icon-line" cx="298.33" cy="384.88" r="7.08"/>
+	<text transform="matrix(1 0 0 1 296.7559 388.4521)" class="icon-font">i</text>
+</g>
+<!-- barcode -->
+<g class="barcode-btn-group" id="barcode-group">
+		<rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect"/>
+		<image id="barcode" style="overflow:visible;"></image>
+		<text id="alt-text">SAMPLE</text>
+</g>
+</svg>

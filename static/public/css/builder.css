@@ -3,25 +3,25 @@
   One page scroll wrapper div styles
 
 *********************************************/
-
+/*
 .wrapper {
   height: 100% !important;
   height: 100%;
   margin: 0 auto;
   overflow: hidden;
 }
-
+*/
 a {
   text-decoration: none;
 }
 
-.wrapper h1, .wrapper h2 {
+h1, h2 {
   width: 100%;
   float: left;
   text-align: center;
 }
 
-.wrapper h1 {
+h1 {
   font-family: 'Helvetica Neue', sans-serif;
   margin-top: 50px;
   color: #000;
@@ -30,7 +30,7 @@ a {
   /*letter-spacing: -4px;*/
   font-weight: 100;
 }
-.wrapper h1 span {
+h1 span {
   font-size: 26px;
   margin: 0 5px;
   text-transform: capitalize;
@@ -44,7 +44,7 @@ a {
   padding: 3px 10px;
 }
 
-.wrapper h2 {
+h2 {
   color: #ffffff;
   font-weight: 100;
   margin-top: 0;
@@ -58,9 +58,13 @@ a {
 .main {
   margin: 0;
 }
+body {
+background-color: rgb(50,45,45);
+}
+/*
 .page2,.page7,.page9,.page11 {
-  /*background: #7F8C8D; */
-  background-color: rgb(255,0,0); /*top colour*/
+
+  background-color: rgb(255,0,0);
   background-image: -webkit-linear-gradient(top, rgb(255,0,0), rgb(0,0,0));
   background-image:    -moz-linear-gradient(top, rgb(255,0,0), rgb(0,0,0));
   background-image:      -o-linear-gradient(top, rgb(255,0,0), rgb(0,0,0));
@@ -69,7 +73,7 @@ a {
 }
 
 .page1,.page6,.page8,.page10,.page12 {
-  background-color: rgb(0,0,0); /*top colour*/
+  background-color: rgb(0,0,0);
   background-image: -webkit-linear-gradient(top, rgb(0,0,0), rgb(255,0,0));
   background-image:    -moz-linear-gradient(top, rgb(0,0,0), rgb(255,0,0));
   background-image:      -o-linear-gradient(top, rgb(0,0,0), rgb(255,0,0));
@@ -79,13 +83,13 @@ a {
 .page3,.page4,.page5{
   background-color: rgb(0,0,0);
 }
-
+*/
 .page1 h1,.page3 h1,.page4 h1,.page5 h1,.page6 h1,.page8 h1,.page10 h1,.page12 h1 {
   color: #fff;
 }
 
 .page1 h2,.page3 h2,.page4 h2,.page5 h2,.page6 h2,.page8 h2,.page10 h2,.page12 h2 {
-  color: rgb(255,0,0);
+  color: rgb(240,30,0);
 }
 
 /********************************************
@@ -97,29 +101,23 @@ a {
 .passtype-grid {
   margin: 0px;
   padding: 10px;
-  background: rgba(0,0,0,0.5);
+  /*background: rgba(0,0,0,0.5);*/
   text-align: center;
 }
 
 /* Responsive Image Control in Passtype_grid */
 .pure-img-responsive {
-  max-width: 70%;
+  max-width: 100%;
   height: auto;
 }
 
 .passtype-label {
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  text-align: center;
   color: #ffffff;
-  list-style-type: none;
 }
 
 /********************************************
   SVG Pass template default styles
 
-*********************************************/
 
 .logo-text {
   fill:   white;
@@ -132,10 +130,11 @@ a {
 .pass-bg {
  fill:  #224774;
 }
-
-.pass-group {
+*********************************************/
+ body /deep/ .pass-group {
   fill: none;
 }
+
 
 /********************************************
   SVG Pass Rectangle selectors
@@ -143,29 +142,29 @@ a {
 *********************************************/
 
 /* rectangle opacity 0 on other pages */
-.img-btn-group rect {
+body /deep/ .img-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
 
 }
 
 /* only select these btn if on img input page */
-.viewing-page-6 .img-btn-group rect {
+.viewing-page-6 /deep/ .img-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
-  stroke-width: 0.5;
+  stroke-width: 1.0;
   stroke: #fff;
 }
 
 /* hover style */
-.viewing-page-6 .img-btn-group:hover rect {
+.viewing-page-6 /deep/ .img-btn-group:hover rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
 
 /* select style */
-.viewing-page-6 .img-btn-group rect.select {
+.viewing-page-6 /deep/ .img-btn-group rect.select {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
@@ -181,7 +180,7 @@ a {
 }*/
 
 /*opacity 0 on other pages */
-.barcode-btn-group rect {
+body /deep/ .barcode-btn-group rect {
   fill: #ffffff;
 }
 
@@ -191,14 +190,14 @@ a {
   fill-opacity: 0.5;
   cursor: pointer;
 }*/
-.text-btn-group rect {
+body /deep/ .text-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
   stroke: none;
 }
 
 /* only select these btn if on text input page */
-.viewing-page-8 .text-btn-group rect {
+.viewing-page-8 /deep/ .text-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
   stroke-width: 1.0;
@@ -206,28 +205,28 @@ a {
 }
 
 /* hover style */
-.viewing-page-8 .text-btn-group:hover rect {
+.viewing-page-8 /deep/ .text-btn-group:hover rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
 
 /* select style */
-.viewing-page-8 .text-btn-group rect.select {
+.viewing-page-8 /deep/ .text-btn-group rect.select {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
 
 /* only select these btn if on back fields page */
-.back-field rect {
+body /deep/ .back-field rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
 
 }
 
 /* back field hover style */
-.viewing-page-9 .back-field:hover rect {
+.viewing-page-9 /deep/ .back-field:hover rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
@@ -236,7 +235,7 @@ a {
 }
 
 /* back field select style */
-.viewing-page-9 .back-field rect.select {
+.viewing-page-9 /deep/ .back-field rect.select {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
@@ -245,7 +244,7 @@ a {
 }
 
 /* Don't change cursor for the text on the svg */
-.text-btn-group text
+body /deep/ .text-btn-group text
 {
     pointer-events: none;
 }
@@ -310,16 +309,18 @@ a {
 }
 
 .alert-success {
-  color: #468847;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
+  color: rgb(255,255,255);
+  background-color: rgb(50,45,45);
+  text-shadow: none;
+
+  border-color: rgb(240,30,0);
 }
 
 .alert-danger,
 .alert-error {
-  color: #b94a48;
-  background-color: #f2dede;
-  border-color: #eed3d7;
+  color: rgb(0,0,0);
+  background-color:rgb(240,30,0);
+  border-color: rgb(0,0,0);
 }
 
 .alert-info {
@@ -361,8 +362,7 @@ a {
 *********************************************/
 
 /* Set the standard pass setting UI styles */
-div.control
-{
+div.control{
   line-height: 1;
   color: rgb(255, 0, 0);
   font-family: 'Roboto','Helvetica Neue', sans-serif;
@@ -385,8 +385,7 @@ div.control legend {
   color: rgb(255, 0, 0);
 }
 
-div#legend-add
-{
+div#legend-add{
   float: right;
   width: 30px;
   top: -27px;
@@ -394,8 +393,7 @@ div#legend-add
   position: relative;
 }
 
-div#legend-add button
-{
+div#legend-add button{
   padding: 3px 6px;
 }
 
@@ -411,6 +409,10 @@ select#currency {
 
 #loc-map { height: 180px; }
 
+.page10 h3 {
+  color: rgb(255,255,255);
+}
+
 div#settings-content{
   display: block;
   position: relative;
@@ -424,6 +426,11 @@ div#settings-content{
 
 table {
   width: 100%;
+}
+
+tr {
+  color: rgb(255,255,255);
+  background-color: rgba(0,0,0,0.70);
 }
 
 #loc-table th,#beacon-table th {
@@ -443,6 +450,12 @@ tbody tr.select {
   background: #a1fcff;
   opacity: 0.5;
   cursor: pointer;
+}
+
+.pure-button { /* override pure button style */
+  background-color: rgba(0,0,0,1.0);
+  border: 2px solid rgb(240,30,0);
+  color: rgb(255,255,255);
 }
 
 /********************************************
@@ -542,7 +555,7 @@ tbody tr.select {
 
 }
 /* Applied to both front and back */
-.pass-template.front, .pass-template.back {
+.fake-content /deep/ .pass-template.front, .fake-content /deep/ .pass-template.back {
   -webkit-backface-visibility:hidden;
   -moz-backface-visibility:hidden;
   backface-visibility: hidden;
@@ -555,12 +568,12 @@ tbody tr.select {
 }
 
 /* front pane, placed above back */
-.pass-template.front {
+.fake-content /deep/ .pass-template.front {
   z-index: 2;
 }
 
  /* Apply a grab cursor over back of pass */
-.pass-template.back {
+ .fake-content /deep/ .pass-template.back {
     cursor: move;  /* fallback if grab cursor is unsupported */
     cursor: grab;
     cursor: -moz-grab;
@@ -568,14 +581,14 @@ tbody tr.select {
 }
 
  /* Apply a "closed-hand" cursor during drag operation. */
-.pass-template.back:active {
+ .fake-content /deep/ .pass-template.back:active {
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
 }
 
 /* back, initially hidden pane */
-.fake-content .pass-template.back {
+.fake-content /deep/ .pass-template.back {
   transition:all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(180deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(180deg) !important;
@@ -583,7 +596,7 @@ tbody tr.select {
 }
 
 /* front of pass, standard sizing and positioning */
-.fake-content .pass-template.front {
+.fake-content /deep/ .pass-template.front {
   transition:all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
@@ -592,7 +605,7 @@ tbody tr.select {
 }
 
 /* front of pass, scale to 40% */
-.viewing-page-2 .fake-content .pass-template.front {
+.viewing-page-2 .fake-content /deep/ .pass-template.front {
   transition:all 1s ease;
   -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
@@ -676,7 +689,7 @@ tbody tr.select {
 }
 
 /* Special page 9 front */
-.viewing-page-9 .fake-content .pass-template.front {
+.viewing-page-9 .fake-content /deep/ .pass-template.front {
   transition:all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
@@ -684,7 +697,7 @@ tbody tr.select {
 }
 
 /* Special page 9 back */
-.viewing-page-9 .fake-content .pass-template.back {
+.viewing-page-9 .fake-content /deep/ .pass-template.back {
   transition:all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
@@ -851,7 +864,7 @@ tbody tr.select {
   }
 
   /* Dont scale down the pass for medium+ screens */
-   .fake-content .pass-template.front
+   .fake-content /deep/ .pass-template.front
    {
     transition:all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
@@ -859,7 +872,7 @@ tbody tr.select {
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   }
 
-  .fake-content .pass-template.back {
+  .fake-content /deep/ .pass-template.back {
      transition:all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
@@ -867,7 +880,7 @@ tbody tr.select {
   }
 
   /* front of pass, scale to 50% Page 2 */
-  .viewing-page-2 .fake-content .pass-template.front {
+  .viewing-page-2 .fake-content /deep/ .pass-template.front {
     transition:all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
@@ -875,7 +888,7 @@ tbody tr.select {
   }
 
 /* Special page 9 back */
-.viewing-page-9 .fake-content .pass-template.back {
+.viewing-page-9 .fake-content /deep/ .pass-template.back {
   transition:all 1s ease;
   -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;

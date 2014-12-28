@@ -1,4 +1,4 @@
-(function (pb, $, undefined) {
+(function (tk, pb, $, undefined) {
 
   'use strict';
 
@@ -170,16 +170,16 @@
 
       if (altValue != undefined) {
 
-        var barcodeRect = d3.select('g#barcode-group rect')
+        var barcodeRect = pb.svg().select('g#barcode-group rect')
           .transition()
           .attr('height', (barcodeShape[barType].height + 10))
           .attr('y', -10);
 
-        d3.select('g#barcode-group image')
+        pb.svg().select('g#barcode-group image')
           .transition()
           .attr('y', 0)
 
-        var altText = d3.select('text#alt-text')
+        var altText = pb.svg().select('text#alt-text')
           .style('display', 'inline')
           .text(altValue);
 
@@ -196,16 +196,16 @@
       } else { //no alt text, set back to default
 
 
-        d3.select('g#barcode-group rect')
+        pb.svg().select('g#barcode-group rect')
           .transition()
           .attr('height', barcodeShape[barType].height)
           .attr('y', 0);
 
-        d3.select('g#barcode-group image')
+        pb.svg().select('g#barcode-group image')
           .transition()
           .attr('y', 10);
 
-        var passGroup = d3.select('text#alt-text')
+        var passGroup = pb.svg().select('text#alt-text')
           .style('display', 'none')
           .text(altValue);
       }
@@ -223,7 +223,7 @@
     setBarGroup(barType); //set group attr
 
     //set rectangle
-    d3.select('g#barcode-group rect')
+    pb.svg().select('g#barcode-group rect')
 
     .attr('x', 0)
       .attr('y', 0)
@@ -231,7 +231,7 @@
       .attr('height', barcodeShape[barType].height);
 
     //set image
-    d3.select('g#barcode-group image')
+    pb.svg().select('g#barcode-group image')
       .attr('x', 10)
       .attr('y', 10)
       .attr('width', barcodeShape[barType].image.width)
@@ -241,7 +241,7 @@
     setAltText(barType);
 
     //display
-    d3.select('g#barcode-group').transition().style('display', 'inline');
+    pb.svg().select('g#barcode-group').transition().style('display', 'inline');
 
     enableInputs();
     setInputs(barType);
@@ -257,7 +257,7 @@
       setLowField();
       prevState = 'rect';
 
-      d3.select('g#barcode-group').transition().style('display', 'none');
+      pb.svg().select('g#barcode-group').transition().style('display', 'none');
 
       disableInputs();
       $('#bar-format').val('No Barcode'); //set selector to no barcode
@@ -276,7 +276,7 @@
     var groupLoc = 'translate(' + xPos + ',' + yPos + ')';
 
     //set group
-    d3.select('g#barcode-group')
+    pb.svg().select('g#barcode-group')
       .attr('transform', groupLoc)
       .attr('width', barcodeShape[barType].width)
       .attr('height', barcodeShape[barType].height)
@@ -289,13 +289,13 @@
   function setFieldPosition(auxShift, secShift) {
 
     //select all aux text groups and subtract Y pos
-    var aux = d3.selectAll('.auxiliaryFields');
+    var aux = pb.svg().selectAll('.auxiliaryFields');
     aux.each(function () {
       shiftField(this, auxShift);
     });
 
     //select all secondary text groups and subtract Y pos
-    var second = d3.selectAll('.secondaryFields');
+    var second = pb.svg().selectAll('.secondaryFields');
     second.each(function () {
       shiftField(this, secShift);
     });
@@ -338,12 +338,12 @@
 
     var barcode = pb.template().keyDoc.barcode;
 
-    pb.setValue('input#bar-alt', barcode.altText);
-    pb.setValue('input#bar-encode', barcode.messageEncoding);
-    pb.setValue('input#bar-message', barcode.message);
+    tk.setValue('input#bar-alt', barcode.altText);
+    tk.setValue('input#bar-encode', barcode.messageEncoding);
+    tk.setValue('input#bar-message', barcode.message);
 
-    //d3.select('#bar-format').value = barType; //set the selector
-    $('#bar-format').val(barType);
+    $('select#bar-format').val(barType); //set the selector
+
   }
 
   /***********************************************************
@@ -353,7 +353,7 @@
   function enableInputs() {
 
     //enable inputs
-    pb.enable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
+    tk.enable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
 
   }
 
@@ -364,7 +364,7 @@
   function disableInputs() {
 
     //disable inputs
-    pb.disable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
+    tk.disable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
 
   }
 
@@ -380,12 +380,12 @@
 
       if (pb.template().keyDoc.barcode.message == "") {
         $('.main').moveTo(index - 1);
-        pb.alertDisplay("error", "Please fill out the required field");
+        tk.alertDisplay("error", "Please fill out the required field");
         $('#bar-message').focus();
 
       } else if (pb.template().keyDoc.barcode.messageEncoding == "") {
         $('.main').moveTo(index - 1);
-        pb.alertDisplay("error", "Please fill out the required field");
+        tk.alertDisplay("error", "Please fill out the required field");
         $('#bar-encode').focus();
 
       } else {
@@ -434,6 +434,4 @@
     }
   };
 
-  //return passBarcode; //return the barcode object
-
-}(passBuilder = window.passBuilder || {}, jQuery));
+}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));
