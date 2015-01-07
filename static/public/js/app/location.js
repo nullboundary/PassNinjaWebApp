@@ -1,4 +1,4 @@
-(function (tk, pb, $, undefined) {
+(function(tk, pb, $, undefined) {
 
   'use strict';
 
@@ -82,6 +82,8 @@
    ***********************************************************/
   function initMap() {
 
+      console.warn(map);
+
       console.log('init Map');
 
       map = L.map('loc-map').setView([51.505, -0.09], 16); //default to london
@@ -107,8 +109,6 @@
         showMarker: false,
       }).addTo(map);
 
-      //console.log(geocode.provider);
-
       //set geoencoder search box placeholder text and disable
       d3.select('leaflet-control-geosearch-qry')
         .property('placeholder', 'search address')
@@ -120,7 +120,7 @@
         maxZoom: 16
       });
 
-      map.on('geosearch_foundlocations', function (e) {
+      map.on('geosearch_foundlocations', function(e) {
 
 
         console.log(e.Locations[0]);
@@ -132,9 +132,6 @@
 
         inputLoc.each(onUpdateLoc);
       });
-
-      //map.on('click', onMapClick);
-
 
     }
     /***********************************************************
@@ -281,18 +278,18 @@
 
         var enterRows = rows.enter()
           .append('tr')
-          .attr('id', function (d, i) {
+          .attr('id', function(d, i) {
             return 'index' + i;
           })
-          .attr('class', function (d, i) {
+          .attr('class', function(d, i) {
             if (this.nextSibling == null) {
               return 'select'; //only set the last new row to select
             }
           });
 
         // Update cells in existing rows.
-        var cells = rows.selectAll('td').data(function (row) {
-          return cols.map(function (column) {
+        var cells = rows.selectAll('td').data(function(row) {
+          return cols.map(function(column) {
             return {
               column: column, //column name for td
               value: row[column] //value for td
@@ -302,7 +299,7 @@
 
         //enter td, add new cells for new data
         cells.enter().append('td')
-          .attr('class', function (d, i) {
+          .attr('class', function(d, i) {
             return d.column;
           });
 
@@ -328,23 +325,24 @@
   function fadePass() {
 
     if (pb.template().keyDoc.beacons != undefined || pb.template().keyDoc.locations != undefined) {
-      d3.select('.fake-content')
-        .transition()
-        .duration(500)
-        .delay(50)
-        .style('opacity', 0.1);
 
-      d3.select('table#loc-table')
-        .transition()
-        .duration(500)
-        .delay(50)
-        .style('z-index', 1);
+      d3.select('div#settings-content')
+      .style('z-index', 1);
 
-      d3.select('table#beacon-table')
+      d3.select('.fake-content') //transistion duration applied in css!
+      .style('opacity', 0.1);
+
+      d3.transition()
+      .duration(1000)
+      .delay(10)
+      .each(function() {
+
+        d3.select('div#settings-content')
         .transition()
-        .duration(500)
-        .delay(50)
-        .style('z-index', 1);
+        .style('opacity', 1.0)
+
+      });
+
     }
 
   }
@@ -357,6 +355,10 @@
 
       d3.select('.fake-content')
         .style('opacity', 1.0);
+
+        d3.select('div#settings-content')
+        .style('opacity', 0)
+        .style('z-index', -1);
 
     }
     /***********************************************************
@@ -380,6 +382,10 @@
   function selectRow() {
 
     var selection = d3.select('tr.select');
+
+    if (selection.empty()) {
+      return;
+    }
 
     var tableId = d3.select(selection.node().offsetParent).attr('id');
     var data = selection.data()[0]; //get bound __data__ from DOM
@@ -560,7 +566,7 @@
 
     row.select('td')
       .datum(null)
-      .text(function (d) { //set text
+      .text(function(d) { //set text
         return '-';
       });
 
@@ -589,7 +595,7 @@
     }]); //bind date as data array
 
     var cell = row.select('td')
-      .text(function (d) { //set text
+      .text(function(d) { //set text
         return d.time.toLocaleString();
       });
 
@@ -844,27 +850,27 @@
 
   pb.location = {
 
-    init: function () {
+    init: function() {
       init();
     },
-    update: function () {
+    update: function() {
       updateTables();
     },
-    xray: function (isXray) {
+    xray: function(isXray) {
       if (isXray) {
         fadePass();
       } else {
         showPass();
       }
     },
-    save: function (index) {
+    save: function(index) {
       onLocationSave(index);
     },
-    name: function () {
+    name: function() {
       return 'location';
     },
 
-    index: function () {
+    index: function() {
       return 10;
     }
 

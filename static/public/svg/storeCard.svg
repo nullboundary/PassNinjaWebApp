@@ -1,18 +1,17 @@
-<svg id="storeCard" class="pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<svg class="storeCard pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
 <style type="text/css">
 <![CDATA[
-	svg#storeCard .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
-	svg#storeCard .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
-	svg#storeCard .bg-grad{fill:url(#linear-grad);}
-	svg#storeCard .label-text{font-size:11px; font-family:'Helvetica-Bold';}
-	svg#storeCard .value-text{font-size:16px; font-family:'Helvetica-Light';}
-	svg#storeCard .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
-	svg#storeCard .headerFields.value-text{font-size:20px;}
-	svg#storeCard .barcode{font-size:40px;}
-	svg#storeCard .primaryFields.label-text{font-size:16px; font-family:'Helvetica-Light';}
-	svg#storeCard .primaryFields.value-text{font-size:48px; font-family:'Helvetica-Light';}
-	svg#storeCard .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.storeCard .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	svg.storeCard .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
+	svg.storeCard .label-text{font-size:11px; font-family:'Helvetica-Bold';}
+	svg.storeCard .value-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg.storeCard .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
+	svg.storeCard .headerFields.value-text{font-size:20px;}
+	svg.storeCard .barcode{font-size:40px;}
+	svg.storeCard .primaryFields.label-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg.storeCard .primaryFields.value-text{font-size:48px; font-family:'Helvetica-Light';}
+	svg.storeCard .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
 ]]>
 </style>
 <linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.5005" y1="4.882812e-04" x2="157.5005" y2="401.0005">
@@ -20,7 +19,7 @@
 	<stop  class="pass-bg" offset="0.5" style="stop-color:#ED3D57"/>
 	<stop  class="pass-bg-dark" offset="1" style="stop-color:#DD1E47"/>
 </linearGradient>
-<path class="bg-grad" d="M315,389c0,6.63-5.37,12-12,12H12c-6.63,0-12-5.37-12-12V12C0,5.37,5.37,0,12,0h291c6.63,0,12,5.37,12,12V389z"
+<path class="bg-grad" fill="url(#linear-grad)" d="M315,389c0,6.63-5.37,12-12,12H12c-6.63,0-12-5.37-12-12V12C0,5.37,5.37,0,12,0h291c6.63,0,12,5.37,12,12V389z"
 	/>
 
 <g class="pass-group">
@@ -35,7 +34,7 @@
 		<rect data-target="strip" transform="scale(0.9859,1)" x="0" y="65" width="320" height="123" class="img-btn-rect"/>
 	</g>
 	<!-- text field groups -->
-	<g id="logo1" class="text-btn-group logo" transform="translate(73.1655,38.6665)">
+	<g id="logo1" class="text-btn-group logo" transform="translate(73.1655,28.6665)">
 		<text class="logo-text value-text">BERY BERRY</text>
 		<rect class="text-btn-rect"/>
 	</g>

@@ -1,32 +1,34 @@
-<svg id="boardingPass" class="pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<svg class="boardingPass pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
 <style type="text/css">
 <![CDATA[
-	svg#boardingPass .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
-	svg#boardingPass .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
-	svg#boardingPass .bg-grad{fill:url(#linear-grad);stroke:#00AEEF;stroke-width:0.25;stroke-miterlimit:10;}
-	svg#boardingPass .font-bold{font-family:'Helvetica-Bold';}
-	svg#boardingPass .fold-line{fill:none;stroke:#21519F;stroke-width:0.25;stroke-miterlimit:10;}
-	svg#boardingPass .font-lite{font-family:'Helvetica-Light';}
-	svg#boardingPass .label-text{font-size:11px; font-family:'Helvetica-Bold';}
-	svg#boardingPass .value-text{font-size:16px; font-family:'Helvetica-Light';}
-	svg#boardingPass .logo-text{font-size:18px;}
-	svg#boardingPass .headerFields.value-text{font-size:20px;}
-	svg#boardingPass .primaryFields.value-text,.barcode{font-size:40px;}
-	svg#boardingPass .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.boardingPass .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	svg.boardingPass .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
+	svg.boardingPass .bg-grad{stroke:#00AEEF;stroke-width:0.25;stroke-miterlimit:10;}
+	svg.boardingPass .font-bold{font-family:'Helvetica-Bold';}
+	svg.boardingPass .fold-line{fill:none;stroke:#21519F;stroke-width:0.25;stroke-miterlimit:10;}
+	svg.boardingPass .font-lite{font-family:'Helvetica-Light';}
+	svg.boardingPass .label-text{font-size:11px; font-family:'Helvetica-Bold';}
+	svg.boardingPass .value-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg.boardingPass .logo-text{font-size:18px;}
+	svg.boardingPass .headerFields.value-text{font-size:20px;}
+	svg.boardingPass .primaryFields.value-text,.barcode{font-size:40px;}
+	svg.boardingPass .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
 ]]>
 </style>
-<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.8726" y1="-0.0889" x2="157.8725" y2="401.0894">
-	<stop class="pass-bg-lite" offset="0" style="stop-color:#2BC4F3"/>
-	<stop class="pass-bg" offset="0.5" style="stop-color:#00AEEE"/>
-	<stop class="pass-bg-dark" offset="1" style="stop-color:#0095DA"/>
-</linearGradient>
-<path class="bg-grad" d="M1.14,390.11c0.06,5.96,4.45,10.76,9.81,10.72l293.04,0.26c5.96-0.03,10.77-4.4,10.76-9.77v2.13V66.8
+<defs>
+	<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.8726" y1="-0.0889" x2="157.8725" y2="401.0894">
+		<stop class="pass-bg-lite" offset="0" style="stop-color:#2BC4F3"/>
+		<stop class="pass-bg" offset="0.5" style="stop-color:#00AEEE"/>
+		<stop class="pass-bg-dark" offset="1" style="stop-color:#0095DA"/>
+	</linearGradient>
+</defs>
+<path class="bg-grad" fill="url(#linear-grad)" d="M1.14,390.11c0.06,5.96,4.45,10.76,9.81,10.72l293.04,0.26c5.96-0.03,10.77-4.4,10.76-9.77v2.13V66.8
 	c-4.26-1.57-4.3-5.02-0.08-7.72h-0.33V11.79c0.09-6.47-4.18-11.79-9.53-11.88v0.27H12.12C6.17-0.02,1.19,4.17,1,9.53l0.19,49.58
 	c4.23,1.67,4.17,5.13-0.11,7.72L1.14,390.11z"/>
 <g class="pass-group">
 	<!-- text field groups -->
-	<g id="logo1" class="text-btn-group logo" transform="translate(86.666,37.668)">
+	<g id="logo1" class="text-btn-group logo" transform="translate(86.666,27.668)">
 		<text class="font-bold logo-text value-text">Pass Airlines</text>
 		<rect class="text-btn-rect"/>
 	</g>

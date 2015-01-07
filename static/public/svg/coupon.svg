@@ -1,32 +1,29 @@
-<svg id="coupon" class="pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<svg class="coupon pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="315px" height="401px" viewBox="0 0 315 401" xml:space="preserve">
 	 <style type="text/css">
 <![CDATA[
-	svg#coupon .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
-	svg#coupon .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
-	svg#coupon .font-bold{font-family:'Helvetica-Bold'; pointer-events: none;}
-	svg#coupon .bg-grad{fill:url(#linear-grad);}
-	svg#coupon .font-lite{font-family:'Helvetica-Light'; pointer-events: none;}
-	svg#coupon .font-norm{font-family:'Helvetica'; pointer-events: none;-webkit-font-smoothing: antialiased;text-shadow: 1px 1px 1px rgba(0,0,0,0.004);}
-	svg#coupon .auxiliaryFields.value-text{font-size:14px;}
-	svg#coupon .auxiliaryFields.label-text{font-size:12px;}
-	svg#coupon .headerFields.value-text{font-size:14px;}
-	svg#coupon .headerFields.label-text{font-size:12px;}
-	svg#coupon .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
-	svg#coupon .barcode{font-size:36px;}
-	svg#coupon .primaryFields.label-text{font-size:16px; font-family:'Helvetica-Light';}
-	svg#coupon .primaryFields.value-text{font-size:52px; font-family:'Helvetica-Light';}
-	svg#coupon .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.coupon .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
+	svg.coupon .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
+	svg.coupon .label-text{font-size:11px; font-family:'Helvetica-Bold';}
+	svg.coupon .value-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg.coupon .primaryFields.label-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg.coupon .primaryFields.value-text{font-size:48px; font-family:'Helvetica-Light';}
+	svg.coupon .headerFields.value-text{font-size:20px;}
+	svg.coupon .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
+	svg.coupon .barcode{font-size:40px;}
+	svg.coupon .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
 ]]>
 </style>
 <g>
 	<g>
-		<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.998" y1="-0.062" x2="157.998" y2="399.062">
-			<stop  class="pass-bg-lite" offset="0" style="stop-color:#F074AC"/>
-			<stop  class="pass-bg" offset="0.5" style="stop-color:#EB008B"/>
-			<stop  class="pass-bg-dark" offset="1" style="stop-color:#CD118C"/>
-		</linearGradient>
-		<path class="bg-grad" d="M53.26,395.74l-1.81,2.38c-0.67,0.88-1.75,0.87-2.41-0.01l-0.45-0.61c-0.66-0.88-1.2-1.64-1.2-1.68
+		<defs>
+			<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.998" y1="-0.062" x2="157.998" y2="399.062">
+				<stop  class="pass-bg-lite" offset="0" style="stop-color:#F074AC"/>
+				<stop  class="pass-bg" offset="0.5" style="stop-color:#EB008B"/>
+				<stop  class="pass-bg-dark" offset="1" style="stop-color:#CD118C"/>
+			</linearGradient>
+		</defs>
+		<path class="bg-grad" fill="url(#linear-grad)" d="M53.26,395.74l-1.81,2.38c-0.67,0.88-1.75,0.87-2.41-0.01l-0.45-0.61c-0.66-0.88-1.2-1.64-1.2-1.68
 			s-0.54,0.63-1.21,1.51l-0.6,0.79c-0.67,0.88-1.75,0.87-2.41-0.01l-0.45-0.61c-0.66-0.88-1.17-1.63-1.14-1.66s-0.48,0.65-1.15,1.53
 			l-0.6,0.79c-0.67,0.88-1.75,0.87-2.41-0.01l-0.45-0.6c-0.66-0.88-1.2-1.64-1.2-1.69s-0.54,0.63-1.21,1.51l-0.6,0.79
 			c-0.67,0.88-1.75,0.87-2.41-0.01l-0.45-0.6c-0.66-0.88-1.22-1.62-1.24-1.64c-0.02-0.02-0.59,0.68-1.25,1.55l-0.6,0.79
@@ -163,33 +160,34 @@
 		<rect data-target="strip" transform="scale(0.9859,1)" x="0" y="65" width="320" height="123" class="img-btn-rect"/>
 	</g>
 	<!-- text field groups -->
-	<g id="logo1" class="text-btn-group logo" transform="translate(72.4985,36)">
-		<text class="font-bold logo-text value-text">Cinderellas</text>
+	<g id="logo1" class="text-btn-group logo" transform="translate(72.4985,26)">
+		<text class="logo-text value-text">Cinderellas</text>
+		<rect class="text-btn-rect"/>
 	</g>
 
 	<g id="header1" class="text-btn-group header" transform="translate(255,10)">
-		<text class="font-norm label-text">OFFER</text>
+		<text class="label-text">OFFER</text>
 		<text class="value-text">In-store</text>
 	</g>
 
 	<g id="primary1" class="text-btn-group primary" transform="translate(17.499,75)">
-		<text transform="scale(1.0733,1)" x="17.499" y="0" class="font-lite value-text">40% OFF</text>
-		<text transform="scale(1.0733,1)" x="17.499" y="20" class="font-lite label-text">All Summer Sandals</text>
+		<text transform="scale(1.0733,1)" x="17.499" y="0" class="value-text">40% OFF</text>
+		<text transform="scale(1.0733,1)" x="17.499" y="20" class="label-text">All Summer Sandals</text>
 		<rect transform="scale(0.9859,1)" x="0" y="0" width="320" height="123" class="text-btn-rect"/>
 	</g>
 
 	<g id="aux1" class="text-btn-group aux" transform="translate(17,209)">
-		<text class="font-norm label-text">VALID THRU</text>
+		<text class="label-text">VALID THRU</text>
 		<text class="value-text">07/31/2014</text>
 	</g>
 
 	<g id="aux2" class="text-btn-group aux" transform="translate(115.5,209)">
-		<text class="font-norm label-text">LIMIT</text>
+		<text class="label-text">LIMIT</text>
 		<text class="value-text">1 Per Customer </text>
 	</g>
 
 	<g id="aux3" class="text-btn-group aux" transform="translate(217,209)">
-		<text class="font-norm label-text">COUPON #</text>
+		<text class="label-text">COUPON #</text>
 		<text class="value-text">0131</text>
 	</g>
 

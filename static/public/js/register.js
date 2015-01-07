@@ -48,7 +48,7 @@ var login = (function (ninjaSignIn, $, undefined) {
 
     ***********************************************************/
   function isAuthenticated() {
-      return window.localStorage.getItem('token')
+      return window.sessionStorage.getItem('token')
     }
     /***********************************************************
 
@@ -56,7 +56,7 @@ var login = (function (ninjaSignIn, $, undefined) {
     ***********************************************************/
   function logOut() {
     // The backend doesn't care about logouts, delete the token and you're good to go.
-    window.localStorage.removeItem('token');
+    window.sessionStorage.removeItem('token');
   }
 
   /***********************************************************
@@ -112,12 +112,12 @@ var login = (function (ninjaSignIn, $, undefined) {
 
     var jqxhr = $.post(provider + query)
       .done(function (data) {
-        localStorage.setItem('token', data.token);
+        window.sessionStorage.setItem('token', data.token);
         loadAccount();
       })
       .fail(function (response) {
         if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem('token');
+          window.sessionStorage.removeItem('token');
         }
       })
       .always(function () {
@@ -140,7 +140,9 @@ var login = (function (ninjaSignIn, $, undefined) {
         token: authToken
       }
       var tokenParam = jQuery.param(params);
-      window.location = "/accounts/?" + tokenParam;
+      //document.cookie = "name=token";
+      document.cookie = "token="+authToken;
+      window.location = "/accounts/home" //?" + tokenParam;
     }
   }
 

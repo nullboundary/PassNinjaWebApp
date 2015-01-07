@@ -82,7 +82,7 @@
  	***********************************************************/
   function setBarcode() {
 
-    if (pb.template().keyDoc.barcode != null) {
+    if (pb.template().keyDoc.barcode != undefined) {
 
       switch (pb.template().keyDoc.barcode.format) {
       case 'PKBarcodeFormatPDF417':
@@ -325,6 +325,11 @@
     if (this.value == 'No Barcode') {
       setNone();
     } else {
+      //barcode was deleted (set to none) before 
+      if (pb.template().keyDoc.barcode == undefined) {
+        pb.template().keyDoc.barcode = {}; //add new barcode object
+      }
+
       setBarType(this.value);
     }
 

@@ -32,7 +32,7 @@
         apiData[pb.template().mutatelist[i]] = "foobar"; //add each entry onto list
       }
 
-      var curlText = "curl -X PATCH -d '" + JSON.stringify(apiData) + "'\\ https://api.pass.ninja/accounts/passes/" + pb.template().id + "/link";
+      var curlText = "curl -X PATCH -d '" + JSON.stringify(apiData) + "'\\ https://pass.ninja/api/v1/passes/" + pb.template().id + "/link";
 
       d3.select('#pass-api').text(curlText); //write json variable list into code block
     }
@@ -42,7 +42,7 @@
     ***********************************************************/
   function getPassLink() {
 
-      var url = "/accounts/passes/" + pb.template().id + "/link",
+      var url = "/api/v1/passes/" + pb.template().id + "/link",
         uri = encodeURI(url);
       console.log(uri);
 
@@ -63,10 +63,15 @@
           d3.select('#pass-copy').node().value = data.url;
 
           //draw qr code
-          qr.canvas({
-            canvas: d3.select('#pass-qr').node(),
-            value: data.url
+          var qrcode = new QRCode(d3.select('#pass-qr').node(), {
+            text: link,
+            width: 128,
+            height: 128,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.Q
           });
+
 
 
         });
@@ -84,7 +89,7 @@
       'second3': "666"
     };
 
-    var url = "/accounts/passes/" + pb.template().id + "/link",
+    var url = "/api/v1/passes/" + pb.template().id + "/link",
       uri = encodeURI(url);
     console.log(uri);
 

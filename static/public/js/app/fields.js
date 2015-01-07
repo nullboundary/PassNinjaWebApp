@@ -1,4 +1,4 @@
-(function (tk, pb, $, undefined) {
+(function(tk, pb, $, undefined) {
 
   'use strict';
 
@@ -13,57 +13,57 @@
 
   var pKTimeTojsTime = { //convert apple PK constant to js time
 
-    'PKDateStyleNone': function () {
+    'PKDateStyleNone': function() {
       return d3.time.format.iso;
     },
-    'PKDateStyleShort': function () {
+    'PKDateStyleShort': function() {
       return d3.time.format('%_I:%M %p');
     },
-    'PKDateStyleMedium': function () {
+    'PKDateStyleMedium': function() {
       return d3.time.format('%_I:%M:%S %p');
     },
-    'PKDateStyleLong': function () {
+    'PKDateStyleLong': function() {
       return d3.time.format('%_I:%M:%S %p %Z'); //TODO - Implement time zones as text
     },
-    'PKDateStyleFull': function () {
+    'PKDateStyleFull': function() {
       return d3.time.format('%_I:%M:%S %p %Z');
     }
   };
 
   var pKDateTojsDate = { //convert apple PK constant to js date
 
-    'PKDateStyleNone': function () {
+    'PKDateStyleNone': function() {
       return d3.time.format('');
     },
-    'PKDateStyleShort': function () {
+    'PKDateStyleShort': function() {
       return d3.time.format('%_m/%e/%y');
     },
-    'PKDateStyleMedium': function () {
+    'PKDateStyleMedium': function() {
       return d3.time.format('%b %e, %Y');
     },
-    'PKDateStyleLong': function () {
+    'PKDateStyleLong': function() {
       return d3.time.format('%B %e, %Y');
     },
-    'PKDateStyleFull': function () {
+    'PKDateStyleFull': function() {
       return d3.time.format('%A, %B %e, %Y AD');
     }
   };
 
   var pKNumberToJs = { //convert apple PK constant to js number format
 
-    'None': function () {
+    'None': function() {
       return d3.format('');
     },
-    'PKNumberStyleDecimal': function () {
+    'PKNumberStyleDecimal': function() {
       return d3.format('.4r'); //13.00
     },
-    'PKNumberStylePercent': function () {
+    'PKNumberStylePercent': function() {
       return d3.format('%'); //multiply by 100 and suffix with '%'
     },
-    'PKNumberStyleScientific': function () {
+    'PKNumberStyleScientific': function() {
       return d3.format('.3n'); //1.33e+5
     },
-    'PKNumberStyleSpellOut': function () {
+    'PKNumberStyleSpellOut': function() {
       return; //TODO: implement spell out function
     }
   };
@@ -126,13 +126,13 @@
 
     //add handler for number format selector
     d3.select('#number-format')
-      .on('input', function () {
+      .on('input', function() {
         onNumberStyle(this.value);
       });
 
     //add handler for date-time selector
     d3.select('#timeDate-format')
-      .on('input', function () {
+      .on('input', function() {
         onDateTimeStyle(this.value);
       });
 
@@ -167,7 +167,7 @@
         .append('g')
         .attr('transform', groupLoc) //the x gets adjusted in setFieldSizes()
         .attr('class', 'text-btn-group ' + fieldType)
-        .attr('id', function (d, i) {
+        .attr('id', function(d, i) {
           var idIndex = i + 1;
           return fieldType + idIndex;
         });
@@ -184,16 +184,18 @@
 
       //set label text
       textGroups.select('.label-text')
-        .text(function (d) {
+        .text(function(d) {
           return valueOrDefault(d.label);
         });
 
+
       //set value text
       textGroups.select('.value-text')
-        .each(function (d, i) {
+        .each(function(d, i) {
           setFormatValueField(d3.select(this), d); //set value text
         });
 
+      pb.colors.updateText(); //set text color
       setFieldSizes(textGroups, fieldType);
 
 
@@ -218,12 +220,12 @@
 
       var textElem = textGroups
         .insert('text', d3.select(this) + 'rect.text-btn-rect') //insert the text before the rect
-        .attr('id', function (d, i) {
+        .attr('id', function(d, i) {
           var idIndex = i + 1; //field id start counting at 1
           return fieldType + '-' + elemList[index] + idIndex; //example: aux-value3
         })
         .attr('dominant-baseline', 'hanging') //set text top-baseline 0,0 for most browsers
-        .attr('class', function (d) {
+        .attr('class', function(d) {
           return elemList[index] + '-text ' + fieldPKType; //example: "value-text auxiliaryFields"
         });
 
@@ -235,13 +237,13 @@
       }
 
       //set x and y values for text element
-      textElem.attr('x', function (d) {
+      textElem.attr('x', function(d) {
           return textX;
         })
-        .attr('y', function (d) {
+        .attr('y', function(d) {
           return textY;
         })
-        .attr('text-anchor', function (d) { //horizontal align
+        .attr('text-anchor', function(d) { //horizontal align
           return pKValueToSVG[valueOrDefault(d.textAlignment, 'default')]; //pass alignment to svg alignment.
         });
 
@@ -257,7 +259,7 @@
 
       var totalWidth = 0;
 
-      textGroups.each(function (d, i) {
+      textGroups.each(function(d, i) {
 
         updateRectSize(d3.select(this), fieldType); //readjust the rect in case text size changed
         totalWidth = totalWidth + (this.getBBox().width + fieldMargin); //field group width + space between
@@ -279,6 +281,7 @@
 
       //add/update the rectangle around the field to match the text size
       setFieldRect(groupElem)
+        .on('click', onTextRectClick) //add event to new rect
         .attr('data-target', fieldPKType);
 
     }
@@ -328,7 +331,7 @@
     //scale down value text font
     textGroups
       .select('text.value-text')
-      .style('font-size', function (d, i) {
+      .style('font-size', function(d, i) {
 
         var fontSize = parseFloat(d3.select(this).style('font-size')),
           multiplier = Math.min((passWidth - 17) / totalWidth, 1.0),
@@ -350,12 +353,12 @@
     //truncate text
     while (remainWidth < 0) {
       textGroups
-        .each(function (d, i) {
+        .each(function(d, i) {
           console.log("height:" + this.getBBox().height);
           longestElem = findLongElem(d3.select(this), longestElem);
         });
 
-      longestElem.call(function (d, i) {
+      longestElem.call(function(d, i) {
         var fontSize = parseFloat(this.style('font-size'));
         truncateText(this);
         var parent = this.node().parentNode;
@@ -479,7 +482,7 @@
     }
 
     //align text in field
-    fieldElement.attr('text-anchor', function (d) { //horizontal align
+    fieldElement.attr('text-anchor', function(d) { //horizontal align
       return pKValueToSVG[valueOrDefault(fieldGroup.textAlignment, 'default')];
     });
 
@@ -505,9 +508,8 @@
       .attr('width', rectWidth)
       .attr('height', rectHeight)
       .attr('x', -(padding / 2))
-      .attr('y', -(padding / 2))
-      //.attr('shape-rendering', 'crispEdges')
-      .on('click', onTextRectClick); //add event to new rect
+      .attr('y', -(padding / 2));
+    //.attr('shape-rendering', 'crispEdges')
 
     return rect;
 
@@ -518,20 +520,34 @@
 
   ***********************************************************/
   function setLogo() {
-    var logoGroup = pb.svg().select('g.logo');
-    logoGroup.select('text')
-      .text(pb.template().keyDoc.logoText);
 
-    //update rectangle size
-    logoGroup.select('rect').remove();
-    //add/update the rectangle around the field to match the text size
-    setFieldRect(logoGroup)
-      .attr('data-target', "logo");
+      console.warn(pb.template().keyDoc.logoText);
 
-  }
+      var logoGroup = pb.svg().select('g.logo');
+      logoGroup.select('text.logo-text')
+        .attr('dominant-baseline', 'hanging') //set text top-baseline 0,0 for most browsers
+        .text(pb.template().keyDoc.logoText);
+
+      if (pb.template().keyDoc.logoText) { //if logoText exists
+        //update rectangle size
+        logoGroup.select('rect').remove();
+        //add/update the rectangle around the field to match the text size
+        setFieldRect(logoGroup)
+          .on('click', onLogoRectClick)
+          .attr('data-target', "logo");
+
+      } else {
+
+        logoGroup.select('rect') //set a default box size for empty logo text
+          .on('click', onLogoRectClick)
+          .attr('width', 120)
+          .attr('height', 20);
+      }
 
 
-  /***********************************************************
+
+    }
+    /***********************************************************
  	Tests whether a json field is undefined and if it is not
  	sets it to '' or to a default.
 
@@ -575,6 +591,7 @@
     //set the input box attributes for the label
     var inputLabel = d3.select('#popLabel')
       .property('value', targetLabel)
+      .on('input',onTextSubmit) //could be removed by logo. add again
       .call(tk.enable);
 
     //set the input box attributes for the value
@@ -621,32 +638,33 @@
   function updateFieldControls(groupID) {
 
     var fieldData = pb.template().keyDoc[pb.passType()];
-
+    var pass = pb.svg();
     setPassFields(fieldData[editGroup.dataType], editGroup.svgType);
 
     //set select group to the next or previous rectangle
-    setEditGroup(pb.svg().select('g#' + groupID + ' rect')[0][0]);
+    setEditGroup(pass.select('g#' + groupID + ' rect')[0][0]);
 
     configTextInputs();
 
-    //set text color, or the field text won't show up
-    $('.pass-template .value-text').css('fill', pb.template().keyDoc.foregroundColor);
-    $('.pass-template .label-text').css('fill', pb.template().keyDoc.labelColor);
-
     //set and clear select highlight style with 'select class'
-    pb.svg().selectAll('rect.text-btn-rect') //clear all
+    pass.selectAll('rect.text-btn-rect') //clear all
       .attr('class', 'text-btn-rect');
 
-    pb.svg().select('g#' + editGroup.svgId + ' rect') //set highlight
+      pass.select('g#' + editGroup.svgId + ' rect') //set highlight
       .attr('class', 'text-btn-rect select');
 
     //enable all buttons
-    tk.enable(d3.select('button#btn-del-field'), d3.select('button#btn-add-field'));
+    tk.enable('button#btn-del-field','button#btn-add-field');
 
 
   }
+  /***********************************************************
 
+
+  ***********************************************************/
   function delMutateItem(groupType, groupIndex) {
+
+    if (pb.template().mutatelist == undefined) return; //no mutatelist items, don't bother
 
     for (var i = groupIndex; i < 5; i++) { //loop all fields deleted and higher
       var groupID = groupType + i;
@@ -662,8 +680,13 @@
 
 
   }
+  /***********************************************************
 
+
+  ***********************************************************/
   function shiftMutateItem(groupType, groupIndex) {
+
+    if (pb.template().mutatelist == undefined) return; //no mutatelist items, don't bother
 
     var groupID = groupType + groupIndex;
     var index = pb.template().mutatelist.indexOf(groupID); //find the value in the list
@@ -673,6 +696,61 @@
       console.log('replace:' + groupID + " with:" + (groupIndex + 1));
 
     }
+  }
+  /***********************************************************
+
+
+  ***********************************************************/
+  function loadCurrency() {
+
+    if (d3.select('#currency').empty()) {
+
+      var url = '/assets/data/currency.html';
+      var uri = encodeURI(url);
+      console.log(uri);
+
+      //load svg xml + place into document
+      d3.html(uri, function(html) {
+
+        d3.select('div#format-control').node().appendChild(html);
+        //add handler for currency selector
+        d3.select('#currency')
+          .call(tk.hide)
+          .on('input', function() {
+            onCurrencyStyle(this.value);
+          });
+
+      });
+    }
+
+  }
+
+  /***********************************************************
+
+  Handler
+
+  ***********************************************************/
+  function onLogoRectClick() {
+
+    var targetLabel = valueOrDefault(pb.template().keyDoc.logoText);
+
+    //diable select inputs and buttons
+    tk.disable('#value-format','#btn-del-field','#btn-add-field','#popValue');
+
+    //hide them if their not already
+    tk.hide('#currency','#number-format','#timeDate-format');
+
+
+    //update the legend in settings form to display the id of the field
+    d3.select('div#legend-header')
+      .text("Logo");
+
+    //set the input box attributes for the label
+    var inputLabel = d3.select('#popLabel')
+      .property('value', targetLabel)
+      .on('input',onLogoSubmit)
+      .call(tk.enable);
+
   }
 
 
@@ -696,8 +774,7 @@
       configTextInputs();
     }
     //enable select inputs and buttons
-    tk.enable(d3.select('#value-format'), d3.select('#btn-del-field'), d3.select(
-      '#btn-add-field'));
+    tk.enable('#value-format','#btn-del-field','#btn-add-field');
 
     //disable add or delete button
     if (editGroup.svgType == "header") { //disable the add button for header. (only 1 field allowed)
@@ -711,7 +788,7 @@
     }
 
     var valueSelect = d3.select('select#value-format');
-    tk.hide(d3.select('#currency'), d3.select('#number-format'), d3.select('#timeDate-format'));
+    tk.hide('#currency','#number-format','#timeDate-format');
 
     var dataGroup = d3.select(this.parentNode);
     var dataSet = dataGroup.data()[0]; //get bound __data__ from DOM
@@ -766,7 +843,7 @@
   function onDelField() {
 
     d3.event.preventDefault();
-
+    var pass = pb.svg();
     var fieldData = pb.template().keyDoc[pb.passType()],
       arrayLength = fieldData[editGroup.dataType].length; //get array length before removal of data field
 
@@ -776,12 +853,12 @@
     var idLastField = editGroup.svgType + arrayLength; //get the index of the last field on the pass
     if (arrayLength <= 1) { //keep the last rect for adding the field type back.
 
-      tk.hide(pb.svg().select('#' + idLastField + ' text.label-text'), pb.svg().select('#' +
+      tk.hide(pass.select('#' + idLastField + ' text.label-text'), pass.select('#' +
         idLastField + ' text.value-text'));
 
     } else {
       //hide this value, but keep it in the svg markup for adding
-      tk.hide(pb.svg().select('#' + idLastField));
+      tk.hide(pass.select('#' + idLastField));
     }
 
     //set group num
@@ -844,9 +921,10 @@
     updateFieldControls(keyValue);
 
     //display the group
-    var valueText = pb.svg().select('#' + keyValue + ' text.value-text'),
-      labelText = pb.svg().select('#' + keyValue + ' text.label-text'),
-      valueElem = pb.svg().select('#' + keyValue);
+    var pass = pb.svg();
+    var valueText = pass.select('#' + keyValue + ' text.value-text'),
+      labelText = pass.select('#' + keyValue + ' text.label-text'),
+      valueElem = pass.select('#' + keyValue);
 
     tk.show(valueText, labelText, valueElem);
 
@@ -878,67 +956,48 @@
     //add/remove a second selector as needed
     switch (selectOption) {
 
-    case 'Number': //----------------------------------------------
+      case 'Number': //----------------------------------------------
 
-      tk.hide(d3.select('#currency'), d3.select('#timeDate-format'));
-      tk.show(d3.select('#number-format'));
-      break;
+        tk.hide('#currency', '#timeDate-format');
+        tk.show('#number-format');
+        break;
 
-    case 'Time': //----------------------------------------------
+      case 'Time': //----------------------------------------------
 
-      tk.hide(d3.select('#currency'), d3.select('#number-format'));
-      tk.show(d3.select('#timeDate-format'));
+        tk.hide('#currency','#number-format');
+        tk.show('#timeDate-format');
 
-      //setup time picker
-      $('#popValue').datetimepicker({
-        datepicker: false,
-        format: 'g:i A',
-        formatTimeScroller: 'g:i A' /*uppercase AM/PM now*/ ,
-        step: 15,
-        onChangeDateTime: onTimeSubmit,
-      });
-      break;
+        //setup time picker
+        $('#popValue').datetimepicker({
+          datepicker: false,
+          format: 'g:i A',
+          formatTimeScroller: 'g:i A' /*uppercase AM/PM now*/ ,
+          step: 15,
+          onChangeDateTime: onTimeSubmit,
+        });
+        break;
 
-    case 'Date': //----------------------------------------------
+      case 'Date': //----------------------------------------------
 
-      //setup date picker
-      $('#popValue').datetimepicker({
-        timepicker: false,
-        format: 'Y/m/d',
-        onChangeDateTime: onDateSubmit,
-      });
+        //setup date picker
+        $('#popValue').datetimepicker({
+          timepicker: false,
+          format: 'Y/m/d',
+          onChangeDateTime: onDateSubmit,
+        });
 
-      tk.hide(d3.select('#currency'), d3.select('#number-format'));
-      tk.show(d3.select('#timeDate-format'));
-      break;
+        tk.hide('#currency','#number-format');
+        tk.show('#timeDate-format');
+        break;
 
-    case 'Currency': //----------------------------------------------
+      case 'Currency': //----------------------------------------------
 
-      tk.hide(d3.select('#timeDate-format'), d3.select('#number-format'));
+        tk.hide('#timeDate-format','#number-format');
+        tk.show('#currency');
+        break;
 
-      var url = '/assets/data/currency.html';
-      var uri = encodeURI(url);
-      console.log(uri);
-
-      //load svg xml + place into document
-      d3.html(uri, function (html) {
-
-        d3.select('div#format-control').node().appendChild(html);
-        //add handler for currency selector
-        d3.select('#currency')
-          .call(tk.show)
-          .on('input', function () {
-            onCurrencyStyle(this.value);
-          });
-
-        //set the value to a default currency (USD)
-        onCurrencyStyle($('#currency').val());
-      });
-      break;
-
-    default: //----------------------------------------------
-      tk.hide(d3.select('#currency'), d3.select('#number-format'), d3.select(
-        '#timeDate-format'));
+      default: //----------------------------------------------
+        tk.hide('#currency','#number-format','#timeDate-format');
     }
 
 
@@ -973,12 +1032,9 @@
       setPassFields(pb.template().keyDoc[pb.passType()][editGroup.dataType], editGroup.svgType); //update svg fields
 
       //set and clear select highlight style with 'select class'
-      pb.svg().selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
-      pb.svg().select('g#' + editGroup.svgId + ' rect').attr('class', 'text-btn-rect select');
-
-      //set text color
-      pb.svg().select('.pass-template .value-text').style('fill', pb.template().keyDoc.foregroundColor);
-      pb.svg().select('.pass-template .label-text').style('fill', pb.template().keyDoc.labelColor);
+      var pass = pb.svg();
+      pass.selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
+      pass.select('g#' + editGroup.svgId + ' rect').attr('class', 'text-btn-rect select');
 
       console.log(editGroup.dataType);
 
@@ -1042,6 +1098,29 @@
   Handler
 
   ***********************************************************/
+  function onLogoSubmit() {
+
+    var fieldLabel = $('input#popLabel').val(); //get input box label
+    var keyValue = editGroup.svgId;
+
+    pb.template().keyDoc.logoText = fieldLabel; //set value into keyDoc
+    setLogo(); //update logo
+
+    //set and clear select highlight style with 'select class'
+    var pass = pb.svg();
+    pass.selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
+    pass.select('g.logo rect').attr('class', 'text-btn-rect select');
+
+    console.log(editGroup.dataType);
+
+
+  }
+
+  /***********************************************************
+
+  Handler
+
+  ***********************************************************/
   function onDateTimeStyle(value) {
 
     var fieldValue = $('input#popValue').val();
@@ -1074,7 +1153,7 @@
  	***********************************************************/
   function onCurrencyStyle(value) {
 
-    var fieldValue = Number($('input#popValue').val());
+    var fieldValue = $('input#popValue').val();
     var currencyCode = value;
     var fieldLabel = $('input#popLabel').val(); //get input box label
     var keyValue = editGroup.svgId;
@@ -1187,8 +1266,13 @@
     };
 
     console.log(pb.template().mutatelist);
-    if (pb.template().mutatelist && pb.template().mutatelist.length > 0) { //submit the api mutate variable list if it exists.
+    //submit the api mutate variable list if it exists.
+    if (pb.template().mutatelist && pb.template().mutatelist.length > 0) {
       passData.mutatelist = pb.template().mutatelist;
+    }
+
+    if (pb.template().keyDoc.logoText) { //submit the logo
+      passData.keyDoc.logoText = pb.template().keyDoc.logoText;
     }
 
     passData.keyDoc[pb.passType()] = {
@@ -1216,43 +1300,44 @@
   pb.fields = {
 
     /* setup and configure text input handlers */
-    init: function () {
+    init: function() {
       init();
     },
 
     /* set svg text fields to match pass json data */
-    set: function (fieldArray, fieldType) {
+    set: function(fieldArray, fieldType) {
       setPassFields(fieldArray, fieldType);
     },
     /* set svg logo to match pass json data */
-    setLogo: function () {
+    setLogo: function() {
       setLogo();
     },
     /* handler for on rect click */
-    onRectClick: function () {
+    onRectClick: function() {
       onTextRectClick();
     },
 
     /* handler for on text submit */
-    onSubmit: function () {
+    onSubmit: function() {
       onTextSubmit();
     },
-    save: function () {
+    save: function() {
       onFieldsSave();
     },
-    xray: function () {
+    xray: function() {
       pb.location.xray(false);
     },
-    stroke: function () {
+    stroke: function() {
       passBuilder.colors.updateRectStroke('rect.text-btn-rect');
     },
-    handler: function () {
+    handler: function() {
+      loadCurrency(); //load currency selectors
       passBuilder.backFields.addHandlers();
     },
-    name: function () {
+    name: function() {
       return 'infoField';
     },
-    index: function () {
+    index: function() {
       return 8;
     }
 

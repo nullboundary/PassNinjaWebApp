@@ -80,9 +80,11 @@ func main() {
 
 	//web app login pages
 	accounts := web.New()
-	goji.Handle("/accounts/*", accounts)                           //handle all things that require login
-	accounts.Use(requireLogin)                                     //login check middleware
-	accounts.Get("/accounts/home", handlePassListPage)             //seperate assets for accounts - TODO add back to non accounts
+	goji.Handle("/accounts/*", accounts)                //handle all things that require login
+	accounts.Use(requireLogin)                          //login check middleware
+	accounts.Get("/accounts/home", handleAccountPage)   //seperate assets for accounts - TODO add back to non accounts
+	accounts.Get("/accounts/editor", handleAccountPage) //seperate assets for accounts - TODO add back to non accounts
+
 	accounts.Get("/accounts/template/:passType", handlePassSample) //return a sample json object of the pass type
 
 	//accounts.Get("/accounts/passes/", handleAccountStatic)
@@ -188,7 +190,7 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handlePassListPage(c web.C, res http.ResponseWriter, req *http.Request) {
+func handleAccountPage(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("handlePassListPage %s", req.URL.Path[1:])
 
@@ -742,6 +744,12 @@ func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token,
 		if len(ah) > 6 && strings.ToUpper(ah[0:6]) == "BEARER" {
 			return jwt.Parse(ah[7:], keyFunc)
 		}
+	}
+
+	//Check for a token in the cookie
+	c, err := req.Cookie("token")
+	if err == nil {
+		return jwt.Parse(c.Value, keyFunc)
 	}
 
 	// Look for "token=" url parameter

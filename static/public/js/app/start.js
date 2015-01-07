@@ -1,11 +1,22 @@
-(function (tk,pb, $, undefined) {
+(function(tk, pb, $, undefined) {
 
   'use strict';
+
+  function init() {
+
+    if (pb.template().id != "") { //a new pass will have no id yet. Don't fill in template names.
+
+      d3.select('input#pass-name').node().value = pb.template().name;
+      d3.select('input#pass-desc').node().value = pb.template().keyDoc.description;
+      d3.select('input#org-name').node().value = pb.template().keyDoc.organizationName;
+    }
+
+  }
 
   /***********************************************************
 
 
-  ***********************************************************/
+	***********************************************************/
   function submitStart() {
 
     var orgName = $('#org-name').val();
@@ -28,36 +39,43 @@
 
   pb.startPage = {
     /* setup and configure barcode handlers */
-//    handler: function () {
-//      handler();
-//    },
-    name: function () {
+    //    handler: function () {
+    //      handler();
+    //    },
+    name: function() {
       return 'getStarted';
     },
 
-    index: function () {
+    index: function() {
       return 2;
     },
-    submit: function () {
-
+    init: function() {
+			init();
     },
-    save: function (index) {
+    save: function(index) {
       submitStart();
-
       console.log(pb.template().name);
       if (pb.template().name == "") {
-        $('.main').moveTo(index - 1);
+        console.log('save start ' + index);
+        //onePageScroll.moveTo(".main", (parseInt(index) - 1));
+        onePageScroll.moveBlock(true);
+        //$('.main').moveTo(index - 1);
         tk.alertDisplay("error", "Please fill out the required field");
         $('#pass-name').focus();
         return;
       }
       if (pb.template().keyDoc.organizationName == "") {
-        $('.main').moveTo(index - 1);
+        onePageScroll.moveBlock(true);
+        //onePageScroll.moveTo(".main", (index - 1));
+        //$('.main').moveTo(index - 1);
         tk.alertDisplay("error", "Please fill out the required field");
         $('#org-name').focus();
         return;
       }
 
+      onePageScroll.moveBlock(false);
+
+			if (pb.template().id == "") {
 
       var passData = {
         'name': pb.template().name,
@@ -70,6 +88,21 @@
       };
 
       pb.create(passData);
+
+		} else { //Updating an old pass
+
+			var passData = {
+				'name': pb.template().name,
+				'keyDoc': {
+					'description': pb.template().keyDoc.description,
+					'organizationName': pb.template().keyDoc.organizationName
+				}
+			};
+			pb.update(pb.template().id, passData);
+		}
+
+
+
     }
   };
 

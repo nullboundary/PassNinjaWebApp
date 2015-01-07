@@ -11,26 +11,25 @@
   /***********************************************************
 
 
- 	***********************************************************/
+  	***********************************************************/
   function init() {
 
     passType = 'none';
     //passBuilder = app.passBuilder;
     console.log(app.passBuilder);
 
-    //setup one page scroll
-    $('.main').onepage_scroll({
-      sectionContainer: 'section',
-      updateURL: false,
-      responsiveFallback: false,
-      pagination: false,
-      keyboard: true,
-      direction: 'vertical',
-      loop: false,
-      beforeMove: onBeforeScroll,
-      afterMove: onAfterScroll
-    });
+    console.log(onePageScroll);
 
+    onePageScroll.init(".main", {
+      sectionContainer: 'section',
+      pagination: false,
+      updateURL: true,
+      beforeMove: onBeforeScroll,
+      afterMove: onAfterScroll,
+      loop: false,
+      keyboard: true,
+      responsiveFallback: false
+    });
 
     //Select PassType
     d3.selectAll('.pass-thumb-select')
@@ -39,6 +38,12 @@
     //Click Next Page Button
     d3.select('#next-button')
       .on('click', onNextPage);
+
+    //Click Return Home Page Button
+    d3.select('#return-button')
+      .on('click', function(){
+        app.setHomePage();
+      });
 
     //prevent enter submit for all forms!
     $('form.pure-form').on("keyup keypress", function (e) {
@@ -49,19 +54,16 @@
       }
     });
 
-    //only load back if you haven't already
-    if (d3.select('svg.back').empty()) {
-      app.toolkit.loadSVG('back', onSVGLoad); //load the back svg
-    }
+
 
   }
 
   /***********************************************************
 
 
- 	***********************************************************/
-  function onBeforeScroll(index) {
-
+  	***********************************************************/
+  function onBeforeScroll(index,nextEl) {
+    console.log(d3.select(nextEl));
       if (pageBeforeIndex != index) { //prevent handler being called twice per scroll.
 
         app.passBuilder.colors.resetRectStroke(); //reset all rect stroke to none
@@ -120,9 +122,9 @@
 
 
   /***********************************************************
-   buildPass makes a new SVG pass representation from the data
+    buildPass makes a new SVG pass representation from the data
 
- 	***********************************************************/
+  	***********************************************************/
   function buildPass() {
 
     //passTemplate
@@ -145,16 +147,43 @@
   }
 
   /***********************************************************
-  initEditor setups up some fields and controls for the pass builder
-  tool.
+	initEditor setups up some fields and controls for the pass builder
+	tool.
 
-  ***********************************************************/
+	***********************************************************/
   function initEditor() {
 
     buildPass(); //setup template pass
 
-    //set color sliders to match keydoc
-    app.passBuilder.colors.updateSliders();
+    //only load back if you haven't already
+    if (d3.select('svg.back').empty()) {
+
+      app.toolkit.loadSVG('back', function (error, xml) { //svg load callback
+
+        if (error) {
+          console.warn(error);
+          app.toolkit.alertDisplay('error', "pass type: " + d.passtype + " " + error.statusText);
+          return;
+        }
+
+        d3.select('div#back-content').node().appendChild(xml.documentElement);
+        configEditor(); //configure editor settings after load
+      });
+
+    } else {
+
+      configEditor(); //configure editor settings
+    }
+
+
+
+  }
+
+  /***********************************************************
+
+
+	***********************************************************/
+  function configEditor() {
     //set back fields
     app.passBuilder.backFields.set();
 
@@ -165,15 +194,17 @@
       }
     }
 
+    //set color sliders to match keydoc
+    app.passBuilder.colors.updateSliders();
+
     //setup location data
     app.passBuilder.location.update();
-
   }
 
   /***********************************************************
 
 
-  ***********************************************************/
+	***********************************************************/
   function create(jsonData) {
 
     d3.json('/api/v1/passes/')
@@ -181,12 +212,13 @@
       .header("Authorization", "Bearer " + app.toolkit.getToken())
       .post(JSON.stringify(jsonData), requestHandler);
 
+
   }
 
   /***********************************************************
 
 
- 	***********************************************************/
+  	***********************************************************/
   function update(passId, jsonData) {
 
     d3.json('/api/v1/passes/' + passId)
@@ -197,20 +229,17 @@
   }
 
   /***********************************************************
-    Since both patch and post have the same reply, lets reuse them
+	  Since both patch and post have the same reply, lets reuse them
 
-  ***********************************************************/
+	***********************************************************/
   function requestHandler(error, data) {
 
-    if (error) {
-      console.warn(error);
-      app.toolkit.alertDisplay('error', error.responseText);
-      return;
-    }
+    if (app.toolkit.checkLoadError(error)) return;
 
     console.log(data);
     app.passBuilder.template().id = data.id;
     app.passBuilder.template().updated = data.time;
+    app.savePassModelList(); //save the state of the list to storage
     app.toolkit.alertDisplay('saved', 'All changes have been successfully saved.');
 
   }
@@ -218,15 +247,16 @@
   /***********************************************************
 
 
- 	***********************************************************/
+  	***********************************************************/
   function onNextPage() {
-    $('.main').moveDown();
+    //$('.main').moveDown();
+    onePageScroll.moveDown('.main');
   }
 
   /***********************************************************
 
 
- 	***********************************************************/
+  	***********************************************************/
   function onSelectType() {
 
     console.log('selectpass');
@@ -273,8 +303,8 @@
 
   /***********************************************************
 
-   //callback for load of an svg element check for errors
-   ***********************************************************/
+	 //callback for load of an svg element check for errors
+	 ***********************************************************/
   var onSVGLoad = function (error, xml) {
 
     if (xml != undefined) {
@@ -295,8 +325,8 @@
 
   /***********************************************************
 
-   callback for load of the Front SVG element and init the pass
-   ***********************************************************/
+	 callback for load of the Front SVG element and init the pass
+	 ***********************************************************/
   var onFrontSVGLoad = function (error, xml) {
 
     if (onSVGLoad(error, xml)) {
@@ -308,7 +338,7 @@
   /***********************************************************
 
 
-  ***********************************************************/
+	***********************************************************/
   function passStatus(currentPage) {
 
     if (app.passBuilder.template().status == "ready" || app.passBuilder.template().status == "api") {
@@ -353,7 +383,9 @@
     build: function () {
       buildPass();
     },
-
+    editor: function () {
+      initEditor();
+    },
     create: function (jsonData) {
       create(jsonData);
     },
