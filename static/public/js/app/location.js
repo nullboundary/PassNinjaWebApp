@@ -327,21 +327,21 @@
     if (pb.template().keyDoc.beacons != undefined || pb.template().keyDoc.locations != undefined) {
 
       d3.select('div#settings-content')
-      .style('z-index', 1);
+        .style('z-index', 1);
 
       d3.select('.fake-content') //transistion duration applied in css!
-      .style('opacity', 0.1);
+        .style('opacity', 0.1);
 
       d3.transition()
-      .duration(1000)
-      .delay(10)
-      .each(function() {
+        .duration(1000)
+        .delay(10)
+        .each(function() {
 
-        d3.select('div#settings-content')
-        .transition()
-        .style('opacity', 1.0)
+          d3.select('div#settings-content')
+            .transition()
+            .style('opacity', 1.0)
 
-      });
+        });
 
     }
 
@@ -356,7 +356,7 @@
       d3.select('.fake-content')
         .style('opacity', 1.0);
 
-        d3.select('div#settings-content')
+      d3.select('div#settings-content')
         .style('opacity', 0)
         .style('z-index', -1);
 
@@ -531,19 +531,19 @@
 
     var inputId = inputElm.attr('id');
 
-    if (inputId == 'beacon-uuid') {
+    if (inputId === 'beacon-uuid') {
 
       beacons[index].proximityUUID = inputVal;
 
-    } else if (inputId == 'beacon-major') {
+    } else if (inputId === 'beacon-major') {
 
       beacons[index].major = parseInt(inputVal, 10);
 
-    } else if (inputId == 'beacon-minor') {
+    } else if (inputId === 'beacon-minor') {
 
       beacons[index].minor = parseInt(inputVal, 10);
 
-    } else if (inputId == 'beacon-relevant') {
+    } else if (inputId === 'beacon-relevant') {
 
       beacons[index].relevantText = inputVal;
     }

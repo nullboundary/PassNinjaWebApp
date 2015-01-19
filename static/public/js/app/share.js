@@ -50,11 +50,7 @@
         .header("Authorization", "Bearer " + tk.getToken())
         .get(function (error, data) {
 
-          if (error) {
-            console.warn(error);
-            tk.alertDisplay('error', error.responseText);
-            return;
-          }
+          if (tk.checkLoadError(error)) return;
 
           d3.select('#pass-link')
             .property('href', data.url)

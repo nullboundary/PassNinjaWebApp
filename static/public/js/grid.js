@@ -45,7 +45,8 @@
 
 
     //set new <li> height
-    activeItem.attr('class', 'expanded')
+    activeItem
+    .classed("expanded", true)
     .style('height', passHeight + 'px')
     .each(function(d, i) {
       var rule = styles.cssRules.item(afterRuleIndex); // get css rule from sheet for <a::after> using index
@@ -93,7 +94,7 @@
 
     //set expanded class to new <li>
     //set new <li> height
-    activeItem.attr('class', 'expanded')
+    activeItem.classed('expanded',true)
     .style('height', itemHeight + 'px')
     .each(function(d, i) {
       bgColor = d.keyDoc.backgroundColor;
@@ -102,7 +103,7 @@
     });
 
     //remove old <li> expanded class
-    previousItem.attr('class', null)
+    previousItem.classed('expanded',false)
     .style('height', null);
 
     d3.transition()
@@ -152,7 +153,7 @@
       var passHeight = previousItem.select('a').node().offsetHeight;
 
       //1. remove old <li> expanded class
-      previousItem.attr('class', null)
+      previousItem.classed('expanded',false)
       .style('height', passHeight + 'px'); //uses css transistion
 
       //2. remove old <li> height
@@ -202,15 +203,32 @@
       //expander.select('.expand-status').style('color', 'green');
       expander.select('.expand-status').text(passNinja.getPassModel().status);
 
-      var link = '<a href="http://local.pass.ninja:8001/pass/1/passes/' + passNinja.getPassModel().filename + '">' + passNinja.getPassModel().filename + '</a>';
+      var url = window.location.protocol + '//local.pass.ninja:8001//pass/1/passes/' + passNinja.getPassModel().filename;
+
+      var link = '<a href="'+ url + '">' + passNinja.getPassModel().filename + '</a>';
       expander.select('.expand-link').html(link);
 
+      expander
+      .each(function(d) {
+
+
+        var colorDark;
+        var color1 = tinycolor(d.keyDoc.labelColor);
+        var color2 = tinycolor(d.keyDoc.foregroundColor);
+
+        if (color1.getBrightness() > color2.getBrightness()) {
+          colorDark = d.keyDoc.foregroundColor;
+        } else {
+          colorDark = d.keyDoc.labelColor;
+        }
+
       var qrcode = new QRCode(expander.select('#expand-qr').node(), {
-        text: link,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
+        text: url,
+        colorDark : colorDark,
+        colorLight : 'rgb(255,255,255)',
         correctLevel : QRCode.CorrectLevel.Q
       });
+    });
 
     } else {
       //expander.select('.expand-status').style('color', 'red');
@@ -220,7 +238,7 @@
     //format & set time/date
     var timeFormat = d3.time.format('%c');
     var fdate = new Date(passNinja.getPassModel().updated);
-    expander.select('.expand-updated').text(fdate);
+    expander.select('.expand-updated').text(timeFormat(fdate));
 
     //TODO: this changes ALL <dt> styles in the page. Only want to change the current expander panel.
     expander
@@ -342,7 +360,7 @@
     var gridList = d3.select('ul#og-grid');
 
     //bind dataset
-    var passListItems = gridList.selectAll('li').data(app.getPassModelList());
+    var passListItems = gridList.selectAll('li.grid-pass').data(app.getPassModelList());
 
     //add <li>
     passListItems.enter().append('li')

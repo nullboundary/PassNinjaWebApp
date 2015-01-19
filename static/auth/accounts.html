@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
     <!--<![endif]-->
     <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet" type="text/css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/global.css" rel="stylesheet" type="text/css">
   <!--  <link rel="stylesheet" type="text/css" href="/assets/css/grid_default.css" />
@@ -30,39 +30,21 @@
     <link href="/assets/css/builder.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
 
-    <template id="file-button-template">
-    <style>
-    div {
-      padding: 6px;
-      border: 1px solid grey;
-      border-radius: 4px;
-      box-shadow: 1px 1px 4px grey;
-      background-color: lightgrey;
-      width: 30px;
-      cursor: pointer;
-    }
-    div:hover {
-      background-color: whitesmoke;
-    }
-    </style>
-    <div>
-      <i class="fa fa-file-image-o"></i>Choose File
-    </div>
-  </template>
-
   <template id="pass-builder">
 
     <!--<div class="wrapper">-->
     <div class="main">
       <!-- Page 1 ================== -->
       <template id="page1-builder">
-        <section class="page1">
+        <section class="page-1">
 
           <div class="pure-g">
             <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
             <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
-              <h1>Pass Type</h1>
-              <h2>Select the type of pass you want to create! </h2>
+              <div class="title">
+                <h1>Pass Type</h1>
+                <h2>Select the type of pass you want to create! </h2>
+              </div>
             </div>
             <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3 "></div>
           </div>
@@ -113,13 +95,15 @@
         </section>
       </template>
       <!-- Page 2 ================== -->
-      <section class="page2">
+      <section class="page-2">
         <!-- Fields -->
         <div class="pure-g">
           <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
-            <h1>Get Started!</h1>
-            <h2>Fill out the name of the pass template and organization!</h2>
+            <div class="title">
+              <h1>Get Started!</h1>
+              <h2>Fill out the name of the pass template and organization!</h2>
+            </div>
             <form class="pure-form">
               <fieldset class="pure-group">
                 <input type="text" class="pure-input-1" id="pass-name" placeholder="Pass Name" required>
@@ -134,12 +118,14 @@
         </div>
       </section>
       <!-- Page 3 ================== -->
-      <section class="page3">
+      <section class="page-3">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Pass Color</h1>
-            <h2>Change background colors.</h2>
+            <div class="title">
+              <h1>Pass Color</h1>
+              <h2>Change background colors.</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- label color slider -->
@@ -150,12 +136,14 @@
         </div>
       </section>
       <!-- Page 4 ================== -->
-      <section class="page4">
+      <section class="page-4">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Label Color</h1>
-            <h2>Change label text colors.</h2>
+            <div class="title">
+              <h1>Label Color</h1>
+              <h2>Change label text colors.</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- label color slider -->
@@ -166,12 +154,14 @@
         </div>
       </section>
       <!-- Page 5 ================== -->
-      <section class="page5">
+      <section class="page-5">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Value Color</h1>
-            <h2>Change value text colors.</h2>
+            <div class="title">
+              <h1>Value Color</h1>
+              <h2>Change value text colors.</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- value color slider -->
@@ -182,12 +172,14 @@
         </div>
       </section>
       <!-- Page 6 ================== -->
-      <section class="page6">
+      <section class="page-6">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Images</h1>
-            <h2>Select an image to change it.</h2>
+            <div class="title">
+              <h1>Images</h1>
+              <h2>Select an image to change it.</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- Image Upload Control -->
@@ -209,12 +201,14 @@
         </div>
       </section>
       <!-- Page 7 ================== -->
-      <section class="page7">
+      <section class="page-7">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Barcode</h1>
-            <h2>Choose the barcode type.</h2>
+            <div class="title">
+              <h1>Barcode</h1>
+              <h2>Choose the barcode type.</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- Barcode Control -->
@@ -232,10 +226,10 @@
                   <div class="pure-control-group">
                     <label for="bar-format">Barcode Format</label>
                     <select id="bar-format">
-                      <option>PDF417</option>
-                      <option>Aztec</option>
-                      <option>QR</option>
-                      <option>No Barcode</option>
+                      <option  value="PKBarcodeFormatPDF417" selected="selected">PDF417</option>
+                      <option  value="PKBarcodeFormatAztec">Aztec</option>
+                      <option  value="PKBarcodeFormatQR">QR</option>
+                      <option  value="None">No Barcode</option>
                     </select>
                   </div>
                 </fieldset>
@@ -245,12 +239,14 @@
         </div>
       </section>
       <!-- Page 8 ================== -->
-      <section class="page8">
+      <section class="page-8">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Info Fields</h1>
-            <h2>Select a field to change it.</h2>
+            <div class="title">
+              <h1>Info Fields</h1>
+              <h2>Select a field to change it.</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- Text Popover -->
@@ -261,7 +257,7 @@
                     <div id="legend-header">
                       No field selected
                     </div>
-                    <div id="legend-add">
+                    <div class="legend-add">
                       <button class="pure-button" id="btn-add-field" disabled><i class="fa fa-plus-circle"></i> New Field</button>
                     </div>
                   </legend>
@@ -271,19 +267,23 @@
                   <div class="pure-control-group">
                     <label for="popLabel">Field Label</label>
                     <input id="popLabel" type="text" disabled>
+                    <select id="align-format" disabled>
+                      <option value="PKTextAlignmentNatural" selected="selected">Align None</option>
+                      <option value="PKTextAlignmentLeft">Align Left</option>
+                      <option value="PKTextAlignmentCenter">Align Center</option>
+                      <option value="PKTextAlignmentRight">Align Right</option>
+                    </select>
                   </div>
-                  <div class="pure-control-group">
+                  <div class="pure-control-group" id="format-control">
                     <label for="popValue">Field Value</label>
+                    <input id="popValue" type="text" disabled>
                     <select id="value-format" disabled>
-                      <option selected="selected">Text</option>
+                      <option value="Text" selected="selected">Text</option>
                       <option value="Number">Number</option>
                       <option value="Time">Time</option>
                       <option value="Date">Date</option>
                       <option value="Currency">Currency</option>
                     </select>
-                  </div>
-                  <div class="pure-control-group" id="format-control">
-                    <input id="popValue" type="text" disabled>
                     <select id="timeDate-format" style="display: none">
                       <option value="PKDateStyleNone">None</option>
                       <option value="PKDateStyleShort" selected="selected">Short</option>
@@ -291,13 +291,14 @@
                       <option value="PKDateStyleLong">Long</option>
                       <option value="PKDateStyleFull">Full</option>
                     </select>
-                    <select id="number-format" style="display: none">
-                      <option value="None">None</option>
-                      <option value="PKNumberStyleDecimal" selected="selected">Decimal</option>
-                      <option value="PKNumberStylePercent">Percent</option>
-                      <option value="PKNumberStyleScientific">Scientific</option>
-                      <!--<option value="PKNumberStyleSpellOut">Spell Out</option>-->
-                    </select>
+                    <label for="number-format">Number Format</label>
+                      <select id="number-format" style="display: none">
+                        <option value="None">None</option>
+                        <option value="PKNumberStyleDecimal" selected="selected">Decimal</option>
+                        <option value="PKNumberStylePercent">Percent</option>
+                        <option value="PKNumberStyleScientific">Scientific</option>
+                        <!--<option value="PKNumberStyleSpellOut">Spell Out</option>-->
+                      </select>
                     <label for="var-field" class="pure-checkbox">
                       <input id="var-field" type="checkbox"> Set via API
                     </label>
@@ -312,23 +313,25 @@
         </div>
       </section>
       <!-- Page 9 ================== -->
-      <section class="page9">
+      <section class="page-9">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Back Info</h1>
-            <h2>Enter your data for the back of the pass.</h2>
+            <div class="title">
+              <h1>Back Info</h1>
+              <h2>Enter your data for the back of the pass.</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- Pass content -->
             <div class="control ninja-theme">
-              <form class="pure-form pure-form-aligned">
+              <form class="pure-form pure-form-stacked">
                 <fieldset>
                   <legend>
                     <div id="back-legend">
                       No field selected
                     </div>
-                    <div id="back-new">
+                    <div class="legend-add">
                       <button class="pure-button" id="btn-add-back-field"><i class="fa fa-plus-circle"></i> New Field</button>
                     </div>
                   </legend>
@@ -340,7 +343,7 @@
                   </div>
                   <div class="pure-control-group">
                     <label for="back-text">Field Value</label>
-                    <textarea id="back-text" name="back-text" rows="5" cols="48" required></textarea>
+                    <textarea id="back-text" name="back-text" required></textarea>
                   </div>
                   <div class="pure-control-group">
                     <button class="pure-button" id="btn-del-back-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
@@ -354,13 +357,14 @@
         </div>
       </section>
       <!-- Page 10 ================== -->
-      <section class="page10">
+      <section class="page-10">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Location</h1>
-            <h2>Set the activation location</h2>
-
+            <div class="title">
+              <h1>Location</h1>
+              <h2>Set the activation location</h2>
+            </div>
             <!-- Pass content -->
             <div id="settings-content">
               <h3>Relevant Time</h3>
@@ -486,12 +490,14 @@
         </div>
       </section>
       <!-- Page 11 ================== -->
-      <section class="page11">
+      <section class="page-11">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Sign It</h1>
-            <h2>Sign your pass with a certificate</h2>
+            <div class="title">
+              <h1>Sign It</h1>
+              <h2>Sign your pass with a certificate</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- Pass content -->
@@ -517,12 +523,14 @@
         </div>
       </section>
       <!-- Page 12 ================== -->
-      <section class="page12">
+      <section class="page-12">
         <div class="pure-g">
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3"></div>
           <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-            <h1>Share it</h1>
-            <h2>Your done! Distribute your pass!</h2>
+            <div class="title">
+              <h1>Share it</h1>
+              <h2>Your done! Distribute your pass!</h2>
+            </div>
           </div>
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
             <!-- Pass content -->
@@ -531,7 +539,7 @@
               <div id="front-content"></div>
             </div>
             <div class="control ninja-theme">
-              <canvas id="pass-qr"></canvas>
+              <div id="pass-qr"></div>
               <form class="pure-form">
                 <pre><code id="pass-api"></code></pre>
                 <input class="pure-input-1" id="pass-copy" type="text" value="" placeholder="Pass URL" readonly>
@@ -556,10 +564,18 @@
         <div class="rect4"></div>
         <div class="rect5"></div>
       </div>
-      <button type="button" class="pure-button btn" id="next-button">
-        <i class="fa fa-angle-down"></i>
+      <button type="button" class="btn" id="next-button">
+        <i class="fa fa-angle-down fa-lg"></i>
       </button>
     </a>
+
+    <!-- Return Home Page Button -->
+    <a class="return">
+      <button type="button" class="btn" id="return-button">
+        <i class="fa fa-reply"></i>
+      </button>
+    </a>
+
   </template>
 
   <template id="pass-grid">
@@ -569,18 +585,21 @@
       <div class="pure-g">
         <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
         <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
-          <h1>Your Passes</h1>
-          <h2>Click to update and share them with your customers!</h2>
+          <div class="title">
+            <h1>Your Passes</h1>
+            <h2>Click to update and share them with your customers!</h2>
+          </div>
         </div>
         <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
       </div>
 
       <div class="main">
-        <button type="button" class="pure-button btn" id="new-pass">
-          <i class="fa fa-plus-square fa-5x"></i>
-        </button>
         <ul id="og-grid" class="og-grid">
-
+          <li>
+            <button type="button" class="pure-button btn" id="new-pass">
+              <i class="fa fa-plus-square fa-5x"></i>
+            </button>
+          </li>
         </ul>
       </div>
 
@@ -589,17 +608,51 @@
 
   </template>
 
+  <template id="expand-template">
+    <div class="expand-inner">
+
+      <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+          <dl class="dl-inline">
+            <dt>Title</dt>
+            <dd class="expand-title" >-</dd>
+            <dt>Description</dt>
+            <dd class="expand-desc">-</dd>
+            <dt>Type</dt>
+            <dd class="expand-passtype">-</dd>
+            <dt>Status</dt>
+            <dd class="expand-status">-</dd>
+            <dt>Updated</dt>
+            <dd class="expand-updated">-</dd>
+            <dt>Download URL</dt>
+            <dd class="expand-link">-</dd>
+          </dl>
+        </div>
+        <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
+          <button type="button" class="pure-button expand-edit-btn">Edit</button>
+          <button type="button" class="pure-button expand-del-btn">Delete</button>
+          <div id="expand-qr"></div>
+        </div>
+        <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
+      <button type="button" class="pure-button expand-close-btn">X</button>
+    </div>
+  </div>
+
+    </div>
+  </template>
+
   </head>
   <body>
         <!-- ============================================================ -->
         <!-- Nav bar
         ================================================================= -->
         <nav class="home-menu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
-          <a href="#" class="pure-menu-heading" id="header">
+          <a href="https://pass.ninja" class="pure-menu-heading" id="header">
             <img src="/assets/img/logo.svg" alt="Pass Ninja">
           </a>
           <ul>
-            <li><button>Support</button></li>
+            <li><button>Account</button></li>
+            <li><button>Feedback</button></li>
             <li><form method="post" action="/logout"><button type="submit">Logout</button></form></li>
           </ul>
         </nav>
@@ -622,9 +675,10 @@
               <script src="/assets/js/plugin/polymer-expressions.js"></script> -->
               <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
-              <script type="text/javascript" src="/assets/js/plugin/jquery.onepage-scroll.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/onepagescroll.js"></script>
+              <!--    <script type="text/javascript" src="/assets/js/plugin/jquery.onepage-scroll.js"></script>
 
-            <!--  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+              <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/grid.js"></script>  -->
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.0.0/tinycolor.min.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/jquery.colorpickersliders.js"></script>
@@ -632,10 +686,11 @@
               <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/l.control.geosearch.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/l.geosearch.provider.google.js"></script>
-              <script type="text/javascript" src="/assets/js/plugin/qr.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/qrcode.js"></script>
 
               <script type="text/javascript" src="/assets/js/app.js"></script>
               <script type="text/javascript" src="/assets/js/app/toolkit.js"></script>
+              <script type="text/javascript" src="/assets/js/grid.js"></script>
               <script type="text/javascript" src="/assets/js/passbuilder.js"></script>
               <script type="text/javascript" src="/assets/js/app/backfields.js"></script>
               <script type="text/javascript" src="/assets/js/app/start.js"></script>

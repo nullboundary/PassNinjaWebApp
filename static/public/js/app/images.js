@@ -1,4 +1,4 @@
-(function (tk, pb, $, undefined) {
+(function(tk, pb, $, undefined) {
 
   'use strict';
 
@@ -14,12 +14,6 @@
     d3.select('button#btn-del-image')
       .call(tk.disable) //starts disabled
       .on('click', onDelImage);
-
-    //FIXME: modify file chooser button, this doesn't work now
-    var button = document.querySelector('input#image-input');
-    var fileButtonTemplate = document.getElementById("file-button-template");
-    var shadowDom = button.createShadowRoot();
-    shadowDom.appendChild(fileButtonTemplate.content);
 
   }
 
@@ -89,7 +83,7 @@
 
         } else { //replace image
 
-          //this doesn't seem to happen, not sure when it should?
+          //add rect click event to empty image group. 
           imageSelection.attr('xlink:href', imageObj.image);
           d3.select(imageSelection.parentNode + ' rect.img-btn-rect').on('click', onImageRectClick);
         }
@@ -113,7 +107,7 @@
       console.log(imageSelect);
       imageSelect.remove(); //remove from svg
 
-      var matchIndex = pb.template().images.map(function (e) {
+      var matchIndex = pb.template().images.map(function(e) {
         return e.name;
       }).indexOf(currentEditTarget); //find the index of the matching image name
       pb.template().images.splice(matchIndex, 1); //remove the image from the array
@@ -167,58 +161,58 @@
     var ratio = imageWidth / imageHeight;
 
     switch (imageName) {
-    case 'logo':
+      case 'logo':
 
-      if (imageWidth > 320 || imageHeight > 100) {
-        return 'Logo image should be 320px x 100px or less ';
-      } else {
-        return ''
-      }
+        if (imageWidth > 320 || imageHeight > 100) {
+          return 'Logo image should be 320px x 100px or less ';
+        } else {
+          return ''
+        }
 
-    case 'icon':
+      case 'icon':
 
-      if (imageWidth > 152 || imageHeight > 152) {
-        return 'Icon image should be 152px x 152px or less ';
-      } else {
-        return ''
-      }
+        if (imageWidth > 152 || imageHeight > 152) {
+          return 'Icon image should be 152px x 152px or less ';
+        } else {
+          return ''
+        }
 
-    case 'strip': //TODO: the are some variations based on passtype
+      case 'strip': //TODO: the are some variations based on passtype
 
-      if (imageWidth > 640 || imageHeight > 246) {
-        return 'Strip image should be 640 x 246 or less ';
-      } else {
-        return ''
-      }
+        if (imageWidth > 640 || imageHeight > 246) {
+          return 'Strip image should be 640 x 246 or less ';
+        } else {
+          return ''
+        }
 
-    case 'background':
+      case 'background':
 
-      if (imageWidth > 360 || imageHeight > 440) {
-        return 'Background image should be 360px x 440px or less ';
-      } else {
-        return ''
-      }
+        if (imageWidth > 360 || imageHeight > 440) {
+          return 'Background image should be 360px x 440px or less ';
+        } else {
+          return ''
+        }
 
-    case 'footer':
+      case 'footer':
 
-      if (imageWidth > 572 || imageHeight > 30) {
-        return 'Footer image should be 572px x 30px or less ';
-      } else {
-        return ''
-      }
+        if (imageWidth > 572 || imageHeight > 30) {
+          return 'Footer image should be 572px x 30px or less ';
+        } else {
+          return ''
+        }
 
-    case 'thumbnail':
+      case 'thumbnail':
 
-      if (imageWidth > 180 || imageHeight > 180) {
-        return 'Thumbnail image should be 180px x 180px or less ';
-      } else if (ratio > 1.5 || ratio < 0.67) { //thumbnail = 3/2 or 2/3 ratio
-        return 'Thumbnail aspect ratio should be 3:2 or 2:3. ' + ratio;
-      } else {
-        return ''
-      }
+        if (imageWidth > 180 || imageHeight > 180) {
+          return 'Thumbnail image should be 180px x 180px or less ';
+        } else if (ratio > 1.5 || ratio < 0.67) { //thumbnail = 3/2 or 2/3 ratio
+          return 'Thumbnail aspect ratio should be 3:2 or 2:3. ' + ratio;
+        } else {
+          return ''
+        }
 
-    default:
-      return 'Image file name invalid for pass type';
+      default:
+        return 'Image file name invalid for pass type';
     }
 
   }
@@ -232,6 +226,7 @@
 
     currentEditTarget = d3.select(this).attr('data-target');
 
+    //add and remove select styling
     pb.svg().selectAll('rect').attr('class', 'img-btn-rect');
     d3.select(this).attr('class', 'img-btn-rect select');
 
@@ -275,7 +270,7 @@
       var wURL = window.URL || window.webkitURL;
       img = new Image();
       var ratio = 0;
-      img.onload = function () {
+      img.onload = function() {
 
         var errorMessage = checkImageSize(currentEditTarget, this.width, this.height);
 
@@ -289,7 +284,7 @@
           var reader = new FileReader();
           reader.readAsDataURL(file); //data encoded url
 
-          reader.onload = function (e) {
+          reader.onload = function(e) {
 
             var isReplace = false;
             for (var i = 0; i < pb.template().images.length; i++) {
@@ -356,26 +351,26 @@
   //////////////////////////////////////////////////////////////////////////
   pb.image = {
     /* set pass images */
-    set: function () {
+    set: function() {
       setPassImages();
     },
-    init: function () {
+    init: function() {
       init();
     },
-    onRectClick: function () {
+    onRectClick: function() {
       onImageRectClick();
     },
 
-    onUpload: function () {
+    onUpload: function() {
       onImageUpload();
     },
-    save: function () {
+    save: function() {
       onImageSave();
     },
-    name: function () {
+    name: function() {
       return 'images';
     },
-    index: function () {
+    index: function() {
       return 6;
     }
 

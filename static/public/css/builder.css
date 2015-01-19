@@ -15,19 +15,23 @@ a {
   text-decoration: none;
 }
 
-h1, h2 {
+div.title {
+  position: relative;
+  top: 0;
+}
+
+div.title h1,div.title h2 {
   width: 100%;
   float: left;
   text-align: center;
 }
 
-h1 {
-  font-family: 'Helvetica Neue', sans-serif;
+div.title h1 {
+  /*font-family: 'Helvetica Neue', sans-serif;*/
   margin-top: 50px;
-  color: #000;
+  color: rgb(240,30,0);
   margin-bottom: 5px;
-  font-size: 40px;
-  /*letter-spacing: -4px;*/
+  font-size: 30px;
   font-weight: 100;
 }
 h1 span {
@@ -44,12 +48,14 @@ h1 span {
   padding: 3px 10px;
 }
 
-h2 {
+div.title h2 {
   color: #ffffff;
   font-weight: 100;
   margin-top: 0;
   margin-bottom: 40px;
   font-size: 14px;
+  font-weight: 300;
+
 }
 
 /********************************************/
@@ -145,14 +151,15 @@ background-color: rgb(50,45,45);
 body /deep/ .img-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
-
+  display:none;
 }
 
 /* only select these btn if on img input page */
 .viewing-page-6 /deep/ .img-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
-  stroke-width: 1.0;
+  display:block;
+  stroke-width: 2.0;
   stroke: #fff;
 }
 
@@ -193,14 +200,16 @@ body /deep/ .barcode-btn-group rect {
 body /deep/ .text-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
+  display:none;
   stroke: none;
 }
 
 /* only select these btn if on text input page */
 .viewing-page-8 /deep/ .text-btn-group rect {
   fill: #a1fcff;
+  display:block;
   fill-opacity: 0.0;
-  stroke-width: 1.0;
+  stroke-width: 2.0;
   stroke: #fff;
 }
 
@@ -230,7 +239,7 @@ body /deep/ .back-field rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
-  stroke-width: 1.0;
+  stroke-width: 2.0;
   stroke: #fff;
 }
 
@@ -239,7 +248,7 @@ body /deep/ .back-field rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
-  stroke-width: 1.0;
+  stroke-width: 2.0;
   stroke: #fff;
 }
 
@@ -306,6 +315,7 @@ body /deep/ .text-btn-group text
 
 .alert-heading {
   color: inherit;
+  font-weight: 400;
 }
 
 .alert-success {
@@ -338,7 +348,7 @@ body /deep/ .text-btn-group text
   float: right;
   border: none;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 400;
   line-height: 18px;
   color: #000000;
   text-shadow: 0 1px 0 #ffffff;
@@ -366,6 +376,7 @@ div.control{
   line-height: 1;
   color: rgb(255, 0, 0);
   font-family: 'Roboto','Helvetica Neue', sans-serif;
+  font-weight: 400;
   font-size: 12px;
   padding: 12px;
   -webkit-border-radius: 3px;
@@ -373,28 +384,31 @@ div.control{
   border-radius: 3px;
   display: block;
   position: relative;
-  top: -250px;
+  top: 270px;
   z-index: 2;
-  transition:all 1s ease;
-    -webkit-transform: translate3d(0px, 530px, 0) !important;
-    -moz-transform: translate3d(0px, 530px, 0) !important;
-    transform: translate3d(0px, 530px, 0) !important;
+
+  transform: translate3d(120%, -97%, 0) !important;    /*shift right for small screens */
+}
+
+div.pure-g {
+     transition: all 0.5s; 
 }
 
 div.control legend {
   color: rgb(255, 0, 0);
+  height: 33px;
 }
 
-div#legend-add{
+div.legend-add{
   float: right;
-  width: 30px;
+  /*width: 30px;*/
   top: -27px;
-  right: 63px;
+  /*right: 63px;*/
   position: relative;
 }
 
-div#legend-add button{
-  padding: 3px 6px;
+div.legend-add button{
+  padding: 0.5em 1.0em;
 }
 
 
@@ -407,21 +421,30 @@ select#currency {
   background: rgba(0,0,0,0.70);
 }
 
-#loc-map { height: 180px; }
+#loc-map { height: 150px; }
 
-.page10 h3 {
+textarea#back-text {
+  height: 90px;
+  width: 100%;
+}
+
+.page-10 h3 {
   color: rgb(255,255,255);
 }
 
 div#settings-content{
   display: block;
   position: relative;
-  right: 40%;
+  top: -80px;
+  left: 33px;
   width: 312px;
   height: 410px;
   overflow: auto;
   font-size: small;
   z-index: 1;
+  -webkit-transform: scale(0.7);
+  -moz-transform: scale(0.7);
+  transform: scale(0.7);
 }
 
 table {
@@ -452,10 +475,46 @@ tbody tr.select {
   cursor: pointer;
 }
 
+.pure-button:hover:enabled { /* override pure button style */
+  background-color: rgb(240,30,0);
+  border: 2px solid rgba(240,30,0,0.0);
+  color: rgba(0,0,0,1.0);
+}
+
 .pure-button { /* override pure button style */
   background-color: rgba(0,0,0,1.0);
   border: 2px solid rgb(240,30,0);
   color: rgb(255,255,255);
+}
+
+
+/* override file input using shadow-dom */
+  input[type="file"] /deep/ input[type="button"] {
+  font-family: 'Roboto','Helvetica Neue', sans-serif;
+  font-weight: 300;
+  background-color: rgba(0,0,0,1.0);
+  border: 2px solid rgb(240,30,0);
+  color: rgb(255,255,255);
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="file"] /deep/ input[type="button"]:hover:enabled {
+  background-color: rgb(240,30,0);
+  border: 2px solid rgba(240,30,0,0.0);
+  color: rgba(0,0,0,1.0);
+}
+
+input[type="file"] /deep/ input[type="button"]:disabled {
+  background-image: none;
+  border: 0;
+  -khtml-opacity: .4;
+  -moz-opacity: .4;
+  opacity: .4;
+  cursor: not-allowed;
+
 }
 
 /********************************************
@@ -468,10 +527,11 @@ tbody tr.select {
           left: -9999px;
       }
 .loc-tabs {
-  width: 650px;
+  width: 100%;
   float: none;
   list-style: none;
   position: relative;
+  bottom: 420px;
   padding: 0;
  /* margin: 75px auto; */
 }
@@ -485,7 +545,7 @@ tbody tr.select {
     color: #fff;
   /*  color: #08C; */
   /*  font-size: 24px; */
-  /*  font-weight: normal; */
+    font-weight: 300;
     background: rgba(255,255,255,0.2);
     cursor: pointer;
     position: relative;
@@ -512,8 +572,7 @@ tbody tr.select {
 .tab-content{
   z-index: 2;
   display: none;
- /* text-align: left; */
- /* width: 100%; */
+  width: 100%;
   /*font-size: 20px; */
  /* line-height: 140%; */
   padding-top: 10px;
@@ -543,7 +602,7 @@ tbody tr.select {
   /*left: 10%;      left margin for small screens */
   width: 100%;
   height: 100%;
-  border-bottom: 1px #707070 solid;
+/*  border-bottom: 1px #707070 solid; */
 
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
@@ -590,17 +649,17 @@ tbody tr.select {
 /* back, initially hidden pane */
 .fake-content /deep/ .pass-template.back {
   transition:all 1s ease;
-  -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(180deg) !important;
-  -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(180deg) !important;
-  transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(180deg) !important;
+  -webkit-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
+  -moz-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
+  transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
 }
 
 /* front of pass, standard sizing and positioning */
 .fake-content /deep/ .pass-template.front {
   transition:all 1s ease;
-  -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
-  -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
-  transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
+  -webkit-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
+  -moz-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
+  transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
 
 }
 
@@ -610,7 +669,13 @@ tbody tr.select {
   -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
+}
 
+.viewing-page-2 .fake-content /deep/ .pass-template.back {
+  transition:all 1s ease;
+  -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
+  -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
+  transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
 }
 
 /* page transitions */
@@ -619,6 +684,7 @@ tbody tr.select {
   -webkit-transform: translate3d(0, -980%, 0) !important;
   -moz-transform: translate3d(0, -980%, 0) !important;
   transform: translate3d(0, -980%, 0) !important;
+  z-index: -100; /*place the pass behind the text input */
 }
 
 .viewing-page-3 .fake-content {
@@ -723,6 +789,125 @@ tbody tr.select {
     cursor: pointer;
   }
 
+  /********************************************
+  pass-grid
+  ********************************************/
+  .og-grid {
+    list-style: none;
+    padding: 20px 0;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+  }
+
+  .og-grid li {
+    display: inline-block;
+    margin: 10px 5px 10px 5px;
+    vertical-align: top;
+    transition:height 450ms ease;
+
+  }
+
+  .og-grid li > a {
+    border: none;
+    outline: none;
+    display: block;
+    position: relative;
+  }
+
+  .og-grid li > a /deep/ svg,
+  button#new-pass {
+    width: 157px;
+    height: 200px;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: scroll;
+    overflow-x: hidden;
+  }
+
+  .expander {
+    position: absolute;
+    background: #ddd;
+    top: auto;
+    left: 0;
+    width: 100%;
+    margin-top: 10px;
+    text-align: left;
+    height: 300px;
+    overflow: hidden;
+    transition:height 450ms ease;
+
+  }
+
+  .og-grid li.expanded > a::after {
+    top: 204px; /* top:204px is also reset for larger screens below */
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #ddd;
+    border-width: 15px;
+    left: 50%;
+    margin: -20px 0 0 -15px;
+  }
+
+
+  .expand-inner {
+    padding: 50px 30px;
+    height: 100%;
+    opacity: 0;
+  }
+
+  /* Displays the list in "field: value" format */
+  .dl-inline {
+    overflow: hidden;
+    *zoom: 1; //for IE 7 and below
+  }
+  .dl-inline dt, .dl-inline dd {float:left;}
+  .dl-inline dd + dd {clear:both;}
+  .dl-inline dt {
+    margin: 0;
+    float: left;
+    clear: both;
+    font-weight: bold;
+  }
+  .dl-inline dt::after {content: ':';}
+  .dl-inline dd {margin-left: 1ex;}
+
+  button.expand-close-btn {
+    position: relative;
+    left: 90%;
+    top: -30px;
+  }
+
+  button.expand-edit-btn {
+    position: absolute;
+    left: 28px;
+    bottom: 10%;
+  }
+
+  button.expand-del-btn {
+    position: absolute;
+    left: 110px;
+    bottom: 10%;
+  }
+
+  div#expand-qr{
+    position: absolute;
+    top: 7%;
+    left: 60%;
+  }
+
+  .grid-pass {
+    cursor: pointer;
+  }
+
 /********************************************
  loading spinner
  -appears when you select & load an svg template
@@ -790,7 +975,7 @@ tbody tr.select {
 
 ********************************************/
 
-.next {
+.next,.return {
   position: fixed;
   margin: 20px;
   right: 0;
@@ -798,21 +983,24 @@ tbody tr.select {
   z-index: 102;
 }
 
+.return {
+  bottom: 80px;
+}
+
 /* style the button */
-.next .btn {
+.next .btn,.return .btn {
   width: 50px;
   height: 50px;
-  border-radius: 25px;
-  border-color: #fff;
-  border-width: 3px;
   color: #fff;
+  border: 3px solid #fff;
+  border-radius: 25px;
   font-size: 25px;
-  padding: 8px 5px 6px 3px;
+  padding: 6px 2px 8px 2px;
   background-color: transparent;
 }
 
 /* set color to black during hover */
-.next .btn:hover {
+.next .btn:hover,.return .btn:hover {
   color: #000;
   border-color: #000;
 }
@@ -831,12 +1019,39 @@ tbody tr.select {
   display: none;
 }
 
+.viewing-page-12 .next .btn {
+  display: none;
+}
+
+/* page 1 set the arrow in the center */
+.viewing-page-12 .return {
+  left: 43%;
+  top: 75%;
+}
+
+/* make the arrow bigger for page 1 */
+.viewing-page-12 .return .btn {
+  width: 140px;
+  height: 140px;
+  border-radius: 70px;
+  font-size: 70px;
+}
+
 
 /***********************************************************
    medium & larger screens
 
 ***********************************************************/
 @media (min-width: 48em) {
+
+  /* section title */
+  div.title {
+    top: 30px;
+  }
+
+  div.title h1 {
+      font-size: 40px;
+  }
 
   /* div style for svg pass */
   .section-content,
@@ -861,6 +1076,7 @@ tbody tr.select {
   /* on medium screens getting started page centers the pass */
   .viewing-page-2 .fake-content {
     left:38%;
+    z-index: -100;
   }
 
   /* Dont scale down the pass for medium+ screens */
@@ -879,12 +1095,18 @@ tbody tr.select {
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
   }
 
-  /* front of pass, scale to 50% Page 2 */
+  /* front and back of pass, scale to 50% Page 2 */
   .viewing-page-2 .fake-content /deep/ .pass-template.front {
     transition:all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
+  }
+  .viewing-page-2 .fake-content /deep/ .pass-template.back {
+    transition:all 1s ease;
+    -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
+    -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
+    transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
   }
 
 /* Special page 9 back */
@@ -897,10 +1119,30 @@ tbody tr.select {
 
   /* The controls need to move up and align next to the pass on medium+ screens */
   div.control{
-     top: -200px;
-     right: 8%;
+     top: 198px;
+     right: 40%;
      font-size: 16px;
+     width: 130%;
   }
+
+  textarea#back-text {
+    height: 130px;
+  }
+
+  div#settings-content{
+    top: auto;
+    left: auto;
+    right: 40%;
+    -webkit-transform: scale(1.0);
+    -moz-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+
+  .loc-tabs {
+    bottom: 0;
+  }
+
+  #loc-map { height: 180px; }
 
   #color-select{
     right: 20%;
@@ -922,6 +1164,15 @@ tbody tr.select {
     left: 42%;
   }
 
+  /* svg grid passes can be bigger on bigger screens */
+  .og-grid li > a /deep/ svg,
+  button#new-pass  {
+    width: 210px;
+    height: 267px;
+  }
 
+  .og-grid li.expanded > a::after {
+    top: 272px;
+  }
 
 }

@@ -1,27 +1,23 @@
 /********************************************
-  Global Styles 
+  Global Styles
 
 *********************************************/
 
 body {
   font-family: 'Roboto','Helvetica Neue', sans-serif;
+  font-weight: 300;
   background: #C0C0C0;
   padding: 0;
-  /* text-align: left;
-  position: relative; */
   margin: 0;
   height: 100%;
- /* text-rendering: optimizeLegibility; 
-  -webkit-font-smoothing: antialiased; 
-  -moz-osx-font-smoothing: grayscale;
-  -moz-font-feature-settings: "liga", "kern"; */
 }
 
 /* font stack for all components: */
 html, button, input, select, textarea,
 .pure-g [class *= "pure-u"] {
-  
+
   font-family: 'Roboto','Helvetica Neue', sans-serif;
+  font-weight: 300;
 }
 
 
@@ -33,11 +29,12 @@ html, button, input, select, textarea,
 .home-menu.pure-menu-open {
   background: rgba(0,0,0,0.4);
   z-index: 4;
+  height: 50px;
 }
 .pure-menu.pure-menu-open.pure-menu-fixed {
 
   /* Remove border from fixed menu. */
-  border-bottom: 1px solid #FF0000; 
+  border-bottom: 1px solid rgb(240,30,0);
   /* a higher z-index here because of the scroll-over effect. */
   z-index: 4;
 }
@@ -54,7 +51,7 @@ html, button, input, select, textarea,
 }
 
 .home-menu ul {
-  float: right; 
+  float: right;
   padding-top: 15px;
 }
 
@@ -65,23 +62,28 @@ html, button, input, select, textarea,
 
 .home-menu li button {
   background:none!important;
-  border:none; 
-  padding:0!important;
+  border:none;
+  padding:0.5em 1em;
   cursor: pointer;
+  color: white;
+  top: -50px;
+  position: relative;
+  font-size: 70%;
+
 }
 
 .home-menu li button:hover,
 .home-menu li button:focus {
   background: none;
   border: none;
-  color: #C0392B; 
+  color: rgb(240,30,0);
 }
 
 .home-menu li a:hover,
 .home-menu li a:focus {
   background: none;
   border: none;
-  color: #C0392B; 
+  color: rgb(240,30,0);
 }
 
 /********************************************
@@ -94,8 +96,20 @@ html, button, input, select, textarea,
 font-size: 18px;
 }
 
+.home-menu.pure-menu-open {
+  height: 70px;
+}
+
+.home-menu li button {
+  top: 0;
+  position: relative;
+  font-size: 100%;
+  font-weight: 400;
+
+}
+
 .home-menu img {
-  
+
   height:55px;
   width: 220px;
 }

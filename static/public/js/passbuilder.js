@@ -1,4 +1,4 @@
-(function (app, $, undefined) {
+(function(app, $, undefined) {
 
   'use strict';
 
@@ -23,6 +23,7 @@
     onePageScroll.init(".main", {
       sectionContainer: 'section',
       pagination: false,
+      animationTime: 500,
       updateURL: true,
       beforeMove: onBeforeScroll,
       afterMove: onAfterScroll,
@@ -41,33 +42,86 @@
 
     //Click Return Home Page Button
     d3.select('#return-button')
-      .on('click', function(){
+      .on('click', function() {
         app.setHomePage();
       });
 
     //prevent enter submit for all forms!
-    $('form.pure-form').on("keyup keypress", function (e) {
-      var code = e.keyCode || e.which;
-      if (code == 13) {
-        e.preventDefault();
-        return false;
-      }
-    });
+    d3.selectAll('form.pure-form')
+      .on('keypress', function() {
+        var code = d3.event.keyCode || d3.event.which;
+        if (code == 13) {
+          d3.event.preventDefault();
+        }
+      });
 
+      addSwipeEvent();
 
 
   }
+
+  function addSwipeEvent(){
+
+    var swipeEl = d3.select('section.active div.pure-g').node();
+
+    console.log(swipeEl);
+    app.toolkit.swipeEvents(swipeEl);
+
+    var sLeft = function(event) {
+      console.log("LEFT");
+      event.preventDefault();
+      moveLeft(swipeEl);
+
+    }
+    document.removeEventListener('swipeLeft', sLeft);
+    document.addEventListener('swipeLeft', sLeft);
+
+    var sRight = function(event) {
+      event.preventDefault();
+      moveRight(swipeEl);
+    }
+
+    document.removeEventListener('swipeRight', sRight);
+    document.addEventListener('swipeRight',sRight);
+
+  }
+
+  function moveLeft(swipeEl) {
+
+    //get the transform height for the pass content
+    var st = window.getComputedStyle(d3.select('div.fake-content').node(), null);
+    var tr = st.getPropertyValue("-webkit-transform") ||
+    st.getPropertyValue("-moz-transform") ||
+    st.getPropertyValue("-ms-transform") ||
+    st.getPropertyValue("-o-transform") ||
+    st.getPropertyValue("transform");
+
+    var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
+    var transY = matrix[matrix.length-1];
+    console.log(matrix);
+
+    d3.select(swipeEl).attr('style', 'transform: translate3d(-120%, 0, 0); ');
+    d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:translate3d(-120%,'+ transY +'px, 0) !important;')
+  }
+
+  function moveRight(swipeEl) {
+    d3.select('div.fake-content')
+    .attr('style', null)
+    .attr('style', 'transition: all 0.5s');
+    d3.select(swipeEl).attr('style', null);
+  }
+
 
   /***********************************************************
 
 
   	***********************************************************/
-  function onBeforeScroll(index,nextEl) {
-    console.log(d3.select(nextEl));
+  function onBeforeScroll(index, nextEl) {
+      console.log(d3.select(nextEl));
       if (pageBeforeIndex != index) { //prevent handler being called twice per scroll.
 
         app.passBuilder.colors.resetRectStroke(); //reset all rect stroke to none
-
+        addSwipeEvent();
         pageBeforeIndex = index;
         console.log('before ' + index);
 
@@ -158,7 +212,7 @@
     //only load back if you haven't already
     if (d3.select('svg.back').empty()) {
 
-      app.toolkit.loadSVG('back', function (error, xml) { //svg load callback
+      app.toolkit.loadSVG('back', function(error, xml) { //svg load callback
 
         if (error) {
           console.warn(error);
@@ -196,6 +250,8 @@
 
     //set color sliders to match keydoc
     app.passBuilder.colors.updateSliders();
+
+    app.passBuilder.barcode.update();
 
     //setup location data
     app.passBuilder.location.update();
@@ -280,7 +336,7 @@
 
     d3.json(uri)
       .header("Authorization", "Bearer " + app.toolkit.getToken())
-      .get(function (error, data) {
+      .get(function(error, data) {
 
         if (error) {
           console.warn(error.statusText);
@@ -305,7 +361,7 @@
 
 	 //callback for load of an svg element check for errors
 	 ***********************************************************/
-  var onSVGLoad = function (error, xml) {
+  var onSVGLoad = function(error, xml) {
 
     if (xml != undefined) {
       var svgid = d3.select(xml.documentElement).attr('id');
@@ -327,7 +383,7 @@
 
 	 callback for load of the Front SVG element and init the pass
 	 ***********************************************************/
-  var onFrontSVGLoad = function (error, xml) {
+  var onFrontSVGLoad = function(error, xml) {
 
     if (onSVGLoad(error, xml)) {
       initEditor();
@@ -376,37 +432,37 @@
 
   app.passBuilder = {
 
-    init: function () {
+    init: function() {
       init();
     },
 
-    build: function () {
+    build: function() {
       buildPass();
     },
-    editor: function () {
+    editor: function() {
       initEditor();
     },
-    create: function (jsonData) {
+    create: function(jsonData) {
       create(jsonData);
     },
 
-    update: function (passId, jsonData) {
+    update: function(passId, jsonData) {
       update(passId, jsonData)
     },
 
-    svg: function () {
+    svg: function() {
       return app.getSvgRoot();
     },
 
-    template: function () {
+    template: function() {
       return app.getPassModel();
     },
 
-    passType: function () {
+    passType: function() {
       return app.getPassModel().passtype;
     },
 
-    status: function (page) {
+    status: function(page) {
       return passStatus(page)
     }
   };

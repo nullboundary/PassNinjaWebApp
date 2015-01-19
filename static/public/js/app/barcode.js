@@ -18,8 +18,7 @@
       }
     },
     barcodeShape = {
-      'PDF417': {
-        'format': 'PKBarcodeFormatPDF417',
+      'PKBarcodeFormatPDF417': {
         'fields': setLowField,
         'fieldState': 'rect',
         'x': 35,
@@ -32,8 +31,7 @@
           'path': '/assets/svg/img/pdf417.png'
         }
       },
-      'QR': {
-        'format': 'PKBarcodeFormatQR',
+      'PKBarcodeFormatQR': {
         'fields': setHighField,
         'fieldState': 'square',
         'x': 81,
@@ -46,8 +44,7 @@
           'path': '/assets/svg/img/QR.png'
         }
       },
-      'Aztec': {
-        'format': 'PKBarcodeFormatAztec',
+      'PKBarcodeFormatAztec': {
         'fields': setHighField,
         'fieldState': 'square',
         'x': 81,
@@ -82,23 +79,10 @@
  	***********************************************************/
   function setBarcode() {
 
-    if (pb.template().keyDoc.barcode != undefined) {
+    var barcode = pb.template().keyDoc.barcode;
 
-      switch (pb.template().keyDoc.barcode.format) {
-      case 'PKBarcodeFormatPDF417':
-        setBarType('PDF417');
-        break;
-      case 'PKBarcodeFormatAztec':
-        setBarType('Aztec');
-        break;
-      case 'PKBarcodeFormatQR':
-        setBarType('QR');
-        break;
-      default:
-        setNone();
-        break;
-      }
-
+    if (barcode) {
+      setBarType(barcode.format);
     } else {
       setNone();
     }
@@ -111,7 +95,6 @@
   function onBarcodeSubmit() {
 
     console.log('onBarcode');
-    //d3.event.preventDefault();
 
     //get input box values
     var barData = $('#bar-message').val();
@@ -121,15 +104,14 @@
 
 
     //TODO: set only fields that are not ""
-    if (barType != 'No Barcode') {
-      pb.template().keyDoc.barcode.format = barcodeShape[barType].format;
+    if (pb.template().keyDoc.barcode && barType != 'None') {
+      pb.template().keyDoc.barcode.format = barType;
       pb.template().keyDoc.barcode.message = barData;
       pb.template().keyDoc.barcode.messageEncoding = barEncode;
       pb.template().keyDoc.barcode.altText = alt;
 
     } else {
       delete pb.template().keyDoc.barcode;
-      //TODO: how do you add a barcode back after delete?
     }
 
 
@@ -152,8 +134,6 @@
       delete pb.template().keyDoc.barcode.altText; //remove it from the keydoc
     }
 
-    //console.log(pb.template());
-
     setAltText(barcode);
 
 
@@ -168,7 +148,7 @@
 
       var altValue = pb.template().keyDoc.barcode.altText;
 
-      if (altValue != undefined) {
+      if (altValue) {
 
         var barcodeRect = pb.svg().select('g#barcode-group rect')
           .transition()
@@ -243,9 +223,6 @@
     //display
     pb.svg().select('g#barcode-group').transition().style('display', 'inline');
 
-    enableInputs();
-    setInputs(barType);
-
   }
 
   /***********************************************************
@@ -255,13 +232,8 @@
   function setNone() {
 
       setLowField();
-      prevState = 'rect';
-
+      prevState = 'rect'; //save state to use for next shift
       pb.svg().select('g#barcode-group').transition().style('display', 'none');
-
-      disableInputs();
-      $('#bar-format').val('No Barcode'); //set selector to no barcode
-
 
     }
     /***********************************************************
@@ -322,10 +294,13 @@
  	***********************************************************/
   function onBarcodeSelect() {
 
-    if (this.value == 'No Barcode') {
+    if (this.value == 'None') {
       setNone();
+      tk.disable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
     } else {
-      //barcode was deleted (set to none) before 
+      tk.enable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
+      
+      //barcode was deleted: (set to none before)
       if (pb.template().keyDoc.barcode == undefined) {
         pb.template().keyDoc.barcode = {}; //add new barcode object
       }
@@ -339,37 +314,22 @@
 
 
   ***********************************************************/
-  function setInputs(barType) {
+  function updateInputs() {
 
     var barcode = pb.template().keyDoc.barcode;
+    if(barcode){
 
-    tk.setValue('input#bar-alt', barcode.altText);
-    tk.setValue('input#bar-encode', barcode.messageEncoding);
-    tk.setValue('input#bar-message', barcode.message);
+      tk.enable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
+      tk.setValue('input#bar-alt', barcode.altText);
+      tk.setValue('input#bar-encode', barcode.messageEncoding);
+      tk.setValue('input#bar-message', barcode.message);
+      d3.select('select#bar-format').node().value = barcode.format; //set the selector
 
-    $('select#bar-format').val(barType); //set the selector
+    } else {
+      tk.disable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
+      d3.select('select#bar-format').node().value = 'None'; //set the selector
+    }
 
-  }
-
-  /***********************************************************
-
-
- 	***********************************************************/
-  function enableInputs() {
-
-    //enable inputs
-    tk.enable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
-
-  }
-
-  /***********************************************************
-
-
- 	***********************************************************/
-  function disableInputs() {
-
-    //disable inputs
-    tk.disable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
 
   }
 
@@ -384,16 +344,18 @@
     if (pb.template().keyDoc.barcode) {
 
       if (pb.template().keyDoc.barcode.message == "") {
-        $('.main').moveTo(index - 1);
+        onePageScroll.moveBlock(true);
         tk.alertDisplay("error", "Please fill out the required field");
         $('#bar-message').focus();
 
       } else if (pb.template().keyDoc.barcode.messageEncoding == "") {
-        $('.main').moveTo(index - 1);
+        onePageScroll.moveBlock(true);
         tk.alertDisplay("error", "Please fill out the required field");
         $('#bar-encode').focus();
 
       } else {
+        onePageScroll.moveBlock(false);
+
         var passData = {
           'name': pb.template().name,
           'status': pb.status(pb.barcode.index()),
@@ -426,6 +388,9 @@
       setBarcode();
     },
 
+    update: function () {
+      updateInputs();
+    },
     save: function (index) {
       onBarcodeSubmit();
       onBarcodeSave(index);

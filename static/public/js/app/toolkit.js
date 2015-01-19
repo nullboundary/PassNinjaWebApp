@@ -11,6 +11,61 @@
 	//////////////////////////////////////////////////////////////////////////
 
 	app.toolkit = {
+
+		/***********************************************************
+
+
+
+		***********************************************************/
+		swipeEvents: function(el) {
+			var startX,
+			startY;
+
+			el.removeEventListener("touchstart", tstart);
+			el.addEventListener("touchstart", tstart);
+
+			function tstart(event) {
+				var touches = event.touches;
+				if (touches && touches.length) {
+					console.log("touchstart");
+					startX = touches[0].pageX;
+					startY = touches[0].pageY;
+					el.addEventListener("touchmove", tmove);
+				}
+			}
+
+			function tmove(event) {
+				var touches = event.touches;
+				if (touches && touches.length) {
+					event.preventDefault();
+					var deltaX = startX - touches[0].pageX;
+					var deltaY = startY - touches[0].pageY;
+
+					if (deltaX >= 50) {
+						var event = new Event('swipeLeft');
+						el.dispatchEvent(event);
+					}
+					if (deltaX <= -50) {
+						var event = new Event('swipeRight');
+						el.dispatchEvent(event);
+					}
+					if (deltaY >= 50) {
+						var event = new Event('swipeUp');
+						el.dispatchEvent(event);
+					}
+					if (deltaY <= -50) {
+						var event = new Event('swipeDown');
+						el.dispatchEvent(event);
+					}
+
+					if (Math.abs(deltaX) >= 50 || Math.abs(deltaY) >= 50) {
+						el.removeEventListener('touchmove', tmove);
+					}
+				}
+			}
+
+		},
+
 		/***********************************************************
 
 
@@ -119,7 +174,14 @@
 			}
 			return token;
 		},
+		/***********************************************************
 
+
+
+		***********************************************************/
+		gUID: function() {
+			return ("0000" + (Math.random()*Math.pow(36,4) << 0).toString(36)).slice(-4);
+		},
 		/***********************************************************
 		selects a template tag and appends it to the doc. parameter
 		childNodeNum uses insertBefore to add the template before another element.

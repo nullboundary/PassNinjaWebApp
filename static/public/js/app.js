@@ -51,9 +51,9 @@
       console.warn(window.location.hash);
       console.log(window.history.state);
 
-      if (window.location.pathname == "/accounts/editor") {
+      if (window.location.pathname === "/accounts/editor") {
 
-        if (!window.location.hash || window.location.hash == '#1') {
+        if (!window.location.hash || window.location.hash === '#1' || !Object.keys(window.history.state).length) {
 
           app.setHomePage();
 
@@ -63,6 +63,7 @@
           console.warn(hash);
 
           onePageScroll.moveBack('.main', window.history.state);
+
 
         }
       }
@@ -79,7 +80,7 @@
   ***********************************************************/
   function removeMarker(key, value) {
 
-    if(key === 'marker'){
+    if (key === 'marker') {
       return undefined;
     }
     return value;
@@ -101,21 +102,21 @@
 
       console.log(window.location.pathname);
 
-			switch (window.location.pathname) {
+      switch (window.location.pathname) {
 
-			case "/accounts/editor": //========================
+        case "/accounts/editor": //========================
 
-        if (!app.getPassActive()){ //no active pass.
-          createEditor(true); //create new pass
-        } else {
-          createEditor(false); //edit pass
-        }
+          if (!app.getPassActive()) { //no active pass.
+            createEditor(true); //create new pass
+          } else {
+            createEditor(false); //edit pass
+          }
 
-				break;
+          break;
 
-			default: //======================= /accounts/home
-				app.grid.init(); //build pass grid
-			}
+        default: //======================= /accounts/home
+          app.grid.init(); //build pass grid
+      }
 
 
     });
@@ -125,123 +126,132 @@
   }
 
   //======================================================
-	//moveToHome removes the editor screen and loads the home
-	//grid page.
+  //moveToHome removes the editor screen and loads the home
+  //grid page.
   //======================================================
-	app.setHomePage = function() {
+  app.setHomePage = function() {
 
-		var docBody = document.querySelector('body');
-		docBody.className = ""; //clear any class name on body.
-		docBody.removeChild(document.querySelector('div.main')); 	//remove editor page.
-		docBody.removeChild(document.querySelector('a.next')); 	//remove buttons.
-		docBody.removeChild(document.querySelector('a.return'));
+    var docBody = d3.select('body')
+      .attr('class', null);
 
-		history.replaceState({}, "Home", "home"); //update url
+    docBody.select('div.main').remove();
+    docBody.select('a.next').remove();
+    docBody.select('a.return').remove();
 
-	  app.grid.init(); //load grid template
+    history.replaceState({}, "Home", "home"); //update url
 
-	}
+    app.grid.init(); //load grid template
 
-	//======================================================
-	//loadEditor removes the pass selection template and loads
-	//the editor template.
-	//======================================================
-	app.setEditorPage = function(isNewPass) {
+  }
 
-		//create a fade transistion for page change
-		d3.select('body div.container').transition()
-		.style('opacity', 0)
-		.remove()
-		.each("end", function() { //at transistion end. load templates
-			createEditor(isNewPass);
-			if (!isNewPass) {
-				onePageScroll.moveTo('.main', 2);
-			}
-		});
+  //======================================================
+  //loadEditor removes the pass selection template and loads
+  //the editor template.
+  //======================================================
+  app.setEditorPage = function(isNewPass) {
 
-		history.pushState({}, "Editor", "editor"); //update url
+    //create a fade transistion for page change
+    d3.select('body div.container').transition()
+      .style('opacity', 0)
+      .remove()
+      .each("end", function() { //at transistion end. load templates
+        createEditor(isNewPass);
+        if (!isNewPass) {
+          //set start page to where you left of, or page 2 if completed.
+          var passStatus = app.getPassModel().status;
+          console.log(passStatus);
+          if (passStatus == "ready" || passStatus == "api") {
+            onePageScroll.moveTo('.main', 2);
+          } else {
+            onePageScroll.moveTo('.main', parseInt(passStatus));
+          }
 
-	}
+        }
+      });
+
+    history.pushState({}, "Editor", "editor"); //update url
+
+  }
 
   //======================================================
   //
   //======================================================
   app.setPassActive = function(rootSelector, index) {
-    console.log(passModelList + " index:" + index);
-    activePass.index = index;
-    activePass.type = app.getPassModelList()[index].passtype;
-    activePass.rootID = rootSelector;
-    console.log("index: " + activePass.index + " type: " + activePass.type + " rootID: " + activePass.rootID);
-    window.sessionStorage.setItem('active',JSON.stringify(activePass));
+      console.log(passModelList + " index:" + index);
+      activePass.index = index;
+      activePass.type = app.getPassModelList()[index].passtype;
+      activePass.rootID = rootSelector;
+      console.log("index: " + activePass.index + " type: " + activePass.type + " rootID: " + activePass.rootID);
+      window.sessionStorage.setItem('active', JSON.stringify(activePass));
 
-  }
-  //======================================================
-  //
-  //======================================================
+    }
+    //======================================================
+    //
+    //======================================================
   app.getPassActive = function() {
-    if(!activePass || !activePass.index){
-      activePass = JSON.parse(window.sessionStorage.getItem('active'));
-    }
-    return activePass;
-  }
-  //======================================================
-  //
-  //======================================================
-  app.setSVGRoot = function(rootSelector) {
-    activePass.rootID = rootSelector;
-  }
-  //======================================================
-  //
-  //======================================================
-  app.getSvgRoot = function() {
-    return d3.select(document.querySelector(app.getPassActive().rootID).shadowRoot);
-  }
-  //======================================================
-  //
-  //======================================================
-  app.getPassModel = function() {
-    return app.getPassModelList()[app.getPassActive().index];
-  }
-  //======================================================
-  //
-  //======================================================
-  app.delPassModel = function() {
-    app.getPassModelList().splice(app.getPassActive().index, 1);
-  }
-  //======================================================
-  //
-  //======================================================
-  app.addPassModel = function(passData) {
-    app.getPassModelList().push(passData);
-  }
-  //======================================================
-  //
-  //======================================================
-  app.setPassModelList = function(list) {
-    passModelList = list;
-    window.sessionStorage.setItem('models',JSON.stringify(passModelList));
-  }
-  //======================================================
-  //
-  //======================================================
-  app.getPassModelList = function() {
-    if(!passModelList || !passModelList.length){
-      var storeList = JSON.parse(window.sessionStorage.getItem('models'));
-      if(storeList){
-        passModelList = storeList;
+      if (!activePass || !activePass.index) {
+        activePass = JSON.parse(window.sessionStorage.getItem('active'));
       }
+      return activePass;
     }
-    return passModelList;
-  }
-  //======================================================
-  //
-  //======================================================
+    //======================================================
+    //
+    //======================================================
+  app.setSVGRoot = function(rootSelector) {
+      activePass.rootID = rootSelector;
+    }
+    //======================================================
+    //
+    //======================================================
+  app.getSvgRoot = function() {
+      return d3.select(document.querySelector(app.getPassActive().rootID).shadowRoot);
+    }
+    //======================================================
+    //
+    //======================================================
+  app.getPassModel = function() {
+      return app.getPassModelList()[app.getPassActive().index];
+    }
+    //======================================================
+    //
+    //======================================================
+  app.delPassModel = function() {
+      app.getPassModelList().splice(app.getPassActive().index, 1);
+    }
+    //======================================================
+    //
+    //======================================================
+  app.addPassModel = function(passData) {
+      app.getPassModelList().push(passData);
+    }
+    //======================================================
+    //
+    //======================================================
+  app.setPassModelList = function(list) {
+      passModelList = list;
+      window.sessionStorage.setItem('models', JSON.stringify(passModelList));
+    }
+    //======================================================
+    //
+    //======================================================
+  app.getPassModelList = function() {
+      if (!passModelList || !passModelList.length) {
+        var storeList = JSON.parse(window.sessionStorage.getItem('models'));
+        if (storeList) {
+          passModelList = storeList;
+        }
+      }
+      return passModelList;
+    }
+    //======================================================
+    //
+    //======================================================
   app.savePassModelList = function() {
-    window.sessionStorage.setItem('models',JSON.stringify(passModelList,removeMarker));
-  }
-  //======================================================
-  //
-  //======================================================
+      window.sessionStorage.setItem('models', JSON.stringify(passModelList, removeMarker));
+    }
+    //======================================================
+    //
+    //======================================================
   app.getNumPassModel = function() {
     return passModelList.length;
   }
