@@ -2,7 +2,7 @@
 
   'use strict';
 
-  //var passBuilder;
+  //var passEditor;
   var pageBeforeIndex;
   var pageAfterIndex;
   var passType;
@@ -15,8 +15,8 @@
   function init() {
 
     passType = 'none';
-    //passBuilder = app.passBuilder;
-    console.log(app.passBuilder);
+    //passEditor = app.passEditor;
+    console.log(app.passEditor);
 
     console.log(onePageScroll);
 
@@ -60,58 +60,6 @@
 
   }
 
-  function addSwipeEvent(){
-
-    var swipeEl = d3.select('section.active div.pure-g').node();
-
-    console.log(swipeEl);
-    app.toolkit.swipeEvents(swipeEl);
-
-    var sLeft = function(event) {
-      console.log("LEFT");
-      event.preventDefault();
-      moveLeft(swipeEl);
-
-    }
-    document.removeEventListener('swipeLeft', sLeft);
-    document.addEventListener('swipeLeft', sLeft);
-
-    var sRight = function(event) {
-      event.preventDefault();
-      moveRight(swipeEl);
-    }
-
-    document.removeEventListener('swipeRight', sRight);
-    document.addEventListener('swipeRight',sRight);
-
-  }
-
-  function moveLeft(swipeEl) {
-
-    //get the transform height for the pass content
-    var st = window.getComputedStyle(d3.select('div.fake-content').node(), null);
-    var tr = st.getPropertyValue("-webkit-transform") ||
-    st.getPropertyValue("-moz-transform") ||
-    st.getPropertyValue("-ms-transform") ||
-    st.getPropertyValue("-o-transform") ||
-    st.getPropertyValue("transform");
-
-    var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
-    var transY = matrix[matrix.length-1];
-    console.log(matrix);
-
-    d3.select(swipeEl).attr('style', 'transform: translate3d(-120%, 0, 0); ');
-    d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:translate3d(-120%,'+ transY +'px, 0) !important;')
-  }
-
-  function moveRight(swipeEl) {
-    d3.select('div.fake-content')
-    .attr('style', null)
-    .attr('style', 'transition: all 0.5s');
-    d3.select(swipeEl).attr('style', null);
-  }
-
-
   /***********************************************************
 
 
@@ -120,24 +68,24 @@
       console.log(d3.select(nextEl));
       if (pageBeforeIndex != index) { //prevent handler being called twice per scroll.
 
-        app.passBuilder.colors.resetRectStroke(); //reset all rect stroke to none
+        app.passEditor.colors.resetRectStroke(); //reset all rect stroke to none
         addSwipeEvent();
         pageBeforeIndex = index;
         console.log('before ' + index);
 
-        for (var key in app.passBuilder) {
+        for (var key in app.passEditor) {
 
-          if (app.passBuilder[key].hasOwnProperty('index')) {
-            if (app.passBuilder[key].index() + 1 == index) { //match index of object to page scroll page index
+          if (app.passEditor[key].hasOwnProperty('index')) {
+            if (app.passEditor[key].index() + 1 == index) { //match index of object to page scroll page index
 
-              console.log(app.passBuilder[key].name());
+              console.log(app.passEditor[key].name());
 
-              if (app.passBuilder[key].hasOwnProperty('save')) { //save object data to server
-                app.passBuilder[key].save(index);
+              if (app.passEditor[key].hasOwnProperty('save')) { //save object data to server
+                app.passEditor[key].save(index);
               }
 
-              if (app.passBuilder[key].hasOwnProperty('stroke')) { //change stroke color of rects (some pages)
-                app.passBuilder[key].stroke();
+              if (app.passEditor[key].hasOwnProperty('stroke')) { //change stroke color of rects (some pages)
+                app.passEditor[key].stroke();
               }
             }
           }
@@ -155,49 +103,23 @@
       pageAfterIndex = index;
       console.log('after ' + index);
 
-      for (var key in app.passBuilder) {
-        if (app.passBuilder[key].hasOwnProperty('index')) {
-          if (app.passBuilder[key].index() == index) { //match index of object to page scroll page index
+      for (var key in app.passEditor) {
+        if (app.passEditor[key].hasOwnProperty('index')) {
+          if (app.passEditor[key].index() == index) { //match index of object to page scroll page index
 
-            console.log('after: ' + app.passBuilder[key].name());
+            console.log('after: ' + app.passEditor[key].name());
 
-            if (app.passBuilder[key].hasOwnProperty('xray')) {
-              app.passBuilder[key].xray(true);
+            if (app.passEditor[key].hasOwnProperty('xray')) {
+              app.passEditor[key].xray(true);
             }
-            if (app.passBuilder[key].hasOwnProperty('handler')) {
-              app.passBuilder[key].handler();
+            if (app.passEditor[key].hasOwnProperty('handler')) {
+              app.passEditor[key].handler();
             }
           }
         }
       }
 
     }
-  }
-
-
-  /***********************************************************
-    buildPass makes a new SVG pass representation from the data
-
-  	***********************************************************/
-  function buildPass() {
-
-    //passTemplate
-    console.log('passType ' + app.passBuilder.passType());
-
-    app.passBuilder.image.set(); //load images into pass
-
-    app.passBuilder.fields.set(app.passBuilder.template().keyDoc[app.passBuilder.passType()].primaryFields, 'primary');
-    app.passBuilder.fields.set(app.passBuilder.template().keyDoc[app.passBuilder.passType()].headerFields, 'header'); //set header fields
-    app.passBuilder.fields.set(app.passBuilder.template().keyDoc[app.passBuilder.passType()].secondaryFields, 'second'); //set secondary fields
-    app.passBuilder.fields.set(app.passBuilder.template().keyDoc[app.passBuilder.passType()].auxiliaryFields, 'aux'); //set auxiliary fields
-
-    app.passBuilder.fields.setLogo(); //keydoc top level
-
-    app.passBuilder.barcode.set(); //add barcode
-
-    app.passBuilder.colors.updateBg(); //set bg gradiant color
-    app.passBuilder.colors.updateText(); //set text color
-
   }
 
   /***********************************************************
@@ -207,7 +129,7 @@
 	***********************************************************/
   function initEditor() {
 
-    buildPass(); //setup template pass
+    app.passBuilder.build(); //setup template pass
 
     //only load back if you haven't already
     if (d3.select('svg.back').empty()) {
@@ -239,22 +161,22 @@
 	***********************************************************/
   function configEditor() {
     //set back fields
-    app.passBuilder.backFields.set();
+    app.passEditor.backFields.set();
 
     //init all objects
-    for (var key in app.passBuilder) {
-      if (app.passBuilder[key].hasOwnProperty('init')) {
-        app.passBuilder[key].init();
+    for (var key in app.passEditor) {
+      if (app.passEditor[key].hasOwnProperty('init')) {
+        app.passEditor[key].init();
       }
     }
 
     //set color sliders to match keydoc
-    app.passBuilder.colors.updateSliders();
+    app.passEditor.colors.updateSliders();
 
-    app.passBuilder.barcode.update();
+    app.passEditor.barcode.update();
 
     //setup location data
-    app.passBuilder.location.update();
+    app.passEditor.location.update();
   }
 
   /***********************************************************
@@ -293,8 +215,8 @@
     if (app.toolkit.checkLoadError(error)) return;
 
     console.log(data);
-    app.passBuilder.template().id = data.id;
-    app.passBuilder.template().updated = data.time;
+    app.passEditor.template().id = data.id;
+    app.passEditor.template().updated = data.time;
     app.savePassModelList(); //save the state of the list to storage
     app.toolkit.alertDisplay('saved', 'All changes have been successfully saved.');
 
@@ -390,6 +312,66 @@
     }
 
   }
+  /***********************************************************
+
+
+  ***********************************************************/
+  function addSwipeEvent(){
+
+    var swipeEl = d3.select('section.active div.pure-g').node();
+
+    console.log(swipeEl);
+    app.toolkit.swipeEvents(swipeEl);
+
+    var sLeft = function(event) {
+      console.log("LEFT");
+      event.preventDefault();
+      moveLeft(swipeEl);
+
+    }
+    document.removeEventListener('swipeLeft', sLeft);
+    document.addEventListener('swipeLeft', sLeft);
+
+    var sRight = function(event) {
+      event.preventDefault();
+      moveRight(swipeEl);
+    }
+
+    document.removeEventListener('swipeRight', sRight);
+    document.addEventListener('swipeRight',sRight);
+
+  }
+  /***********************************************************
+
+
+  ***********************************************************/
+  function moveLeft(swipeEl) {
+
+    //get the transform height for the pass content
+    var st = window.getComputedStyle(d3.select('div.fake-content').node(), null);
+    var tr = st.getPropertyValue("-webkit-transform") ||
+    st.getPropertyValue("-moz-transform") ||
+    st.getPropertyValue("-ms-transform") ||
+    st.getPropertyValue("-o-transform") ||
+    st.getPropertyValue("transform");
+
+    var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
+    var transY = matrix[matrix.length-1];
+    console.log(matrix);
+
+    d3.select(swipeEl).attr('style', 'transform: translate3d(-120%, 0, 0); ');
+    d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:translate3d(-120%,'+ transY +'px, 0) !important;')
+  }
+  /***********************************************************
+
+
+  ***********************************************************/
+  function moveRight(swipeEl) {
+    d3.select('div.fake-content')
+    .attr('style', null)
+    .attr('style', 'transition: all 0.5s');
+    d3.select(swipeEl).attr('style', null);
+  }
 
   /***********************************************************
 
@@ -397,22 +379,22 @@
 	***********************************************************/
   function passStatus(currentPage) {
 
-    if (app.passBuilder.template().status == "ready" || app.passBuilder.template().status == "api") {
-      return app.passBuilder.template().status;
+    if (app.passEditor.template().status == "ready" || app.passEditor.template().status == "api") {
+      return app.passEditor.template().status;
     }
 
-    var statusNum = parseInt(app.passBuilder.template().status, 10);
+    var statusNum = parseInt(app.passEditor.template().status, 10);
     if (statusNum == NaN) {
       return "0";
     }
 
     //only set the highest page completion value in the template
     if (statusNum >= currentPage) {
-      return app.passBuilder.template().status;
+      return app.passEditor.template().status;
     }
     //all pages have been set, pass should be complete. Share should always be the last page
-    if (currentPage >= app.passBuilder.share.index() - 1) {
-      if (app.passBuilder.template().mutatelist && app.passBuilder.template().mutatelist.length > 0) { //submit the api mutate variable list if it exists.
+    if (currentPage >= app.passEditor.share.index() - 1) {
+      if (app.passEditor.template().mutatelist && app.passEditor.template().mutatelist.length > 0) { //submit the api mutate variable list if it exists.
         return "api";
       }
       return "ready";
@@ -430,7 +412,7 @@
   //
   //////////////////////////////////////////////////////////////////////////
 
-  app.passBuilder = {
+  app.passEditor = {
 
     init: function() {
       init();

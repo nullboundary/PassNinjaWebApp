@@ -233,6 +233,7 @@
     } else {
       //expander.select('.expand-status').style('color', 'red');
       expander.select('.expand-status').text('incomplete');
+      expander.select('#expand-qr').call(app.toolkit.hide);
     }
 
     //format & set time/date

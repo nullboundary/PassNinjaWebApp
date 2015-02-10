@@ -94,6 +94,17 @@
 				$('.alert').css('display', 'none');
 			}, alertTimeout);
 		},
+
+		/***********************************************************
+		Tests whether a json field is undefined and if it is not
+		sets it to '' or to a default.
+
+		***********************************************************/
+		valueOrDefault: function (val, def) {
+			if (def == undefined) def = '';
+			return val == undefined ? def : val;
+		},
+
 		/***********************************************************
 
 
@@ -168,11 +179,45 @@
 
 		***********************************************************/
 		getToken: function () {
-			var token = window.sessionStorage.getItem('token');
+			var token = app.toolkit.readCookie('token');
+			console.log(token);
 			if (token == undefined) {
 				window.location = '/';
 			}
 			return token;
+		},
+		/***********************************************************
+
+
+		***********************************************************/
+		createCookie: function (name, value, days) {
+			if (days) {
+				var date = new Date();
+				date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+				var expires = "; expires=" + date.toGMTString();
+			} else var expires = "";
+			document.cookie = name + "=" + value + expires + "; path=/";
+		},
+		/***********************************************************
+
+
+		***********************************************************/
+		readCookie: function (name) {
+			var nameEQ = name + "=";
+			var ca = document.cookie.split(';');
+			for (var i = 0; i < ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+			}
+			return null;
+		},
+		/***********************************************************
+
+
+		***********************************************************/
+		eraseCookie: function (name) {
+			app.toolkit.createCookie(name, "", -1);
 		},
 		/***********************************************************
 

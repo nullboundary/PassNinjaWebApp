@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bitbucket.org/cicadaDev/storer"
 	"bitbucket.org/cicadaDev/utils"
 	"encoding/base64"
 	"fmt"
@@ -24,6 +25,8 @@ func passReadVerify(c *web.C, h http.Handler) http.Handler {
 		passID := getIDType(*c) //get passID from passIDVerify middleware
 
 		passInput := pass{}
+		//decodePass(req)
+
 		if err := utils.ReadJson(req, &passInput); err != nil {
 			log.Printf("read json error: %s", err.Error())
 			utils.JsonErrorResponse(res, malformError, http.StatusBadRequest)
@@ -59,7 +62,7 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 	handler := func(res http.ResponseWriter, req *http.Request) {
 
 		notFoundError := fmt.Errorf("pass not found")
-		db, err := utils.GetDbType(*c)
+		db, err := GetDbType(*c)
 		utils.Check(err)
 
 		passID := c.URLParams["id"]
@@ -128,6 +131,65 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(fn)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	addDb Middleware
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func AddDb(c *web.C, h http.Handler) http.Handler {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+
+		if c.Env == nil {
+			c.Env = make(map[interface{}]interface{})
+		}
+
+		if _, ok := c.Env["db"]; !ok { //test is the db is already added
+
+			rt := storer.NewReThink()
+			var err error
+			rt.Url, err = utils.GetEtcdKey("db/url") //os.Getenv("PASS_APP_DB_URL")
+			utils.Check(err)
+			rt.Port, err = utils.GetEtcdKey("db/port") //os.Getenv("PASS_APP_DB_PORT")
+			utils.Check(err)
+			rt.DbName, err = utils.GetEtcdKey("db/name") //os.Getenv("PASS_APP_DB_NAME")
+			utils.Check(err)
+
+			s := storer.Storer(rt) //abstract cb to a Storer
+			s.Conn()
+
+			c.Env["db"] = s //add db
+		}
+
+		h.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(handler)
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	getDbType
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func GetDbType(c web.C) (storer.Storer, error) {
+
+	if v, ok := c.Env["db"]; ok {
+
+		if db, ok := v.(storer.Storer); ok {
+
+			return db, nil //all good
+
+		}
+		err := fmt.Errorf("value could not convert to type Storer")
+		return nil, err
+
+	}
+	err := fmt.Errorf("value for key db, not found")
+	return nil, err
 
 }
 

@@ -1,6 +1,34 @@
 
+dialog#feedback-modal {
+  height:300px;
+  width:300px;
+}
+
+dialog#feedback-modal h1{
+  margin-top: 0.20em;
+  margin-bottom: 1em;
+  text-align: left;
+}
+
+dialog#feedback-modal label {
+  float: left;
+  margin-right: 1em;
+}
+
+button#feedback-send {
+  float: right;
+}
+
+textarea#feedback-text {
+  border-radius: 3px;
+  width: inherit;
+  height: 150px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
 /********************************************
-  One page scroll wrapper div styles
+  body styles
 
 *********************************************/
 /*
@@ -391,7 +419,7 @@ div.control{
 }
 
 div.pure-g {
-     transition: all 0.5s; 
+     transition: all 0.5s;
 }
 
 div.control legend {
@@ -900,8 +928,16 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 
   div#expand-qr{
     position: absolute;
-    top: 7%;
+    top: 2.3%;
     left: 60%;
+    width: 256px;
+    height: 256px;
+    background: white;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    border-radius: 5px;
   }
 
   .grid-pass {
@@ -1062,7 +1098,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
     left: 20%;  /* left margin for medium screens */
     width: 100%;
     height: 100%;
-    border-bottom: 1px #707070 solid;
+    /*border-bottom: 1px #707070 solid;*/
 
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
@@ -1123,6 +1159,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
      right: 40%;
      font-size: 16px;
      width: 130%;
+     transform: translate3d(0, 0, 0) !important; /* undo right shift */
   }
 
   textarea#back-text {

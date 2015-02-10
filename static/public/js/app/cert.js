@@ -139,4 +139,4 @@
     }
   };
 
-}(passBuilder = window.passBuilder || {}, jQuery));
+}(passEditor = window.passEditor || {}, jQuery));

@@ -2,8 +2,25 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/slugmobile/goth"
 	"time"
 )
+
+//userModel can be any struct that represents a user in a system
+type userModel struct {
+	ID            string    `gorethink:"id"`
+	Email         string    `gorethink:"email"`                  //Email is ID of user
+	User          goth.User `gorethink:"user"`                   //Detailed User info from oauth login
+	Organization  string    `gorethink:"organization,omitempty"` //User organization name
+	OAuthProvider string    `gorethink:"oauth"`                  //User is using OAuth login, not email
+	Created       time.Time `gorethink:"created,omitempty"`      //Account Created time/date
+	LastLogin     time.Time `gorethink:"lastLogin,omitempty"`    //Last login time
+	Subscriber    bool      `gorethink:"subscriber,omitempty"`   //subscriber: true or false? (false could be free trial users)
+	SubStart      time.Time `gorethink:"subStart,omitempty"`     //Subscription start date
+	SubExpiration time.Time `gorethink:"subExpire,omitempty"`    //Subscription expiration date
+	SubPlan       string    `gorethink:"subPlan,omitempty"`      //Subscription plan for this user
+	PassList      []string  `gorethink:"passList,omitempty"`     //A list of the pass Ids this users has made
+}
 
 type registerPass struct {
 	PassTypeId   string    `json:"id" gorethink:"id" valid:"required"`    //Pass type ID
@@ -29,7 +46,7 @@ type pass struct {
 	Updated     time.Time         `json:"updated" gorethink:"updated" valid:"required"`                        //when the pass was last updated or created
 	Status      string            `json:"status" gorethink:"status" valid:"required"`                          //Is the pass ready for distribution, in process, or expired
 	CertId      string            `json:"cert,omitempty" gorethink:"cert,omitempty"`                           //Id to the certificate used to sign the pass
-	MutateList  []string          `json:"mutatelist,omitempty" gorethink:"mutatelist,omitempty"`               //List of key/value pairs used to change the pass via the api upon issuing
+	MutateList  []string          `json:"mutatelist,omitempty" gorethink:"mutatelist,omitempty"`               //List of value keys used to change the pass via the api upon issuing
 }
 
 /*************************************************************************
@@ -88,8 +105,8 @@ type passKeys struct {
 	// A pass is marked as expired if the current date is after the pass’s expiration date, or if the pass has been explicitly marked as voided.
 	//////////////////////////////////////////////////////////////////////////
 
-	ExpirationDate *time.Time `json:"expirationDate,omitempty" gorethink:"expirationDate,omitempty"` //Optional. Date and time when the pass expires.
-	Voided         bool       `json:"voided,omitempty" gorethink:"voided,omitempty"`                 //Optional. Indicates that the pass is void—for example, a one time use coupon that has been redeemed.
+	ExpirationDate *Time `json:"expirationDate,omitempty" gorethink:"expirationDate,omitempty"` //Optional. Date and time when the pass expires.
+	Voided         bool  `json:"voided,omitempty" gorethink:"voided,omitempty"`                 //Optional. Indicates that the pass is void—for example, a one time use coupon that has been redeemed.
 
 	//////////////////////////////////////////////////////////////////////////
 	// Relevance Keys
@@ -100,7 +117,7 @@ type passKeys struct {
 	Beacons      []beacon   `json:"beacons,omitempty" gorethink:"beacons,omitempty"`                     //Optional. Beacons marking locations where the pass is relevant.
 	Locations    []location `json:"locations,omitempty" gorethink:"locations,omitempty"`                 //Optional. Locations where the pass is relevant. For example, the location of your store.
 	MaxDistance  int        `json:"maxDistance,omitempty" gorethink:"maxDistance,omitempty" valid:"int"` //Optional. Maximum distance in meters from a relevant latitude and longitude that the pass is relevant.
-	RelevantDate *time.Time `json:"relevantDate,omitempty" gorethink:"relevantDate,omitempty"`           //Optional. Date and time when the pass becomes relevant. For example, the start time of a movie.
+	RelevantDate *Time      `json:"relevantDate,omitempty" gorethink:"relevantDate,omitempty"`           //Optional. Date and time when the pass becomes relevant. For example, the start time of a movie.
 
 	//////////////////////////////////////////////////////////////////////////
 	// Style Keys
@@ -136,6 +153,6 @@ type passKeys struct {
 	// If a web service URL is provided, an authentication token is required; otherwise, these keys are not allowed.
 	//////////////////////////////////////////////////////////////////////////
 
-	AuthenticationToken string `json:"authenticationToken,omitempty" gorethink:"authenticationToken,omitempty"` //The authentication token to use with the web service. The token must be 16 characters or longer.
-	WebServiceURL       string `json:"webServiceURL,omitempty" gorethink:"webServiceURL,omitempty" valid:"url"` //The URL of a web service
+	AuthenticationToken string `json:"authenticationToken,omitempty" gorethink:"authenticationToken,omitempty"`    //The authentication token to use with the web service. The token must be 16 characters or longer.
+	WebServiceURL       string `json:"webServiceURL,omitempty" gorethink:"webServiceURL,omitempty" valid:"requrl"` //The URL of a web service
 }

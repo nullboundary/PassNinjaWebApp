@@ -11,21 +11,19 @@
     <meta name="keywords" content="passbook, pass, pass ninja, wallet, ibeacon, mobile pass, coupon">
     <meta name="author" content="Pass Ninja">
     <link rel="shortcut icon" href="/assets/img/favicon_ticket.ico">
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/pure/0.5.0/pure-min.css">
     <!--[if lte IE 8]>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
     <!--<![endif]-->
     <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet" type="text/css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/global.css" rel="stylesheet" type="text/css">
-  <!--  <link rel="stylesheet" type="text/css" href="/assets/css/grid_default.css" />
-    <link rel="stylesheet" type="text/css" href="/assets/css/grid_component.css" /> -->
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" type="text/css">
-    <link rel="stylesheet" href="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-geocoder.css" type="text/css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" rel="stylesheet" type="text/css">
+    <link href="//cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-geocoder.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/plugin/onepage-scroll.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/builder.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
@@ -652,8 +650,8 @@
           </a>
           <ul>
             <li><button>Account</button></li>
-            <li><button>Feedback</button></li>
-            <li><form method="post" action="/logout"><button type="submit">Logout</button></form></li>
+            <li><button id="feedback-btn">Feedback</button></li>
+            <li><button id="logout-btn">Logout</button></li>
           </ul>
         </nav>
        <!-- ============================================================ -->
@@ -664,8 +662,21 @@
             <!-- Message alert -->
             <div class="alert alert-dismissable" style="display: none">
               <button type="button" class="close" data-dismiss="alert">×</button>
-
             </div>
+            <!-- Feedback Modal -->
+            <dialog id="feedback-modal" class="modal">
+              <button class="pure-button close" id="feedback-close"><i class="fa fa-times"></i></button>
+              <h1>Say Hello</h1>
+              <label>Select Feedback Type</label>
+              <select id="feedback-type">
+                <option selected="selected">Report a bug</option>
+                <option>Suggestion</option>
+                <option>Complaint</option>
+                <option>Question</option>
+              </select>
+              <textarea id="feedback-text"></textarea>
+              <button id="feedback-send" class="pure-button"><i class="fa fa-paper-plane"></i> Send</button>
+            </dialog>
               <!-- JavaScript
               ================================================== -->
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents.min.js"></script>
@@ -675,6 +686,7 @@
               <script src="/assets/js/plugin/polymer-expressions.js"></script> -->
               <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
+              <script type="text/javascript" src="/assets/js/plugin/dialog-polyfill.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/onepagescroll.js"></script>
               <!--    <script type="text/javascript" src="/assets/js/plugin/jquery.onepage-scroll.js"></script>
 
@@ -683,7 +695,7 @@
               <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.0.0/tinycolor.min.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/jquery.colorpickersliders.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/jquery.datetimepicker.js"></script>
-              <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+              <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/l.control.geosearch.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/l.geosearch.provider.google.js"></script>
               <script type="text/javascript" src="/assets/js/plugin/qrcode.js"></script>
@@ -691,7 +703,13 @@
               <script type="text/javascript" src="/assets/js/app.js"></script>
               <script type="text/javascript" src="/assets/js/app/toolkit.js"></script>
               <script type="text/javascript" src="/assets/js/grid.js"></script>
-              <script type="text/javascript" src="/assets/js/passbuilder.js"></script>
+              <script type="text/javascript" src="/assets/js/builder/passBuilder.js"></script>
+              <script type="text/javascript" src="/assets/js/builder/buildbarcode.js"></script>
+              <script type="text/javascript" src="/assets/js/builder/buildcolor.js"></script>
+              <script type="text/javascript" src="/assets/js/builder/buildfields.js"></script>
+              <script type="text/javascript" src="/assets/js/builder/buildImages.js"></script>
+
+              <script type="text/javascript" src="/assets/js/passEditor.js"></script>
               <script type="text/javascript" src="/assets/js/app/backfields.js"></script>
               <script type="text/javascript" src="/assets/js/app/start.js"></script>
               <script type="text/javascript" src="/assets/js/app/images.js"></script>

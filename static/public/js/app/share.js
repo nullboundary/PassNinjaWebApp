@@ -128,4 +128,4 @@
     }
   };
 
-}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));
+}(passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));

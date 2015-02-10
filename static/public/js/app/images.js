@@ -1,4 +1,4 @@
-(function(tk, pb, $, undefined) {
+(function(app, tk, pb, $, undefined) {
 
   'use strict';
 
@@ -15,82 +15,9 @@
       .call(tk.disable) //starts disabled
       .on('click', onDelImage);
 
-  }
+    pb.svg().selectAll('rect.img-btn-rect')
+    .on('click', onImageRectClick); //add event to rect
 
-  /***********************************************************
-
-
- 	***********************************************************/
-  function setPassImages() {
-
-    //- if image is not in the pb.template() data
-
-    //- remove image from the svg template
-    //- leave the group rectangle
-
-    //- if image does exist in pb.template() data
-    //- replace or add image to svg template
-
-    var imageTypes = ['logo', 'icon', 'strip', 'background', 'footer', 'thumbnail'];
-
-    //diff contains what was in imageTypes[] that is not in pb.template().images[]
-    var diff = $(imageTypes).not(pb.template().images).get();
-
-    //remove all images from svg if they are part of the pass data
-    for (var i = 0; i < diff.length; ++i) {
-      var imageSelection = pb.svg().select('g.img-btn-group #' + diff[i]);
-      if (!imageSelection.empty()) { //remove it if its in the svg
-        imageSelection.remove();
-      }
-    }
-
-    if (pb.template().images != null) {
-      //add or replace images that exist in data
-      var imageLength = pb.template().images.length;
-      for (var index = 0; index < imageLength; ++index) {
-
-        var imageObj = pb.template().images[index];
-
-        //select the image id. Example: g.img-btn-group #logo
-        var imageSelection = pb.svg().select('g.img-btn-group #' + imageObj.name);
-
-        if (imageSelection.empty()) { //if group has no image, add image. svg images were removed above!
-
-          //select th imageGroup specific to that image. Example: g.img-btn-group#logo-group
-          var imageGroup = pb.svg().select('g.img-btn-group#' + imageObj.name + '-group')
-
-          if (!imageGroup.empty()) { //image group exists
-            var imageRect = imageGroup.select('rect.img-btn-rect'),
-              rectWidth = imageRect.attr('width'),
-              rectHeight = imageRect.attr('height'),
-              rectX = imageRect.attr('x'),
-              rectY = imageRect.attr('y');
-
-            imageGroup
-              .insert('image', 'rect.img-btn-rect') //insert before the rect
-              .attr('id', imageObj.name)
-              .attr('xlink:href', imageObj.image)
-              .attr('width', rectWidth)
-              .attr('height', rectHeight)
-              .attr('x', rectX)
-              .attr('y', rectY);
-
-            imageGroup.select('rect.img-btn-rect').on('click', onImageRectClick); //add event to rect
-
-          } else {
-            //TODO: some cases group doesn't exist! (eg thumbnail)
-          }
-
-        } else { //replace image
-
-          //add rect click event to empty image group. 
-          imageSelection.attr('xlink:href', imageObj.image);
-          d3.select(imageSelection.parentNode + ' rect.img-btn-rect').on('click', onImageRectClick);
-        }
-
-
-      }
-    }
   }
 
   /***********************************************************
@@ -286,39 +213,58 @@
 
           reader.onload = function(e) {
 
-            var isReplace = false;
-            for (var i = 0; i < pb.template().images.length; i++) {
-              if (pb.template().images[i].name == currentEditTarget) {
+            setImageData(currentEditTarget,e.target.result); //set uploaded image as selected image type
 
-                pb.template().images[i].image = e.target.result;
-                isReplace = true;
-              }
+            if (currentEditTarget == "logo"){ //FIXME: This is temporary should change
+              setImageData("icon",e.target.result); //set uploaded logo image as icon
             }
 
-            //if the image is not found, add a new image to the array
-            if (!isReplace) {
-
-              var imageData = {
-                image: e.target.result,
-                name: currentEditTarget
-              };
-
-              pb.template().images.push(imageData);
-            }
-
-            setPassImages();
-            //postUpdate(passData);
+            app.passBuilder.image.set(); //update the pass svg
 
           };
         }
-
-
 
       };
 
       img.src = wURL.createObjectURL(file);
 
     }
+
+  }
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function setImageData(imageName,imageData) {
+
+    if (!replaceImage(imageName, imageData)) {
+
+      var imageObj = {
+        image: imageData,
+        name:imageName
+      };
+
+      pb.template().images.push(imageObj); //add image to image array
+    }
+  }
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function replaceImage(imageName, imageData) {
+
+    var imageList = pb.template().images;
+    var imageLen = imageList.length;
+    for (var i = 0; i < imageLen; i++) {
+      if (imageList[i].name == imageName) {
+        imageList[i].image = imageData;
+        return true;
+      }
+    }
+
+    return false;
 
   }
 
@@ -350,17 +296,12 @@
   //
   //////////////////////////////////////////////////////////////////////////
   pb.image = {
-    /* set pass images */
-    set: function() {
-      setPassImages();
-    },
     init: function() {
       init();
     },
     onRectClick: function() {
       onImageRectClick();
     },
-
     onUpload: function() {
       onImageUpload();
     },
@@ -375,6 +316,5 @@
     }
 
   };
-  //return passImages; //return the image object
 
-}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));
+}(window.passNinja, passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));

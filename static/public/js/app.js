@@ -29,12 +29,13 @@
         }
 
         d3.select('div#front-content').node().createShadowRoot().appendChild(xml.documentElement);
-        app.passBuilder.editor();
+        app.passEditor.editor();
 
       });
     }
 
-    app.passBuilder.init(); //init editor
+    app.passEditor.init(); //init editor
+
   }
 
 
@@ -61,15 +62,66 @@
 
           var hash = window.location.hash.substring(1);
           console.warn(hash);
-
           onePageScroll.moveBack('.main', window.history.state);
-
 
         }
       }
 
 
     });
+  }
+
+  /***********************************************************
+  Handler for navbar logout button click
+
+  ***********************************************************/
+  function logOut() {
+
+    window.sessionStorage.clear(); //clear it all
+    app.toolkit.eraseCookie('token'); //remove token.
+    window.location = "/";
+  }
+
+  /***********************************************************
+  Handler for navbar feedback button click
+
+  ***********************************************************/
+  function feedBackModal() {
+
+    //setup login modal handlers
+    var dialog = document.querySelector('dialog#feedback-modal');
+    dialogPolyfill.registerDialog(dialog); //register with polyfill
+
+    //feedback nav bar button
+    d3.select('#feedback-btn').on('click',function() {
+      dialog.showModal();
+    });
+
+    //on click dialog close button
+    d3.select('#feedback-close').on('click',function() {
+      dialog.close();
+    });
+
+    //click outside modal box
+    d3.select('dialog#feedback-modal').on('click',function() {
+      if (!dialog.open) { //don't close if not open...
+        return;
+      }
+      if (clickedInDialog(dialog, d3.event)) { //don't close if clicked inside modal
+        return;
+      }
+      dialog.close();
+    });
+
+  }
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function clickedInDialog(dialog, mouseEvent) {
+    var rect = dialog.getBoundingClientRect();
+    return rect.top <= mouseEvent.clientY && mouseEvent.clientY <= rect.top + rect.height && rect.left <= mouseEvent.clientX && mouseEvent.clientX <= rect.left + rect.width;
   }
 
   /***********************************************************
@@ -97,6 +149,9 @@
   //
   //======================================================
   app.init = function() {
+
+    d3.select('#logout-btn').on('click',logOut); //logout nav bar button
+    feedBackModal();
 
     document.addEventListener("WebComponentsReady", function(event) {
 
@@ -138,6 +193,8 @@
     docBody.select('a.next').remove();
     docBody.select('a.return').remove();
 
+    onePageScroll.disable();
+
     history.replaceState({}, "Home", "home"); //update url
 
     app.grid.init(); //load grid template
@@ -156,6 +213,7 @@
       .remove()
       .each("end", function() { //at transistion end. load templates
         createEditor(isNewPass);
+        onePageScroll.enable();
         if (!isNewPass) {
           //set start page to where you left of, or page 2 if completed.
           var passStatus = app.getPassModel().status;

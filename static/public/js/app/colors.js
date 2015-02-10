@@ -72,35 +72,6 @@
 
 	/***********************************************************
 
- 	set bg gradiant color of svg
- 	***********************************************************/
-	function updateBg() {
-
-		//set bg gradiant color
-		var bgColor = tinycolor(pb.template().keyDoc.backgroundColor);
-		console.log(bgColor.toRgbString());
-		pb.svg().select('.pass-bg-lite').style('stop-color', bgColor.brighten(15).toRgbString());
-		pb.svg().select('.pass-bg').style('stop-color', bgColor.toRgbString());
-		pb.svg().select('.pass-bg-dark').style('stop-color', bgColor.darken(15).toRgbString());
-
-
-
-	}
-
-	/***********************************************************
-
- 	set text color
- 	***********************************************************/
-	function updateText() {
-
-		console.log(pb.svg().select('.value-text').style('fill'));
-		pb.svg().selectAll('.value-text').style('fill', pb.template().keyDoc.foregroundColor);
-		pb.svg().selectAll('.label-text').style('fill', pb.template().keyDoc.labelColor);
-	}
-
-
-	/***********************************************************
-
 
  	***********************************************************/
 	function updateRectStroke(selection) {
@@ -179,16 +150,6 @@
 			updateSliders();
 		},
 
-		/* update background gradiant match pass json data */
-		updateBg: function () {
-			updateBg();
-		},
-
-		/* update text color match pass json data */
-		updateText: function () {
-			updateText();
-		},
-
 		updateRectStroke: function (selection) {
 			updateRectStroke(selection);
 		},
@@ -215,4 +176,4 @@
 
 	//return passColors; //return the colors object
 
-}(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));
+}(passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
