@@ -1,5 +1,5 @@
 <svg class="boardingPass pass-template front" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
+	 width="315px" height="442px" viewBox="0 0 315 442" style="enable-background:new 0 0 315 442;" xml:space="preserve">
 <style type="text/css">
 <![CDATA[
 	svg.boardingPass .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
@@ -17,15 +17,15 @@
 ]]>
 </style>
 <defs>
-	<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.8726" y1="-0.0889" x2="157.8725" y2="401.0894">
+	<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.8726" y1="-0.0889" x2="157.8725" y2="442.0894">
 		<stop class="pass-bg-lite" offset="0" style="stop-color:#2BC4F3"/>
 		<stop class="pass-bg" offset="0.5" style="stop-color:#00AEEE"/>
 		<stop class="pass-bg-dark" offset="1" style="stop-color:#0095DA"/>
 	</linearGradient>
 </defs>
-<path class="bg-grad" fill="url(#linear-grad)" d="M1.14,390.11c0.06,5.96,4.45,10.76,9.81,10.72l293.04,0.26c5.96-0.03,10.77-4.4,10.76-9.77v2.13V66.8
+<path class="bg-grad" fill="url(#linear-grad)" d="M1.14,431.11c0.06,5.96,4.45,10.76,9.81,10.72l293.04,0.26c5.96-0.03,10.77-4.4,10.76-9.77v2.13V66.8
 	c-4.26-1.57-4.3-5.02-0.08-7.72h-0.33V11.79c0.09-6.47-4.18-11.79-9.53-11.88v0.27H12.12C6.17-0.02,1.19,4.17,1,9.53l0.19,49.58
-	c4.23,1.67,4.17,5.13-0.11,7.72L1.14,390.11z"/>
+	c4.23,1.67,4.17,5.13-0.11,7.72L1.14,431.11z"/>
 <g class="pass-group">
 	<!-- text field groups -->
 	<g id="logo1" class="text-btn-group logo" transform="translate(86.666,27.668)">
@@ -108,12 +108,13 @@
 <!-- ticket fold line -->
 <line class="fold-line" x1="17.67" y1="62.8" x2="297.67" y2="62.84"/>
 <!-- left and right icons -->
-<rect x="10.16" y="377.17" class="icon-line" width="11.5" height="14.5"/>
-<line class="icon-line" x1="15.91" y1="371.57" x2="15.91" y2="384.92"/>
-<line class="icon-line" x1="13.41" y1="375.17" x2="15.91" y2="371.57"/>
-<line class="icon-line" x1="15.91" y1="371.57" x2="18.16" y2="375.17"/>
+<rect x="11.5" y="418.67" class="icon-line" width="14.5" height="14.5"/>
+<line class="icon-line" x1="18.91" y1="413.07" x2="18.91" y2="426.42"/>
+<line class="icon-line" x1="16.41" y1="416.67" x2="18.91" y2="413.07"/>
+<line class="icon-line" x1="18.91" y1="413.07" x2="21.16" y2="416.67"/>
+
 <g>
-	<circle class="icon-line" cx="298.33" cy="384.88" r="7.08"/>
-	<text transform="matrix(1 0 0 1 296.7559 388.4521)" class="icon-font">i</text>
+	<circle class="icon-line" cx="299.33" cy="426.38" r="9.08"/>
+	<text transform="matrix(1 0 0 1 296.7559 430.9521)" class="icon-font">i</text>
 </g>
 </svg>

@@ -1,5 +1,5 @@
 <svg version="1.1" class="eventTicket pass-template front" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
+	 width="315px" height="442px" viewBox="0 0 315 442" style="enable-background:new 0 0 315 442;" xml:space="preserve">
 <style type="text/css">
 <![CDATA[
 	svg.eventTicket .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
@@ -13,14 +13,14 @@
 ]]>
 </style>
 <defs>
-	<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.7495" y1="-0.5005" x2="157.7495" y2="401.4995">
+	<linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.7495" y1="-0.5005" x2="157.7495" y2="442.4995">
 		<stop  class="pass-bg-lite" offset="0" style="stop-color:rgb(40, 38, 59);"/>
 		<stop  class="pass-bg" offset="0.5" style="stop-color:rgb(40, 38, 59);"/>
 		<stop  class="pass-bg-dark" offset="1" style="stop-color:rgb(8, 8, 12);"/>
 	</linearGradient>
 </defs>
-<path class="bg-grad" fill="url(#linear-grad)" d="M188.24-0.5c0,11.5-14.39,20.81-32.18,20.81l0.32,0c-16.66,0-30.14-9.31-30.14-20.81l0.01,0h-126l0.67,402H0.25
-	h315l-0.67-402l0.67,0L188.24-0.5"/>
+<path class="bg-grad" fill="url(#linear-grad)" d="M188.24-0.5c0,11.5-14.39,20.81-32.18,20.81l0.32,0c-16.66,0-30.14-9.31-30.14-20.81l0.01,0h-126l0.67,443H0.25
+	h315l-0.67-443l0.67,0L188.24-0.5"/>
 
 <g class="pass-group">
 	<!-- image groups -->
@@ -85,13 +85,14 @@
 </g>
 
 <!-- left and right icons -->
-<rect x="10.16" y="377.17" class="icon-line" width="11.5" height="14.5"/>
-<line class="icon-line" x1="15.91" y1="371.57" x2="15.91" y2="384.92"/>
-<line class="icon-line" x1="13.41" y1="375.17" x2="15.91" y2="371.57"/>
-<line class="icon-line" x1="15.91" y1="371.57" x2="18.16" y2="375.17"/>
+<rect x="11.5" y="418.67" class="icon-line" width="14.5" height="14.5"/>
+<line class="icon-line" x1="18.91" y1="413.07" x2="18.91" y2="426.42"/>
+<line class="icon-line" x1="16.41" y1="416.67" x2="18.91" y2="413.07"/>
+<line class="icon-line" x1="18.91" y1="413.07" x2="21.16" y2="416.67"/>
+
 <g>
-	<circle class="icon-line" cx="298.33" cy="384.88" r="7.08"/>
-	<text transform="matrix(1 0 0 1 296.7559 388.4521)" class="icon-font">i</text>
+	<circle class="icon-line" cx="299.33" cy="426.38" r="9.08"/>
+	<text transform="matrix(1 0 0 1 296.7559 430.9521)" class="icon-font">i</text>
 </g>
 <!-- barcode -->
 <g class="barcode-btn-group" id="barcode-group">

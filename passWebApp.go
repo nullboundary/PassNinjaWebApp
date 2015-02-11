@@ -10,18 +10,17 @@ import (
 	//"github.com/markbates/goth"
 	//"github.com/markbates/goth/providers/gplus"
 	//"github.com/markbates/goth/providers/linkedin"
+	"crypto/tls"
+	"crypto/x509"
+	"github.com/hashicorp/logutils"
 	"github.com/pressly/cji"
 	"github.com/slugmobile/goth"
 	"github.com/slugmobile/goth/providers/gplus"
 	"github.com/slugmobile/goth/providers/linkedin"
 	"github.com/slugmobile/govalidator"
-	//"github.com/zenazn/goji"
-	"crypto/tls"
-	"crypto/x509"
 	"github.com/zenazn/goji/graceful"
 	"github.com/zenazn/goji/web"
 	"github.com/zenazn/goji/web/middleware"
-	"html/template"
 	"image/png"
 	"io/ioutil"
 	"log"
@@ -49,6 +48,14 @@ func init() {
 	//add custom validator functions
 	addValidators()
 
+	//setup logutils log levels
+	filter := &logutils.LevelFilter{
+		Levels:   []logutils.LogLevel{"DEBUG", "WARN", "ERROR"},
+		MinLevel: "DEBUG",
+		Writer:   os.Stderr,
+	}
+	log.SetOutput(filter)
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -70,8 +77,8 @@ func main() {
 	root.Get("/auth/success", handleLoginSuccess) //loads a login success page into oauth popup.(probably never seen)
 
 	//home page
-	root.Get("/index.html", handleTemplates)
-	root.Get("/", handleTemplates)
+	root.Get("/index.html", handleIndex)
+	root.Get("/", handleIndex)
 	root.Get("/assets/*", handleStatic)
 
 	//web app login pages
@@ -83,13 +90,6 @@ func main() {
 
 	accounts.Post("/accounts/feedback", handleFeedback)
 	accounts.Get("/accounts/template/:passType", handlePassSample) //return a sample json object of the pass type
-
-	//accounts.Get("/accounts/passes/", handleAccountStatic)
-
-	//login root, view current passes - TODO: now its set as builder! - TODO: Make static
-	//accounts.Get("/accounts/index.html", handlePageStatic) //handleAccountTemplates)
-	//accounts.Get("/accounts/", handlePageStatic)           //handleAccountTemplates)
-	//accounts.Get("/accounts/builder.html", handleAccountTemplates) //make a pass
 
 	//API
 	api := web.New()
@@ -108,10 +108,9 @@ func main() {
 
 	//customCA Server is only used for testing
 	customCAServer := &graceful.Server{Addr: ":10443", Handler: root}
-	customCAServer.TLSConfig = addRootCA()
+	customCAServer.TLSConfig = addRootCA("tls/myCA.cer")
 	customCAServer.ListenAndServeTLS("tls/mycert1.cer", "tls/mycert1.key")
 
-	//goji.Serve() //set port via cl - example: app -bind :9000
 	//graceful.ListenAndServeTLS(":10443", "tls/mycert1.cer", "tls/mycert1.key", root)
 }
 
@@ -121,18 +120,13 @@ func main() {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func addRootCA() *tls.Config {
+func addRootCA(filepath string) *tls.Config {
 
-	//cAPair, err := tls.LoadX509KeyPair("tls/myCA.cer", "tls/myCA.key")
-	//utils.Check(err)
-	severCert, err := ioutil.ReadFile("tls/myCA.cer")
+	severCert, err := ioutil.ReadFile(filepath)
 	utils.Check(err)
 
-	//log.Println(cAPair.Leaf.Raw)
-	//log.Println(cAPair.Leaf.IsCA)
 	cAPool := x509.NewCertPool()
 	cAPool.AppendCertsFromPEM(severCert)
-	//cAPool.AddCert(cAPair.Leaf)
 
 	tlc := &tls.Config{
 		RootCAs:    cAPool,
@@ -211,7 +205,7 @@ func addValidators() {
 		r := bytes.NewReader(data)
 		_, err = png.DecodeConfig(r)
 		if err != nil {
-			log.Printf("png decodeConfig error:%s", err.Error())
+			log.Printf("[ERROR] png decodeConfig error:%s", err.Error())
 			return false
 		}
 
@@ -240,10 +234,12 @@ func addListValidator(key string, typeList []string) {
 
 }
 
+//////////////////////////////////////////////////////////////////////////
 // Try to find the token in an http.Request.
 // This method will call ParseMultipartForm if there's no token in the header.
 // Currently, it looks in the Authorization header as well as
 // looking for an 'access_token' request parameter in req.Form.
+//////////////////////////////////////////////////////////////////////////
 func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token, err error) {
 
 	// Look for an Authorization header
@@ -290,7 +286,7 @@ func verifyState(req *http.Request) bool {
 
 	param := req.URL.Query()
 	stateStr := param.Get("state")
-	log.Println(stateStr)
+	log.Printf("[DEBUG] %s", stateStr)
 
 	if stateStr == "" {
 		return false
@@ -343,7 +339,7 @@ func updatePassVariables(newPass *pass, customVars map[string]value) error {
 	case "storeCard":
 		passDoc = newPass.KeyDoc.StoreCard
 	default:
-		log.Printf("Pass type %s not found", newPass.PassType)
+		log.Printf("[WARN] Pass type %s not found", newPass.PassType)
 		return fmt.Errorf("the submitted data is malformed")
 	}
 
@@ -352,7 +348,7 @@ mutateLoop:
 	for _, key := range newPass.MutateList {
 		val, ok := customVars[key]
 		if !ok {
-			log.Printf("mutate key not found:%s", key)
+			log.Printf("[WARN] mutate key not found:%s", key)
 			return fmt.Errorf("the submitted data is malformed")
 		}
 
@@ -413,11 +409,11 @@ func verifyToken(token string, seeds ...string) error {
 	//id is a token, verify it
 	ok, err := utils.VerifyToken(passTokenKey, token, seeds...)
 	if err != nil {
-		log.Printf("verify token failed: %s", err.Error()) //base64 decode failed
+		log.Printf("[ERROR] verify token failed: %s", err.Error()) //base64 decode failed
 		return fmt.Errorf("pass not found")
 	}
 	if !ok {
-		log.Println("token Failed to verify!")
+		log.Println("[WARN] token Failed to verify!")
 		return fmt.Errorf("pass not found")
 	}
 
@@ -463,7 +459,7 @@ func noDirListing(prefix string, h http.Handler) http.Handler {
 		log.Println(path.Join(prefix, safePath))
 		fileInfo, err := os.Stat(path.Join(prefix, r.URL.Path))
 		if err != nil {
-			log.Println(err)
+			log.Printf("[ERROR] os.Stat error: %s", err)
 			handleNotFound(w, r)
 			return
 		}
@@ -474,49 +470,4 @@ func noDirListing(prefix string, h http.Handler) http.Handler {
 
 		h.ServeHTTP(w, r)
 	})
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func createFromTemplate(res http.ResponseWriter, layout string, file string) error {
-
-	//make sure the file name is safe
-	safeFile := govalidator.SafeFileName(file)
-
-	fp := path.Join("templates", safeFile)
-	lp := path.Join("templates", layout)
-
-	// Return a 404 if the template doesn't exist
-	info, err := os.Stat(fp)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return fmt.Errorf("404 File doesn't exist: %s", err)
-		}
-	}
-
-	// Return a 404 if the request is for a directory
-	if info.IsDir() {
-		return fmt.Errorf("404 File doesn't exist: %s", err)
-	}
-
-	templates, err := template.ParseFiles(lp, fp)
-	utils.Check(err)
-
-	sidValue, err := createJWToken("sid", csrfKey, utils.RandomStr(16))
-	if err != nil {
-		return fmt.Errorf("Internal Error")
-	}
-	log.Println(sidValue["sid"])
-
-	//sidValue := utils.GenerateToken(csrfKey, time.Now().String(), string(randBytes)) //get id as token from base64 hmac
-	sidcookie := &http.Cookie{Name: "sid", Value: sidValue["sid"]}
-	http.SetCookie(res, sidcookie)
-
-	templates.ExecuteTemplate(res, "layout", nil)
-
-	return nil
 }

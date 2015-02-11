@@ -23,7 +23,7 @@
       'fields': setLowField,
       'fieldState': 'rect',
       'x': 35,
-      'y': 304,
+      'y': 345,
       'width': 246,
       'height': 78,
       'image': {
@@ -35,26 +35,26 @@
     'PKBarcodeFormatQR': {
       'fields': setHighField,
       'fieldState': 'square',
-      'x': 81,
-      'y': 240,
-      'width': 153,
-      'height': 153,
+      'x': 86,
+      'y': 286,
+      'width': 143,
+      'height': 143,
       'image': {
-        'width': 133,
-        'height': 133,
+        'width': 123,
+        'height': 123,
         'path': '/assets/svg/img/QR.png'
       }
     },
     'PKBarcodeFormatAztec': {
       'fields': setHighField,
       'fieldState': 'square',
-      'x': 81,
-      'y': 240,
-      'width': 153,
-      'height': 153,
+      'x': 86,
+      'y': 286,
+      'width': 143,
+      'height': 143,
       'image': {
-        'width': 133,
-        'height': 133,
+        'width': 123,
+        'height': 123,
         'path': '/assets/svg/img/aztec.png'
       }
     }

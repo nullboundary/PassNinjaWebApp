@@ -19,9 +19,15 @@
       //set bg gradiant color
       var bgColor = tinycolor(pb.template().keyDoc.backgroundColor);
       console.log(bgColor.toRgbString());
-      pb.svg().select('.pass-bg-lite').style('stop-color', bgColor.brighten(15).toRgbString());
+
+      //IOS7 & 8 have no more gradiant bg
+      pb.svg().select('.pass-bg-lite').style('stop-color', bgColor.toRgbString());
       pb.svg().select('.pass-bg').style('stop-color', bgColor.toRgbString());
-      pb.svg().select('.pass-bg-dark').style('stop-color', bgColor.darken(15).toRgbString());
+      pb.svg().select('.pass-bg-dark').style('stop-color', bgColor.toRgbString());
+
+    /*  pb.svg().select('.pass-bg-lite').style('stop-color', bgColor.brighten(15).toRgbString());
+      pb.svg().select('.pass-bg').style('stop-color', bgColor.toRgbString());
+      pb.svg().select('.pass-bg-dark').style('stop-color', bgColor.darken(15).toRgbString()); */
 
     },
 
@@ -32,6 +38,10 @@
       console.log(pb.svg().select('.value-text').style('fill'));
       pb.svg().selectAll('.value-text').style('fill', pb.template().keyDoc.foregroundColor);
       pb.svg().selectAll('.label-text').style('fill', pb.template().keyDoc.labelColor);
+      pb.svg().selectAll('.icon-font').style('fill', pb.template().keyDoc.foregroundColor);
+      pb.svg().selectAll('.icon-line').style('stroke', pb.template().keyDoc.foregroundColor);
+
+
     },
 
     name: function () {

@@ -85,7 +85,7 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 			return
 		}
 
-		//id is a token, verify it - checks to make sure the correct user is matching the pass id
+		//pass id is a token, verify it - checks to make sure the correct user is matching the pass id
 		if verifyToken(passID, passData.Name, userID) != nil {
 			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return

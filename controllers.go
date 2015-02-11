@@ -11,7 +11,6 @@ import (
 	"github.com/zenazn/goji/web"
 	"log"
 	"net/http"
-	"path"
 	"strings"
 	"time"
 )
@@ -22,59 +21,9 @@ import (
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func handleTemplates(res http.ResponseWriter, req *http.Request) {
-
-	log.Printf("handleTemplates: %s \n", req.URL.Path)
-
-	dir, file := path.Split(req.URL.Path)
-	if file == "" {
-		file = "index.html"
-	}
-	urlPath := path.Join(dir, file) //clean and rejoin path
-
-	err := createFromTemplate(res, "layout.tmpl", urlPath)
-	if err != nil {
-		log.Printf("template error %s", err)
-		handleNotFound(res, req)
-		return
-	}
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func handleAccountTemplates(res http.ResponseWriter, req *http.Request) {
-
-	log.Printf("handleAccountTemplates: %s \n", req.URL.Path)
-
-	dir, file := path.Split(req.URL.Path)
-	if file == "" {
-		file = "index.html"
-	}
-	urlPath := path.Join(dir, file) //clean and rejoin path
-
-	err := createFromTemplate(res, "accountLayout.tmpl", urlPath)
-	if err != nil {
-		log.Printf("template error %s", err)
-		handleNotFound(res, req)
-		return
-	}
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
 func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	log.Printf("handleStatic %s", req.URL.Path[1:])
+	log.Printf("[DEBUG] handleStatic %s", req.URL.Path[1:])
 
 	dir := "static/public"
 	fs := http.FileServer(http.Dir(dir))
@@ -91,9 +40,22 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //
 //////////////////////////////////////////////////////////////////////////
+func handleIndex(c web.C, res http.ResponseWriter, req *http.Request) {
+
+	log.Printf("[DEBUG] handleIndex %s", req.URL.Path[1:])
+	http.ServeFile(res, req, "static/public/index.html")
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
 func handleLoginSuccess(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	log.Printf("handleLoginSuccess %s", req.URL.Path[1:])
+	log.Printf("[DEBUG] handleLoginSuccess %s", req.URL.Path[1:])
 	http.ServeFile(res, req, "static/public/success.html")
 
 }
@@ -106,27 +68,8 @@ func handleLoginSuccess(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleAccountPage(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	log.Printf("handlePassListPage %s", req.URL.Path[1:])
+	log.Printf("[DEBUG] handlePassListPage %s", req.URL.Path[1:])
 	http.ServeFile(res, req, "static/auth/accounts.html")
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//////////////////////////////////////////////////////////////////////////
-func handleAccountStatic(c web.C, res http.ResponseWriter, req *http.Request) {
-
-	log.Printf("handleAccountStatic %s", req.URL.Path[1:])
-
-	dir := "static/auth"
-	fs := http.FileServer(http.Dir(dir))
-	cleanFiles := noDirListing(dir, fs)
-	files := http.StripPrefix("/accounts/assets/", cleanFiles)
-
-	files.ServeHTTP(res, req)
 
 }
 
@@ -152,7 +95,7 @@ func handleFeedback(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //////////////////////////////////////////////////////////////////////////
 func handlePassSample(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handlePassSample")
+	log.Printf("[DEBUG] handlePassSample")
 
 	var templateID string
 
@@ -173,7 +116,7 @@ func handlePassSample(c web.C, res http.ResponseWriter, req *http.Request) {
 	case "generic":
 		templateID = "pass.ninja.pass.template.generic"
 	default:
-		log.Println("Pass type not found")
+		log.Printf("[WARN] Pass type: %s not found", passType)
 		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusBadRequest)
 		return
 	}
@@ -181,7 +124,7 @@ func handlePassSample(c web.C, res http.ResponseWriter, req *http.Request) {
 	var newPass pass
 
 	if !db.FindById("passTemplate", templateID, &newPass) {
-		log.Println("Pass type not found")
+		log.Printf("[WARN] Pass type: %s not found in DB", templateID)
 		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusBadRequest)
 		return
 	}
@@ -203,12 +146,12 @@ func handlePassSample(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //////////////////////////////////////////////////////////////////////////
 func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleGetPass")
+	log.Printf("[DEBUG] handleGetPass")
 
 	passData := c.Env["passData"].(pass) //get pass from passIDVerify middleware
 
 	if passData.Status != "ready" {
-		log.Println("Requested Pass is not ready for distribution!")
+		log.Println("[WARN] Requested Pass: %s is not ready for distribution!", passData.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready for sharing"), http.StatusNotFound)
 		return
 	}
@@ -229,7 +172,7 @@ func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //////////////////////////////////////////////////////////////////////////
 func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleCustomPass")
+	log.Printf("[DEBUG] handleCustomPass")
 
 	db, err := GetDbType(c)
 	utils.Check(err)
@@ -238,7 +181,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	//pass ready to be mutated? Or of the wrong type
 	if passData.Status != "api" {
-		log.Println("requested Pass is not ready or configurable")
+		log.Println("[WARN] requested Pass: %s is not ready or configurable", passData.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready or configurable"), http.StatusNotFound)
 		return
 	}
@@ -246,7 +189,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	var customVars map[string]value //a map of custom variables to change in the pass
 	//read json doc of variables to change
 	if err := utils.ReadJson(req, &customVars); err != nil {
-		log.Printf("read json error: %s", err.Error())
+		log.Printf("[ERROR] read json error: %s", err.Error())
 		utils.JsonErrorResponse(res, fmt.Errorf("the submitted data is malformed"), http.StatusBadRequest)
 		return
 	}
@@ -262,8 +205,8 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	passData.Id = newPassID
 	passData.FileName = passData.FileName + "-" + newPassID
 
-	if !db.Add("passCustom", passData) {
-		log.Println("db Add Pass Error")
+	if !db.Add("passMutate", passData) { //passMutate table holds mutated ready passes for download.
+		log.Println("[ERROR] add to table:passMutate error")
 		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
 		return
 	}
@@ -284,9 +227,10 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //////////////////////////////////////////////////////////////////////////
 func handleGetPass(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleGetPass")
+	log.Printf("[DEBUG] handleGetPass")
 
-	passData := c.Env["passData"].(pass) //get pass from passIDVerify middleware
+	//get pass from passIDVerify middleware. Will only return passes that are owned by the req user
+	passData := c.Env["passData"].(pass)
 
 	err := utils.WriteJson(res, passData, true)
 	utils.Check(err)
@@ -300,7 +244,7 @@ func handleGetPass(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //////////////////////////////////////////////////////////////////////////
 func handleGetAllPass(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleGetAllPass")
+	log.Printf("[DEBUG] handleGetAllPass")
 
 	db, err := GetDbType(c)
 	utils.Check(err)
@@ -313,7 +257,7 @@ func handleGetAllPass(c web.C, res http.ResponseWriter, req *http.Request) {
 	filter := map[string]string{"field": "userid", "value": userID}
 
 	if !db.FindAllEq("pass", filter, &passList) {
-		log.Println("db FindAllEq Error")
+		log.Println("[ERROR] db findAllEq Error")
 		utils.JsonErrorResponse(res, fmt.Errorf("an error has occured retrieving pass data"), http.StatusInternalServerError)
 		return
 	}
@@ -330,7 +274,7 @@ func handleGetAllPass(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //////////////////////////////////////////////////////////////////////////
 func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleCreatePass")
+	log.Printf("[DEBUG] handleCreatePass")
 
 	db, err := GetDbType(c)
 	utils.Check(err)
@@ -346,7 +290,7 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	log.Println(userID)
 
 	if !db.Add("pass", newPass) {
-		log.Println("db Add Pass Error")
+		log.Printf("[ERROR] error adding pass: %s to db", newPass.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
 		return
 	}
@@ -364,7 +308,7 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 //
 //////////////////////////////////////////////////////////////////////////
 func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
-	log.Printf("handleUpdatePass")
+	log.Printf("[DEBUG] handleUpdatePass")
 
 	db, err := GetDbType(c)
 	utils.Check(err)
@@ -391,7 +335,7 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	}
 
 	if !db.Merge("pass", "id", passInputFrag.Id, passInputFrag) {
-		log.Println("db Merge Error")
+		log.Printf("[ERROR] error merging pass: %s to db", passInputFrag.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured updating the pass"), http.StatusInternalServerError)
 		return
 	}
@@ -410,7 +354,7 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	log.Println("handleLogin")
+	log.Println("[DEBUG] handleLogin")
 
 	db, err := GetDbType(c)
 	utils.Check(err)
@@ -418,7 +362,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	//get matching provider from url (gplus,facebook,etc)
 	provider, err := goth.GetProvider(c.URLParams["provider"])
 	if err != nil {
-		log.Printf("provider oauth error: %s", err.Error())
+		log.Printf("[ERROR] provider oauth error: %s", err.Error())
 		utils.JsonErrorResponse(res, fmt.Errorf("ninja fail, bad request"), http.StatusBadRequest)
 		return
 	}
@@ -432,7 +376,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	//verify oauth state is same as session id. protect against cross-site request forgery
 	if ok := verifyState(req); !ok {
-		log.Printf("state oauth - failed")
+		log.Printf("[WARN] verifying oauth state - failed")
 		utils.JsonErrorResponse(res, fmt.Errorf("ninja fail, bad request"), http.StatusBadRequest)
 		return
 	}
@@ -440,7 +384,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	//1. Exchange authorization code for access token
 	_, err = sess.Authorize(provider, req.URL.Query())
 	if err != nil {
-		log.Printf("session authorize error: %s", err.Error())
+		log.Printf("[ERROR] session authorize error: %s", err.Error())
 		utils.JsonErrorResponse(res, fmt.Errorf("ninja fail, bad request"), http.StatusBadRequest)
 		return
 	}
@@ -448,7 +392,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	//2. fetch user info
 	user, err := provider.FetchUser(sess)
 	if err != nil {
-		log.Printf("complete oauth error: %s", err.Error())
+		log.Printf("[ERROR] fetch user info oauth error: %s", err.Error())
 		utils.JsonErrorResponse(res, fmt.Errorf("ninja fail, server error"), http.StatusInternalServerError)
 		return
 	}
@@ -460,6 +404,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	if err == nil && jwtoken.Valid { //3a. Link user accounts - if user not already logged in
 
 		if !db.FindById("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
+			log.Printf("[WARN] user: %s not found in db", jwtoken.Claims["sub"].(string))
 			utils.JsonErrorResponse(res, fmt.Errorf("user not found"), http.StatusBadRequest)
 			return
 		}
@@ -482,7 +427,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 			newUser.Created = time.Now()
 
 			if ok := db.Add("users", newUser); !ok {
-				log.Println("Add User Error")
+				log.Println("[ERROR] problem adding user %s to db", newUser.ID)
 				utils.JsonErrorResponse(res, fmt.Errorf("this user account already exists"), http.StatusConflict)
 				return
 			}
@@ -513,13 +458,14 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 		return jWTokenKey, nil
 	})
 	if err != nil || !jwtoken.Valid {
-		log.Println("Current user not connected")
+		log.Printf("[WARN] Current user %s not connected", jwtoken.Claims["sub"].(string))
 		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), 401)
 		return
 	}
 
 	var newUser userModel
 	if !db.FindById("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
+		log.Printf("[WARN] Current user %s not found in db - cannot unlink", jwtoken.Claims["sub"].(string))
 		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), http.StatusBadRequest)
 		return
 	}
@@ -530,7 +476,7 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	url := "https://accounts.google.com/o/oauth2/revoke?token=" + accessToken
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Println("Failed to revoke token for a given user")
+		log.Printf("[ERROR] failed to revoke token for a user: %s", newUser.ID)
 		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), 400)
 		return
 	}
@@ -541,7 +487,7 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	newUser.User = goth.User{}
 
 	if !db.Merge("users", "id", newUser.ID, newUser) {
-		log.Println("db Merge Error")
+		log.Println("[ERROR] db Merge Error")
 		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), http.StatusInternalServerError)
 		return
 	}
@@ -559,7 +505,7 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleNotFound(res http.ResponseWriter, req *http.Request) {
 
-	log.Printf("404 Not Found %s", req.URL.Path[1:])
+	log.Printf("[WARN] 404 Not Found %s", req.URL.Path[1:])
 	http.ServeFile(res, req, "static/public/notfound.html")
 
 	res.WriteHeader(http.StatusNotFound) //TODO: doesnt set 404, file already served!

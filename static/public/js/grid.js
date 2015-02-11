@@ -203,7 +203,7 @@
       //expander.select('.expand-status').style('color', 'green');
       expander.select('.expand-status').text(passNinja.getPassModel().status);
 
-      var url = window.location.protocol + '//local.pass.ninja:8001//pass/1/passes/' + passNinja.getPassModel().filename;
+      var url = window.location.protocol + '//local.pass.ninja:8001/pass/1/passes/' + passNinja.getPassModel().filename;
 
       var link = '<a href="'+ url + '">' + passNinja.getPassModel().filename + '</a>';
       expander.select('.expand-link').html(link);

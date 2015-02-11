@@ -1,5 +1,5 @@
 <svg version="1.1" id="passBack" class="pass-template back" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="315px" height="401px" viewBox="0 0 315 401" style="enable-background:new 0 0 315 401;" xml:space="preserve">
+	 width="315px" height="442px" viewBox="0 0 315 442" style="enable-background:new 0 0 315 442;" xml:space="preserve">
 <style type="text/css">
 <![CDATA[
 	svg.back .outline-path{fill:#E6E7E8;}
@@ -15,14 +15,14 @@
 ]]>
 </style>
 <!-- pass outline-->
-<path class="outline-path" d="M315,389.01c0,6.62-5.37,11.99-12,11.99H12c-6.63,0-12-5.37-12-11.99V12.48C0,5.87,5.37,0.5,12,0.5h291
-	c6.63,0,12,5.37,12,11.98V389.01z"/>
+<path class="outline-path" d="M315,430.01c0,6.62-5.37,11.99-12,11.99H12c-6.63,0-12-5.37-12-11.99V12.48C0,5.87,5.37,0.5,12,0.5h291
+	c6.63,0,12,5.37,12,11.98V430.01z"/>
 <!-- edge clip -->
 <g>
 	<defs>
 	<clipPath id="pass-outline">
-		<path d="M315,389.01c0,6.62-5.37,11.99-12,11.99H12c-6.63,0-12-5.37-12-11.99V12.48C0,5.87,5.37,0.5,12,0.5h291
-			c6.63,0,12,5.37,12,11.98V389.01z"/>
+		<path d="M315,430.01c0,6.62-5.37,11.99-12,11.99H12c-6.63,0-12-5.37-12-11.99V12.48C0,5.87,5.37,0.5,12,0.5h291
+			c6.63,0,12,5.37,12,11.98V430.01z"/>
 	</clipPath>
 </defs>
 </g>
