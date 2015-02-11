@@ -4,38 +4,44 @@
  * https://github.com/smeijer/leaflet.control.geosearch
  */
 
-onLoadGoogleApiCallback = function () {
+onLoadGoogleApiCallback = function() {
   L.GeoSearch.Provider.Google.Geocoder = new google.maps.Geocoder();
   document.body.removeChild(document.getElementById('load_google_api'));
+  L.GeoSearch.Provider.Google.apiLoaded = true;
+
 };
 
 L.GeoSearch.Provider.Google = L.Class.extend({
+
   options: {
 
   },
 
-  initialize: function (options) {
+  initialize: function(options) {
     options = L.Util.setOptions(this, options);
     this.loadMapsApi();
   },
 
-  loadMapsApi: function () {
-    var url = "https://maps.googleapis.com/maps/api/js?v=3&callback=onLoadGoogleApiCallback&sensor=false";
-    var script = document.createElement('script');
-    script.id = 'load_google_api';
-    script.type = "text/javascript";
-    script.src = url;
-    document.body.appendChild(script);
+  loadMapsApi: function() {
+
+    if (!L.GeoSearch.Provider.Google.apiLoaded) {
+      var url = "https://maps.googleapis.com/maps/api/js?v=3&callback=onLoadGoogleApiCallback&sensor=false";
+      var script = document.createElement('script');
+      script.id = 'load_google_api';
+      script.type = "text/javascript";
+      script.src = url;
+      document.body.appendChild(script);
+    }
   },
 
-  GetLocations: function (qry, callback) {
+  GetLocations: function(qry, callback) {
     var geocoder = L.GeoSearch.Provider.Google.Geocoder;
 
     var parameters = L.Util.extend({
       address: qry
     }, this.options);
 
-    var results = geocoder.geocode(parameters, function (data) {
+    var results = geocoder.geocode(parameters, function(data) {
       data = {
         results: data
       };
