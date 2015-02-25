@@ -41,88 +41,122 @@ html, button, input, select, textarea,
 }
 
 #auth-header {
-  position: relative;
-  top: 250px;
-  left: 16%;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #notfound-header {
-  position: relative;
-  top: 25px;
-  left: 38%;
+  display: block;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #notfound-img {
-  position: relative;
-  left: 42%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
 }
 
+button.light {
+  background-color: rgba(0, 0, 0, 0);
+  border: 2px solid rgb(0, 0, 0);
+  color: rgb(16, 16, 16);
+}
+
+.button-primary {
+  background-color: rgba(0,0,0,1.0);
+  border: 2px solid rgb(240,30,0);
+  color: rgb(255,255,255);
+}
+
+.button-secondary {
+  background-color: rgba(0, 0, 0, 0);
+  border: 2px solid rgb(0, 0, 0);
+  color: rgb(16, 16, 16);
+}
 
 /********************************************
   Nav Bar Styles
 
 *********************************************/
-
-.home-menu.pure-menu-open {
-  background: rgba(0,0,0,0.4);
-  z-index: 4;
-  height: 50px;
-}
-.pure-menu.pure-menu-open.pure-menu-fixed {
-
-  /* Remove border from fixed menu. */
-  border-bottom: 1px solid rgb(240,30,0);
-  /* a higher z-index here because of the scroll-over effect. */
-  z-index: 4;
-}
-
-.home-menu a#header {
-  float: left;
-  clear: none;
-  overflow: hidden;
-  width: 260px;
+.nav-menu {
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgb(240,30,0);
+    z-index: 4;
+    position: relative;
+    height: 3.1em;
+    overflow: hidden;
+    -webkit-transition: height 0.5s;
+    -moz-transition: height 0.5s;
+    -ms-transition: height 0.5s;
+    transition: height 0.5s;
 }
 
-.home-menu img {
+.nav-menu.open {
+    height: 11em;
+}
+
+.nav-menu img {
   height:35px;
 }
 
-.home-menu ul {
-  float: right;
-  padding-top: 15px;
+.nav-menu ul {
+  padding-top: 0.9em;
 }
 
-.home-menu li a {
-  background: none;
-  border: none;
+.custom-menu-right {
+  text-align: left;
 }
 
-.home-menu li button {
-  background:none!important;
-  border:none;
-  padding:0.5em 1em;
-  cursor: pointer;
-  color: white;
-  top: -50px;
-  position: relative;
-  font-size: 70%;
-
+.custom-toggle {
+    width: 34px;
+    height: 34px;
+    display: block;
+    position: absolute;
+    margin-top: 10px;
+    top: 0;
+    right: 0;
+    display: block;
 }
 
-.home-menu li button:hover,
-.home-menu li button:focus {
-  background: none;
-  border: none;
-  color: rgb(240,30,0);
+.custom-toggle .bar {
+    background-color: #777;
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 100px;
+    position: absolute;
+    top: 18px;
+    right: 7px;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    transition: all 0.5s;
 }
 
-.home-menu li a:hover,
-.home-menu li a:focus {
-  background: none;
-  border: none;
-  color: rgb(240,30,0);
+.custom-toggle .bar:first-child {
+    -webkit-transform: translateY(-6px);
+    -moz-transform: translateY(-6px);
+    -ms-transform: translateY(-6px);
+    transform: translateY(-6px);
 }
 
+.custom-toggle.x .bar {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.custom-toggle.x .bar:first-child {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
 /********************************************
  Modal Dialog Box
 
@@ -173,29 +207,24 @@ dialog[open].modal {
 }
 
 /********************************************
-  On tablets and other medium-sized devices
-
+  On tablets and other medium+-sized devices
 *********************************************/
 @media (min-width: 48em) {
 
-.navbar {
-font-size: 18px;
+.custom-menu-right {
+      text-align: right;
 }
 
-.home-menu.pure-menu-open {
-  height: 70px;
+.custom-toggle {
+      display: none;
 }
 
-.home-menu li button {
-  top: 0;
-  position: relative;
-  font-size: 100%;
-  font-weight: 400;
-
+.nav-menu {
+  height: 4.2em;
+  font-size: 1.1em;
 }
 
-.home-menu img {
-
+.nav-menu img {
   height:55px;
   width: 220px;
 }

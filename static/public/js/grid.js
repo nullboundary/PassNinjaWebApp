@@ -64,7 +64,7 @@
     .each(buildExpander);
 
     //scroll grid
-    var menuTopMargin = d3.select('.home-menu').node().offsetHeight + 15; //menu bottom + extra
+    var menuTopMargin = d3.select('.nav-menu').node().offsetHeight + 15; //menu bottom + extra
     scrollGrid(activeItem, menuTopMargin);
 
     //transistion the height of both <li.expanded> and <div.expander> simultaniously
@@ -137,7 +137,7 @@
     });
 
     //scroll grid
-    var menuTopMargin = d3.select('.home-menu').node().offsetHeight + 15; //menu bottom + extra
+    var menuTopMargin = d3.select('.nav-menu').node().offsetHeight + 15; //menu bottom + extra
     scrollGrid(activeItem, menuTopMargin);
 
   }
@@ -424,6 +424,12 @@
 
     console.log(data);
     app.setPassModelList(data); //set master pass data list
+
+    //no passes? Set the heading message.
+    if (app.getNumPassModel() <= 0){
+      d3.select('#emptyGridHeading').call(app.toolkit.show);
+      d3.select('#gridHeading').call(app.toolkit.hide);
+    }
 
     buildPassGrid();
   }

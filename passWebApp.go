@@ -3,21 +3,18 @@ package main
 import (
 	"bitbucket.org/cicadaDev/utils"
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/lidashuang/goji_gzip"
-	//"github.com/markbates/goth"
-	//"github.com/markbates/goth/providers/gplus"
-	//"github.com/markbates/goth/providers/linkedin"
-	"crypto/tls"
-	"crypto/x509"
 	"github.com/hashicorp/logutils"
+	"github.com/lidashuang/goji_gzip"
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/providers/gplus"
+	"github.com/markbates/goth/providers/linkedin"
+	"github.com/nullboundary/govalidator"
 	"github.com/pressly/cji"
-	"github.com/slugmobile/goth"
-	"github.com/slugmobile/goth/providers/gplus"
-	"github.com/slugmobile/goth/providers/linkedin"
-	"github.com/slugmobile/govalidator"
 	"github.com/zenazn/goji/graceful"
 	"github.com/zenazn/goji/web"
 	"github.com/zenazn/goji/web/middleware"
@@ -404,7 +401,7 @@ mutateLoop:
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func verifyToken(token string, seeds ...string) error {
+func verifyPassIDToken(token string, seeds ...string) error {
 
 	//id is a token, verify it
 	ok, err := utils.VerifyToken(passTokenKey, token, seeds...)

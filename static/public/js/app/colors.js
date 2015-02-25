@@ -34,15 +34,20 @@
 
 				if (changeClass == '.pass-bg') { //adjust values gradiant in pass background
 
-					//TODO: This seems to give incorrect values. Find new method.
-
 					var centerColor = color.tiny.toRgbString();
+					//IOS7 & 8 have no more gradiant bg
+					pb.svg().select('.pass-bg-lite').style('stop-color', centerColor);
+					pb.svg().select('.pass-bg').style('stop-color', centerColor);
+					pb.svg().select('.pass-bg-dark').style('stop-color', centerColor);
+
+					//TODO: This seems to give incorrect values. Find new method.
+				/*	var centerColor = color.tiny.toRgbString();
 					var topColor = color.tiny.brighten(15).toRgbString();
 					var bottomColor = color.tiny.darken(30).toRgbString(); //lightens or darkens color obj, so darken needs to add back after lighten.
 					console.log(color.tiny.toRgbString());
 					pb.svg().select('.pass-bg-lite').style('stop-color', topColor);
 					pb.svg().select(changeClass).style('stop-color', centerColor);
-					pb.svg().select('.pass-bg-dark').style('stop-color', bottomColor);
+					pb.svg().select('.pass-bg-dark').style('stop-color', bottomColor); */
 
 				} else { //adjust values of all the other classes
 					pb.svg().selectAll(changeClass).style('fill', color.tiny.toRgbString());

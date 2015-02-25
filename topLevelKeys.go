@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/slugmobile/goth"
+	"github.com/markbates/goth"
 	"time"
 )
 

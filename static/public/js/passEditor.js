@@ -109,9 +109,9 @@
 
             console.log('after: ' + app.passEditor[key].name());
 
-            if (app.passEditor[key].hasOwnProperty('xray')) {
-              app.passEditor[key].xray(true);
-            }
+          //  if (app.passEditor[key].hasOwnProperty('xray')) {
+          //    app.passEditor[key].xray(true);
+        //    }
             if (app.passEditor[key].hasOwnProperty('handler')) {
               app.passEditor[key].handler();
             }

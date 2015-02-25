@@ -7,8 +7,8 @@
 <![CDATA[
 	.st0{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
 	.st1{stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
-	.st2{fill:#FF0000;stroke:#000000;stroke-width:3;stroke-miterlimit:10;}
-	.st3{fill:#FF0000;}
+	.st2{fill:rgb(240,30,0);stroke:#000000;stroke-width:3;stroke-miterlimit:10;}
+	.st3{fill:rgb(50,45,45);}
 	.st4{fill:#FFFFFF;}
 	.st5{stroke:#000000;stroke-width:3;stroke-miterlimit:10;}
 	.st6{stroke:#000000;stroke-width:3;stroke-miterlimit:15;}
@@ -16,10 +16,10 @@
 ]]>
 </style>
 <g id="images" class="st7">
-	
+
 		<image style="display:inline;overflow:visible;" width="104" height="104" xlink:href="../../passbook_Web/boarding/logo.png"  transform="matrix(10.2018 0 0 10.2018 194.4531 -190.2031)">
 	</image>
-	
+
 		<image style="display:inline;overflow:visible;" width="954" height="1725" xlink:href="Illustrator-iPhone-5-Wireframe-Mockup.jpg"  transform="matrix(0.2356 -0.1839 0.1839 0.2356 37.9863 399.8931)">
 	</image>
 </g>
@@ -1331,11 +1331,11 @@
 			<path class="st2" d="M201.96,209.87c1.53,1.88,1.09,4.79-0.99,6.51l-27.07,22.43c-2.08,1.72-5,1.59-6.53-0.29l0,0
 				c-1.53-1.88-1.09-4.79,0.99-6.51l27.07-22.43C197.5,207.86,200.43,207.99,201.96,209.87L201.96,209.87z"/>
 			<polygon class="st2" points="504.01,458.5 350.55,586.17 124.2,309.62 277.66,181.96 			"/>
-			
+
 				<ellipse transform="matrix(0.9997 -0.0233 0.0233 0.9997 -12.698 10.6019)" class="st2" cx="447.95" cy="549.42" rx="21.85" ry="22.03"/>
 			<path class="st5" d="M455.33,547.08c1.72,2.05,1.43,5.15-0.65,6.92l-4.22,3.61c-2.08,1.77-5.16,1.55-6.88-0.5l-3.5-4.16
 				c-1.72-2.05-1.43-5.15,0.65-6.92l4.22-3.61c2.08-1.77,5.16-1.55,6.88,0.5L455.33,547.08z"/>
-			
+
 				<ellipse transform="matrix(0.9997 -0.0234 0.0234 0.9997 -4.9057 4.1478)" class="st2" cx="174.96" cy="211.9" rx="5.91" ry="5.68"/>
 		</g>
 		<g>

@@ -186,7 +186,10 @@
       }
 
     }
+    /***********************************************************
 
+
+    ***********************************************************/
     function setTextElemPos(textGroups,fieldType) {
 
       var firstLineSize = 0; //font size of the first line (label or value)
