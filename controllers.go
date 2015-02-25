@@ -4,10 +4,10 @@ import (
 	"bitbucket.org/cicadaDev/utils"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/slugmobile/goth"
-	"github.com/slugmobile/goth/providers/gplus"
-	"github.com/slugmobile/goth/providers/linkedin"
-	"github.com/slugmobile/govalidator"
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/providers/gplus"
+	"github.com/markbates/goth/providers/linkedin"
+	"github.com/nullboundary/govalidator"
 	"github.com/zenazn/goji/web"
 	"log"
 	"net/http"
@@ -43,6 +43,17 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 func handleIndex(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("[DEBUG] handleIndex %s", req.URL.Path[1:])
+
+	sidValue, err := createJWToken("sid", csrfKey, utils.RandomStr(16))
+	if err != nil {
+		log.Printf("[ERROR] createJWTToken failed: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("bad request"), http.StatusBadRequest)
+		return
+	}
+	log.Println(sidValue["sid"])
+	sidcookie := &http.Cookie{Name: "sid", Value: sidValue["sid"]}
+	http.SetCookie(res, sidcookie)
+
 	http.ServeFile(res, req, "static/public/index.html")
 
 }
@@ -117,15 +128,15 @@ func handlePassSample(c web.C, res http.ResponseWriter, req *http.Request) {
 		templateID = "pass.ninja.pass.template.generic"
 	default:
 		log.Printf("[WARN] Pass type: %s not found", passType)
-		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
 		return
 	}
 
 	var newPass pass
 
-	if !db.FindById("passTemplate", templateID, &newPass) {
+	if ok, _ := db.FindById("passTemplate", templateID, &newPass); !ok {
 		log.Printf("[WARN] Pass type: %s not found in DB", templateID)
-		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("pass not found"), http.StatusNotFound)
 		return
 	}
 
@@ -205,8 +216,9 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	passData.Id = newPassID
 	passData.FileName = passData.FileName + "-" + newPassID
 
-	if !db.Add("passMutate", passData) { //passMutate table holds mutated ready passes for download.
-		log.Println("[ERROR] add to table:passMutate error")
+	err = db.Add("passMutate", passData)
+	if err != nil { //passMutate table holds mutated ready passes for download.
+		log.Printf("[ERROR] add to table:passMutate %s", err)
 		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
 		return
 	}
@@ -256,10 +268,13 @@ func handleGetAllPass(c web.C, res http.ResponseWriter, req *http.Request) {
 	log.Printf("userID=%s", userID)
 	filter := map[string]string{"field": "userid", "value": userID}
 
-	if !db.FindAllEq("pass", filter, &passList) {
-		log.Println("[ERROR] db findAllEq Error")
-		utils.JsonErrorResponse(res, fmt.Errorf("an error has occured retrieving pass data"), http.StatusInternalServerError)
-		return
+	//found false continues with empty struct. Error returns error message.
+	if ok, err := db.FindAllEq("pass", filter, &passList); !ok {
+		if err != nil {
+			log.Printf("[ERROR] db findAllEq %s", err)
+			utils.JsonErrorResponse(res, fmt.Errorf("an error has occured retrieving pass data"), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	err = utils.WriteJson(res, passList, true)
@@ -289,8 +304,9 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	newPass.UserId = userID
 	log.Println(userID)
 
-	if !db.Add("pass", newPass) {
-		log.Printf("[ERROR] error adding pass: %s to db", newPass.Name)
+	err = db.Add("pass", newPass)
+	if err != nil {
+		log.Printf("[ERROR]%s adding pass: %s to db", err, newPass.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
 		return
 	}
@@ -334,8 +350,9 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	}
 
-	if !db.Merge("pass", "id", passInputFrag.Id, passInputFrag) {
-		log.Printf("[ERROR] error merging pass: %s to db", passInputFrag.Name)
+	_, err = db.Merge("pass", "id", passInputFrag.Id, passInputFrag)
+	if err != nil {
+		log.Printf("[ERROR] %s - merging pass: %s to db", err, passInputFrag.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured updating the pass"), http.StatusInternalServerError)
 		return
 	}
@@ -403,8 +420,12 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 	})
 	if err == nil && jwtoken.Valid { //3a. Link user accounts - if user not already logged in
 
-		if !db.FindById("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
-			log.Printf("[WARN] user: %s not found in db", jwtoken.Claims["sub"].(string))
+		if ok, err := db.FindById("users", jwtoken.Claims["sub"].(string), &newUser); !ok { //if user not found
+			if err != nil {
+				log.Printf("[ERROR] %s", err)
+			} else {
+				log.Printf("[WARN] user: %s not found in db", jwtoken.Claims["sub"].(string))
+			}
 			utils.JsonErrorResponse(res, fmt.Errorf("user not found"), http.StatusBadRequest)
 			return
 		}
@@ -416,8 +437,13 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	} else { //3b. Create a new user account or return an existing one.
 
-		ok := db.FindById("users", user.UserID, &newUser)
-		if !ok { //if user not found
+		if ok, err := db.FindById("users", user.UserID, &newUser); !ok { //if user not found
+
+			if err != nil {
+				log.Println("[ERROR] %s", err)
+				utils.JsonErrorResponse(res, fmt.Errorf("Internal error"), http.StatusInternalServerError)
+				return
+			}
 
 			//add new user
 			newUser.ID = user.UserID
@@ -426,8 +452,9 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 			newUser.User = user //all details from oauth login
 			newUser.Created = time.Now()
 
-			if ok := db.Add("users", newUser); !ok {
-				log.Println("[ERROR] problem adding user %s to db", newUser.ID)
+			err := db.Add("users", newUser)
+			if err != nil {
+				log.Println("[ERROR] %s - problem adding user %s to db", err, newUser.ID)
 				utils.JsonErrorResponse(res, fmt.Errorf("this user account already exists"), http.StatusConflict)
 				return
 			}
@@ -464,8 +491,12 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	}
 
 	var newUser userModel
-	if !db.FindById("users", jwtoken.Claims["sub"].(string), &newUser) { //if user not found
-		log.Printf("[WARN] Current user %s not found in db - cannot unlink", jwtoken.Claims["sub"].(string))
+	if ok, err := db.FindById("users", jwtoken.Claims["sub"].(string), &newUser); !ok { //if user not found
+		if err != nil {
+			log.Printf("[ERROR] %s", err)
+		} else {
+			log.Printf("[WARN] Current user %s not found in db - cannot unlink", jwtoken.Claims["sub"].(string))
+		}
 		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), http.StatusBadRequest)
 		return
 	}
@@ -486,7 +517,8 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	newUser.OAuthProvider = ""
 	newUser.User = goth.User{}
 
-	if !db.Merge("users", "id", newUser.ID, newUser) {
+	_, err = db.Merge("users", "id", newUser.ID, newUser)
+	if err != nil {
 		log.Println("[ERROR] db Merge Error")
 		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), http.StatusInternalServerError)
 		return

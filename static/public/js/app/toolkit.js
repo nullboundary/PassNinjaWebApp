@@ -73,7 +73,7 @@
 		***********************************************************/
 		alertDisplay: function (alertType, alertMessage) {
 			//how long an alert is displayed
-			var alertTimeout = 3500;
+			var alertTimeout = 4500;
 			var outHtml = '';
 			var alertClass = 'alert-info';
 
@@ -278,7 +278,8 @@
 
 				}
 
-				app.toolkit.alertDisplay('error', error.responseText);
+				var errorObj = JSON.parse(error.responseText);
+				app.toolkit.alertDisplay('error', errorObj.error);
 				return true;
 			}
 			return false;

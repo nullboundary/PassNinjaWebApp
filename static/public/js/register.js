@@ -39,12 +39,15 @@ var login = (function(ninjaSignIn, $, undefined) {
   ***********************************************************/
   function init() {
 
+      console.log("init page");
+
       //set to correct login status
       setMenuItems();
 
       //setup nav button listeners
       $(document).on('click', '#logout-btn', logOut);
       $(document).on('click', '#pass-btn', function(e){
+        e.preventDefault();
         if(isAuthenticated()){
           loadAccount();
         }
@@ -59,7 +62,8 @@ var login = (function(ninjaSignIn, $, undefined) {
       dialogPolyfill.registerDialog(dialog); //register with polyfill
 
       //on click login nav button
-      $(document).on('click', '#login-btn', function() {
+      $(document).on('click', '#login-btn', function(e) {
+        e.preventDefault();
         console.log(dialog);
         dialog.showModal();
 
@@ -300,4 +304,51 @@ var login = (function(ninjaSignIn, $, undefined) {
 
 }(ninjaSignIn = window.ninjaSignIn || {}, jQuery));
 
-ninjaSignIn.init();
+
+
+
+/***********************************************************
+  Init js on page load
+
+***********************************************************/
+(function (window, document) {
+
+ninjaSignIn.init(); //start ninja signin
+
+var menu = document.getElementById('menu'),
+    WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange':'resize';
+
+function toggleHorizontal() {
+    [].forEach.call(
+        document.getElementById('menu').querySelectorAll('.custom-can-transform'),
+        function(el){
+            el.classList.toggle('pure-menu-horizontal');
+        }
+    );
+};
+
+function toggleMenu() {
+    // set timeout so that the panel has a chance to roll up
+    // before the menu switches states
+    if (menu.classList.contains('open')) {
+        setTimeout(toggleHorizontal, 500);
+    }
+    else {
+        toggleHorizontal();
+    }
+    menu.classList.toggle('open');
+    document.getElementById('toggle').classList.toggle('x');
+};
+
+function closeMenu() {
+    if (menu.classList.contains('open')) {
+        toggleMenu();
+    }
+}
+
+document.getElementById('toggle').addEventListener('click', function (e) {
+    toggleMenu();
+});
+
+window.addEventListener(WINDOW_CHANGE_EVENT, closeMenu);
+})(this, this.document);

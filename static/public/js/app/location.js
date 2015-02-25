@@ -227,7 +227,7 @@
       locations[index].altitude = parseFloat(inputVal);
     }
 
-    fadePass();
+    //fadePass();
 
     updateTable('locations', 'loc-table', locKeys);
   }
@@ -250,7 +250,7 @@
 
     locations.splice(locations.length, 0, locData);
 
-    fadePass();
+    //fadePass();
 
     //enable/clear setting panel
     enableLoc();
@@ -506,7 +506,7 @@
 
     beacons.splice(beacons.length, 0, beaconData);
 
-    fadePass();
+    //fadePass();
 
     //enable/clear setting panel
     enableBeacon();
@@ -548,7 +548,7 @@
       beacons[index].relevantText = inputVal;
     }
 
-    fadePass();
+    //fadePass();
 
     updateTable('beacons', 'beacon-table', beaconKeys);
 

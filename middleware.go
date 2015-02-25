@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/slugmobile/govalidator"
+	"github.com/nullboundary/govalidator"
 	"github.com/zenazn/goji/web"
 	"log"
 	"net/http"
@@ -28,7 +28,7 @@ func passReadVerify(c *web.C, h http.Handler) http.Handler {
 		//decodePass(req)
 
 		if err := utils.ReadJson(req, &passInput); err != nil {
-			log.Printf("read json error: %s", err.Error())
+			log.Printf("[ERROR] read json: %s", err.Error())
 			utils.JsonErrorResponse(res, malformError, http.StatusBadRequest)
 			return
 		}
@@ -40,8 +40,8 @@ func passReadVerify(c *web.C, h http.Handler) http.Handler {
 		//validate the struct before adding it to the dB
 		result, err := govalidator.ValidateStruct(passInput)
 		if err != nil {
-			log.Printf("validated: %t - validation error: %s", result, err.Error())
-			utils.JsonErrorResponse(res, malformError, http.StatusBadRequest)
+			log.Printf("[ERROR] validated: %t - validation error: %s", result, err.Error())
+			utils.JsonErrorResponse(res, err, http.StatusBadRequest)
 			return
 		}
 
@@ -69,7 +69,7 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 
 		_, err = base64.URLEncoding.DecodeString(passID)
 		if err != nil {
-			log.Println("Pass ID is not base64")
+			log.Printf("[ERROR] Pass ID is not base64: %s", err)
 			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return
 		}
@@ -79,14 +79,18 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 
 		passData := pass{}
 		//checks to make sure the pass exists in the db, the id is real
-		if !db.FindById("pass", passID, &passData) {
-			log.Println("Pass ID not found in DB")
+		if ok, err := db.FindById("pass", passID, &passData); !ok {
+			if err != nil {
+				log.Printf("[ERROR] %s", err)
+			} else {
+				log.Println("[WARN] Pass ID not found in DB")
+			}
 			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return
 		}
 
 		//pass id is a token, verify it - checks to make sure the correct user is matching the pass id
-		if verifyToken(passID, passData.Name, userID) != nil {
+		if verifyPassIDToken(passID, passData.Name, userID) != nil {
 			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return
 		}
@@ -109,10 +113,7 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
-		log.Println("requireLogin ")
-
-		param := r.URL.Query()
-		log.Println(param.Get("token"))
+		log.Println("[DEBUG] requireLogin")
 
 		jwtoken, err := parseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
 			return jWTokenKey, nil
