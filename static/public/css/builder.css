@@ -1,24 +1,19 @@
-
 dialog#feedback-modal {
-  height:300px;
-  width:300px;
+  height: 300px;
+  width: 300px;
 }
-
-dialog#feedback-modal h1{
+dialog#feedback-modal h1 {
   margin-top: 0.20em;
   margin-bottom: 1em;
   text-align: left;
 }
-
 dialog#feedback-modal label {
   float: left;
   margin-right: 1em;
 }
-
 button#feedback-send {
   float: right;
 }
-
 textarea#feedback-text {
   border-radius: 3px;
   width: inherit;
@@ -26,6 +21,7 @@ textarea#feedback-text {
   margin-top: 10px;
   margin-bottom: 5px;
 }
+
 
 /********************************************
   body styles
@@ -39,25 +35,24 @@ textarea#feedback-text {
   overflow: hidden;
 }
 */
+
 a {
   text-decoration: none;
 }
-
 div.title {
   position: relative;
   top: 0;
 }
-
-div.title h1,div.title h2 {
+div.title h1, div.title h2 {
   width: 100%;
   float: left;
   text-align: center;
 }
-
 div.title h1 {
   /*font-family: 'Helvetica Neue', sans-serif;*/
+
   margin-top: 50px;
-  color: rgb(240,30,0);
+  color: rgb(240, 30, 0);
   margin-bottom: 5px;
   font-size: 30px;
   font-weight: 100;
@@ -66,7 +61,7 @@ h1 span {
   font-size: 26px;
   margin: 0 5px;
   text-transform: capitalize;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.85);
   display: inline-block;
   color: #6D461D;
   border-radius: 5px 5px;
@@ -75,7 +70,6 @@ h1 span {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
   padding: 3px 10px;
 }
-
 div.title h2 {
   color: #ffffff;
   font-weight: 100;
@@ -83,83 +77,88 @@ div.title h2 {
   margin-bottom: 40px;
   font-size: 14px;
   font-weight: 300;
-
 }
-
 h2#emptyGridHeading {
   display: none;
 }
-
 /********************************************/
 /* Main Div Styles
 *********************************************/
+
 .main {
   margin: 0;
 }
 body {
-/*background-color: rgb(50,45,45);*/
+  /*background-color: rgb(50,45,45);*/
 }
-
-
-.page-1 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xPC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-1 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xPC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-2 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4yPC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-2 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4yPC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-3 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4zPC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-3 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4zPC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-4 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj40PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-4 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj40PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-5 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj41PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-5 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj41PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-6 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj42PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-6 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj42PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-7 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj43PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-7 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj43PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-8 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj44PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-8 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj44PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
-.page-9 {  background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj45PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
+.page-9 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iMCIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj45PC90ZXh0Pjx0ZXh0IHg9Ii0xMCUiIHk9IjExNSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSI2MDAiPi8xMjwvdGV4dD48L3N2Zz4=');
 }
 /*
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="250%" width="100%"><text x="-15%" y="55%" fill="rgb(26, 24, 24)" textLength="110%" font-size="600">10</text><text x="-10%" y="115%" fill="rgb(26, 24, 24)" textLength="110%" font-size="600">/12</text></svg>
 */
-.page-10 {          background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTE1JSIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xMDwvdGV4dD48dGV4dCB4PSItMTAlIiB5PSIxMTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4vMTI8L3RleHQ+PC9zdmc+');
-}
-.page-11 {  background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTE1JSIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xMTwvdGV4dD48dGV4dCB4PSItMTAlIiB5PSIxMTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4vMTI8L3RleHQ+PC9zdmc+');
-}
-.page-12 {  background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTE1JSIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xMjwvdGV4dD48dGV4dCB4PSItMTAlIiB5PSIxMTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4vMTI8L3RleHQ+PC9zdmc+');
-}
 
-.page1 h1,.page3 h1,.page4 h1,.page5 h1,.page6 h1,.page8 h1,.page10 h1,.page12 h1 {
+.page-10 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTE1JSIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xMDwvdGV4dD48dGV4dCB4PSItMTAlIiB5PSIxMTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4vMTI8L3RleHQ+PC9zdmc+');
+}
+.page-11 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTE1JSIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xMTwvdGV4dD48dGV4dCB4PSItMTAlIiB5PSIxMTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4vMTI8L3RleHQ+PC9zdmc+');
+}
+.page-12 {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTE1JSIgeT0iNTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4xMjwvdGV4dD48dGV4dCB4PSItMTAlIiB5PSIxMTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iNjAwIj4vMTI8L3RleHQ+PC9zdmc+');
+}
+.page1 h1, .page3 h1, .page4 h1, .page5 h1, .page6 h1, .page8 h1, .page10 h1, .page12 h1 {
   color: #fff;
 }
-
-.page1 h2,.page3 h2,.page4 h2,.page5 h2,.page6 h2,.page8 h2,.page10 h2,.page12 h2 {
-  color: rgb(240,30,0);
+.page1 h2, .page3 h2, .page4 h2, .page5 h2, .page6 h2, .page8 h2, .page10 h2, .page12 h2 {
+  color: rgb(240, 30, 0);
 }
-
 /********************************************
  Page 1 Pass Type Selection Grid Styles
 
 *********************************************/
-
 /* Passtype Selection Grid */
+
 .passtype-grid {
   margin: 0px;
   padding: 10px;
   /*background: rgba(0,0,0,0.5);*/
+
   text-align: center;
 }
-
 /* Responsive Image Control in Passtype_grid */
+
 .pure-img-responsive {
   max-width: 100%;
   height: auto;
 }
-
 .passtype-label {
   color: #ffffff;
 }
-
 /********************************************
   SVG Pass template default styles
 
@@ -176,46 +175,44 @@ body {
  fill:  #224774;
 }
 *********************************************/
- body /deep/ .pass-group {
+
+body /deep/ .pass-group {
   fill: none;
 }
-
-
 /********************************************
   SVG Pass Rectangle selectors
 
 *********************************************/
-
 /* rectangle opacity 0 on other pages */
+
 body /deep/ .img-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
-  display:none;
+  display: none;
 }
-
 /* only select these btn if on img input page */
+
 .viewing-page-6 /deep/ .img-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
-  display:block;
+  display: block;
   stroke-width: 2.0;
   stroke: #fff;
 }
-
 /* hover style */
+
 .viewing-page-6 /deep/ .img-btn-group:hover rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
-
 /* select style */
+
 .viewing-page-6 /deep/ .img-btn-group rect.select {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
-
 /* only select these btn if on barcode input page */
 /*
 .viewing-page-7 .barcode-btn-group rect {
@@ -224,56 +221,55 @@ body /deep/ .img-btn-group rect {
   stroke-width: 1;
   stroke: #fff;
 }*/
-
 /*opacity 0 on other pages */
+
 body /deep/ .barcode-btn-group rect {
   fill: #ffffff;
 }
-
 /*
 .viewing-page-7 .barcode-btn-group:hover rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }*/
+
 body /deep/ .text-btn-group rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
-  display:none;
+  display: none;
   stroke: none;
 }
-
 /* only select these btn if on text input page */
+
 .viewing-page-8 /deep/ .text-btn-group rect {
   fill: #a1fcff;
-  display:block;
+  display: block;
   fill-opacity: 0.0;
   stroke-width: 2.0;
   stroke: #fff;
 }
-
 /* hover style */
+
 .viewing-page-8 /deep/ .text-btn-group:hover rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
-
 /* select style */
+
 .viewing-page-8 /deep/ .text-btn-group rect.select {
   fill: #a1fcff;
   fill-opacity: 0.5;
   cursor: pointer;
 }
-
 /* only select these btn if on back fields page */
+
 body /deep/ .back-field rect {
   fill: #a1fcff;
   fill-opacity: 0.0;
-
 }
-
 /* back field hover style */
+
 .viewing-page-9 /deep/ .back-field:hover rect {
   fill: #a1fcff;
   fill-opacity: 0.5;
@@ -281,8 +277,8 @@ body /deep/ .back-field rect {
   stroke-width: 2.0;
   stroke: #fff;
 }
-
 /* back field select style */
+
 .viewing-page-9 /deep/ .back-field rect.select {
   fill: #a1fcff;
   fill-opacity: 0.5;
@@ -290,46 +286,37 @@ body /deep/ .back-field rect {
   stroke-width: 2.0;
   stroke: #fff;
 }
-
 /* Don't change cursor for the text on the svg */
-body /deep/ .text-btn-group text
-{
-    pointer-events: none;
-}
 
+body /deep/ .text-btn-group text {
+  pointer-events: none;
+}
 /********************************************
   Transistion the color sliders for each page
 
 *********************************************/
 
 .color-select {
-  position:relative;
-  top:-100px;
+  position: relative;
+  top: -100px;
   z-index: 2;
 }
-
 /* initial settings, off screen */
-.rgb-background,
-.rgb-value,
-.rgb-label {
-  transition:all 1s ease;
+
+.rgb-background, .rgb-value, .rgb-label {
+  transition: all 1s ease;
   -webkit-transform: translate3d(200%, 300px, 0) !important;
-    -moz-transform: translate3d(200%, 300px, 0) !important;
-    transform: translate3d(200%, 300px, 0) !important;
+  -moz-transform: translate3d(200%, 300px, 0) !important;
+  transform: translate3d(200%, 300px, 0) !important;
 }
-
 /* move the slider into screen */
-.viewing-page-3 .rgb-background,
-.viewing-page-4 .rgb-label,
-.viewing-page-5 .rgb-value{
 
-  transition:all 1s ease;
-    -webkit-transform: translate3d(0px, 400px, 0) !important;
-    -moz-transform: translate3d(0px, 400px, 0) !important;
-    transform: translate3d(0px, 400px, 0) !important;
-
+.viewing-page-3 .rgb-background, .viewing-page-4 .rgb-label, .viewing-page-5 .rgb-value {
+  transition: all 1s ease;
+  -webkit-transform: translate3d(0px, 400px, 0) !important;
+  -moz-transform: translate3d(0px, 400px, 0) !important;
+  transform: translate3d(0px, 400px, 0) !important;
 }
-
 /********************************************
  Message Alert Box
 
@@ -348,33 +335,26 @@ body /deep/ .text-btn-group text
   background-color: #fcf8e3;
   border: 1px solid #fbeed5;
 }
-
 .alert-heading {
   color: inherit;
   font-weight: 400;
 }
-
 .alert-success {
-  color: rgb(255,255,255);
-  background-color: rgba(50,45,45,0);
+  color: rgb(255, 255, 255);
+  background-color: rgba(50, 45, 45, 0);
   text-shadow: none;
-
-  border-color: rgb(240,30,0);
+  border-color: rgb(240, 30, 0);
 }
-
-.alert-danger,
-.alert-error {
-  color: rgb(0,0,0);
-  background-color:rgb(240,30,0);
-  border-color: rgb(0,0,0);
+.alert-danger, .alert-error {
+  color: rgb(0, 0, 0);
+  background-color: rgb(240, 30, 0);
+  border-color: rgb(0, 0, 0);
 }
-
 .alert-info {
   color: #3a87ad;
   background-color: #d9edf7;
   border-color: #bce8f1;
 }
-
 .alert .close {
   position: relative;
   top: -2px;
@@ -392,7 +372,6 @@ body /deep/ .text-btn-group text
   filter: alpha(opacity=20);
   text-decoration: none;
 }
-
 .alert .close:hover {
   color: #000000;
   text-decoration: none;
@@ -400,18 +379,16 @@ body /deep/ .text-btn-group text
   filter: alpha(opacity=40);
   cursor: pointer;
 }
-
-
 /********************************************
   Pass settings control UI
 
 *********************************************/
-
 /* Set the standard pass setting UI styles */
-div.control{
+
+div.control {
   line-height: 1;
   color: rgb(255, 0, 0);
-  font-family: 'Roboto','Helvetica Neue', sans-serif;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 400;
   font-size: 12px;
   padding: 12px;
@@ -422,67 +399,58 @@ div.control{
   position: relative;
   top: 270px;
   z-index: 2;
-
-  transform: translate3d(120%, -97%, 0) !important;    /*shift right for small screens */
+  transform: translate3d(120%, -97%, 0) !important;
+  /*shift right for small screens */
 }
-
 div.pure-g {
-     transition: all 0.5s;
+  transition: all 0.5s;
 }
-
 div.control legend {
   color: rgb(255, 0, 0);
   height: 33px;
 }
-
-div.legend-add{
+div.legend-add {
   float: right;
   /*width: 30px;*/
+
   top: -27px;
   /*right: 63px;*/
+
   position: relative;
 }
-
-div.legend-add button{
+div.legend-add button {
   padding: 0.5em 1.0em;
 }
-
-
 /* Limit the width of the currency select menu bar */
+
 select#currency {
-  max-width:26%;
+  max-width: 26%;
 }
-
 .ninja-theme {
-  background: rgba(0,0,0,0.70);
+  background: rgba(0, 0, 0, 0.70);
 }
-
-#loc-map { height: 150px; }
-
+#loc-map {
+  height: 150px;
+}
 textarea#back-text {
   height: 90px;
   width: 100%;
 }
-
 .page-10 h3 {
-  color: rgb(255,255,255);
+  color: rgb(255, 255, 255);
 }
-
 .viewing-page-10 .fake-content {
   opacity: 0.1;
 }
-
 .viewing-page-10 div#settings-content {
   opacity: 1.0;
 }
-
-.viewing-page-2 form{
+.viewing-page-2 form {
   position: relative;
   z-index: 999;
 }
-
-div#settings-content{
-  transition:all 2s ease-in-out;
+div#settings-content {
+  transition: all 2s ease-in-out;
   display: block;
   position: relative;
   top: -80px;
@@ -497,41 +465,36 @@ div#settings-content{
   transform: scale(0.7);
   opacity: 0.0;
 }
-
 table {
   width: 100%;
 }
-
 tr {
-  color: rgb(255,255,255);
-  background-color: rgba(0,0,0,0.70);
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.70);
 }
-
-#loc-table th,#beacon-table th {
+#loc-table th, #beacon-table th {
   padding: .5em .5em;
 }
-#loc-table td,#beacon-table td {
+#loc-table td, #beacon-table td {
   padding: .5em .5em;
 }
-
 tbody tr:hover {
   background: #a1fcff;
   opacity: 0.5;
   cursor: pointer;
 }
-
 tbody tr.select {
   background: #a1fcff;
   opacity: 0.5;
   cursor: pointer;
 }
+.pure-button:hover:enabled {
+  /* override pure button style */
 
-.pure-button:hover:enabled { /* override pure button style */
-  background-color: rgb(240,30,0);
-  border: 2px solid rgba(240,30,0,0.0);
-  color: rgba(0,0,0,1.0);
+  background-color: rgb(240, 30, 0);
+  border: 2px solid rgba(240, 30, 0, 0.0);
+  color: rgba(0, 0, 0, 1.0);
 }
-
 /*
 .pure-button {
   background-color: rgba(0,0,0,1.0);
@@ -539,26 +502,24 @@ tbody tr.select {
   color: rgb(255,255,255);
 }
 */
-
 /* override file input using shadow-dom */
-  input[type="file"] /deep/ input[type="button"] {
-  font-family: 'Roboto','Helvetica Neue', sans-serif;
+
+input[type="file"] /deep/ input[type="button"] {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
-  background-color: rgba(0,0,0,1.0);
-  border: 2px solid rgb(240,30,0);
-  color: rgb(255,255,255);
+  background-color: rgba(0, 0, 0, 1.0);
+  border: 2px solid rgb(240, 30, 0);
+  color: rgb(255, 255, 255);
   padding: 0.5em 1em;
   cursor: pointer;
   border-radius: 2px;
   outline: none;
 }
-
 input[type="file"] /deep/ input[type="button"]:hover:enabled {
-  background-color: rgb(240,30,0);
-  border: 2px solid rgba(240,30,0,0.0);
-  color: rgba(0,0,0,1.0);
+  background-color: rgb(240, 30, 0);
+  border: 2px solid rgba(240, 30, 0, 0.0);
+  color: rgba(0, 0, 0, 1.0);
 }
-
 input[type="file"] /deep/ input[type="button"]:disabled {
   background-image: none;
   border: 0;
@@ -566,18 +527,17 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   -moz-opacity: .4;
   opacity: .4;
   cursor: not-allowed;
-
 }
-
 /********************************************
  Tabs for Location screen
 
 *********************************************/
+
 .loc-tabs input[type=radio] {
-          position: absolute;
-          top: -9999px;
-          left: -9999px;
-      }
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
 .loc-tabs {
   width: 100%;
   float: none;
@@ -585,50 +545,51 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   position: relative;
   bottom: 420px;
   padding: 0;
- /* margin: 75px auto; */
+  /* margin: 75px auto; */
 }
-.loc-tabs li{
+.loc-tabs li {
   float: left;
 }
 .loc-tabs label.tab-label {
-    display: block;
-    padding: 10px 20px;
-    border-radius: 2px 2px 0 0;
-    color: #fff;
+  display: block;
+  padding: 10px 20px;
+  border-radius: 2px 2px 0 0;
+  color: #fff;
   /*  color: #08C; */
   /*  font-size: 24px; */
-    font-weight: 300;
-    background: rgba(255,255,255,0.2);
-    cursor: pointer;
-    position: relative;
-    top: -20px;
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out;
+
+  font-weight: 300;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  position: relative;
+  top: -20px;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 .loc-tabs label.tab-label:hover {
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   top: -20px;
 }
-
 [id^=tab]:checked + label.tab-label {
-  background: rgba(0,0,0,0.70);
+  background: rgba(0, 0, 0, 0.70);
   color: rgb(255, 0, 0);
   z-index: 3;
 }
-
 [id^=tab]:checked ~ [id^=tab-content] {
-    display: block;
+  display: block;
 }
-.tab-content{
+.tab-content {
   z-index: 2;
   display: none;
   width: 100%;
   /*font-size: 20px; */
- /* line-height: 140%; */
+  /* line-height: 140%; */
+
   padding-top: 10px;
   /*background: #08C; */
+
   padding: 15px;
   color: rgb(255, 0, 0);
   position: absolute;
@@ -640,415 +601,387 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   -moz-animation-duration: 0.5s;
   animation-duration: 0.5s;
 }
-
 /********************************************
  Pass transition between scroll pages
 
 *********************************************/
 
-.section-content,
-.fake-content {
+.section-content, .fake-content {
   display: block;
   position: absolute;
   top: 0;
   /*left: 10%;      left margin for small screens */
+
   width: 100%;
   height: 100%;
-/*  border-bottom: 1px #707070 solid; */
+  /*  border-bottom: 1px #707070 solid; */
 
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   backface-visibility: hidden;
-
   -webkit-perspective: 1000;
   -moz-perspective: 1000;
   perspective: 1000;
-
 }
 /* Applied to both front and back */
-.fake-content /deep/ .pass-template.front, .fake-content /deep/ .pass-template.back {
-  -webkit-backface-visibility:hidden;
-  -moz-backface-visibility:hidden;
-  backface-visibility: hidden;
 
+.fake-content /deep/ .pass-template.front, .fake-content /deep/ .pass-template.back {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
   -webkit-transform-origin: center center;
   -moz-transform-origin: center center;
   transform-origin: center center;
-
   position: absolute;
 }
-
 /* front pane, placed above back */
+
 .fake-content /deep/ .pass-template.front {
   z-index: 2;
 }
+/* Apply a grab cursor over back of pass */
 
- /* Apply a grab cursor over back of pass */
- .fake-content /deep/ .pass-template.back {
-    cursor: move;  /* fallback if grab cursor is unsupported */
-    cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
-}
-
- /* Apply a "closed-hand" cursor during drag operation. */
- .fake-content /deep/ .pass-template.back:active {
-    cursor: grabbing;
-    cursor: -moz-grabbing;
-    cursor: -webkit-grabbing;
-}
-
-/* back, initially hidden pane */
 .fake-content /deep/ .pass-template.back {
-  transition:all 1s ease;
+  cursor: move;
+  /* fallback if grab cursor is unsupported */
+
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+/* Apply a "closed-hand" cursor during drag operation. */
+
+.fake-content /deep/ .pass-template.back:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+/* back, initially hidden pane */
+
+.fake-content /deep/ .pass-template.back {
+  transition: all 1s ease;
   -webkit-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
   -moz-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
   transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
 }
-
 /* front of pass, standard sizing and positioning */
+
 .fake-content /deep/ .pass-template.front {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
   -moz-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
   transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
-
 }
-
 /* front of pass, scale to 40% */
+
 .viewing-page-2 .fake-content /deep/ .pass-template.front {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
 }
-
 .viewing-page-2 .fake-content /deep/ .pass-template.back {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
   -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
   transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
 }
-
 /* page transitions */
+
 .viewing-page-2 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -980%, 0) !important;
   -moz-transform: translate3d(0, -980%, 0) !important;
   transform: translate3d(0, -980%, 0) !important;
   /*  z-index: -100;place the pass behind the text input */
 }
-
 .viewing-page-3 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -900%, 0) !important;
   -moz-transform: translate3d(0, -900%, 0) !important;
   transform: translate3d(0, -900%, 0) !important;
 }
-
 .viewing-page-4 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -800%, 0) !important;
   -moz-transform: translate3d(0, -800%, 0) !important;
   transform: translate3d(0, -800%, 0) !important;
 }
-
 .viewing-page-5 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -700%, 0) !important;
   -moz-transform: translate3d(0, -700%, 0) !important;
   transform: translate3d(0, -700%, 0) !important;
 }
-
 .viewing-page-6 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -600%, 0) !important;
   -moz-transform: translate3d(0, -600%, 0) !important;
   transform: translate3d(0, -600%, 0) !important;
 }
-
 .viewing-page-7 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -500%, 0) !important;
   -moz-transform: translate3d(0, -500%, 0) !important;
   transform: translate3d(0, -500%, 0) !important;
 }
-
 .viewing-page-8 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -400%, 0) !important;
   -moz-transform: translate3d(0, -400%, 0) !important;
   transform: translate3d(0, -400%, 0) !important;
 }
-
 .viewing-page-9 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -300%, 0) !important;
   -moz-transform: translate3d(0, -300%, 0) !important;
   transform: translate3d(0, -300%, 0) !important;
 }
-
 .viewing-page-10 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -200%, 0) !important;
   -moz-transform: translate3d(0, -200%, 0) !important;
   transform: translate3d(0, -200%, 0) !important;
 }
-
 .viewing-page-11 .fake-content {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(0, -100%, 0) !important;
   -moz-transform: translate3d(0, -100%, 0) !important;
   transform: translate3d(0, -100%, 0) !important;
 }
-
-.viewing-page-12 .fake-content{
-  transition:all 1s ease;
+.viewing-page-12 .fake-content {
+  transition: all 1s ease;
 }
-
 /* Special page 9 front */
+
 .viewing-page-9 .fake-content /deep/ .pass-template.front {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
   transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
 }
-
 /* Special page 9 back */
+
 .viewing-page-9 .fake-content /deep/ .pass-template.back {
-  transition:all 1s ease;
+  transition: all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
   transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
-  }
-
-
+}
 /********************************************
  Pass Type Select Page 1 thumbnail hover
 
 ********************************************/
 
-  .pass-thumb-select {
-    transition:all 0.15s ease;
-  }
+.pass-thumb-select {
+  transition: all 0.15s ease;
+}
+/* Enlarge the pass image when you hover */
 
-  /* Enlarge the pass image when you hover */
-  .pass-thumb-select:hover {
-    transition:all 0.15s ease;
-    -webkit-transform: translate3d(0, 0, 0) scale(1.05) !important;
-    -moz-transform: translate3d(0, 0, 0) scale(1.05) !important;
-    transform: translate3d(0, 0, 0) scale(1.05) !important;
-    cursor: pointer;
-  }
-
-  /********************************************
+.pass-thumb-select:hover {
+  transition: all 0.15s ease;
+  -webkit-transform: translate3d(0, 0, 0) scale(1.05) !important;
+  -moz-transform: translate3d(0, 0, 0) scale(1.05) !important;
+  transform: translate3d(0, 0, 0) scale(1.05) !important;
+  cursor: pointer;
+}
+/********************************************
   pass-grid
   ********************************************/
-  .og-grid {
-    list-style: none;
-    padding: 20px 0;
-    margin: 0 auto;
-    text-align: center;
-    width: 100%;
-  }
 
-  .og-grid li {
-    display: inline-block;
-    margin: 10px 5px 10px 5px;
-    vertical-align: top;
-    transition:height 450ms ease;
+.og-grid {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
+.og-grid li {
+  display: inline-block;
+  margin: 10px 5px 10px 5px;
+  vertical-align: top;
+  transition: height 450ms ease;
+}
+.og-grid li > a {
+  border: none;
+  outline: none;
+  display: block;
+  position: relative;
+}
+.og-grid li > a /deep/ svg, button#new-pass {
+  width: 157px;
+  height: 200px;
+}
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+.expander {
+  position: absolute;
+  background: #ddd;
+  top: auto;
+  left: 0;
+  width: 100%;
+  margin-top: 10px;
+  text-align: left;
+  height: 300px;
+  overflow: hidden;
+  transition: height 450ms ease;
+}
+.og-grid li.expanded > a::after {
+  top: 204px;
+  /* top:204px is also reset for larger screens below */
 
-  }
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-bottom-color: #ddd;
+  border-width: 15px;
+  left: 50%;
+  margin: -20px 0 0 -15px;
+}
+.expand-inner {
+  padding: 50px 30px;
+  height: 100%;
+  opacity: 0;
+}
+/* Displays the list in "field: value" format */
 
-  .og-grid li > a {
-    border: none;
-    outline: none;
-    display: block;
-    position: relative;
-  }
-
-  .og-grid li > a /deep/ svg,
-  button#new-pass {
-    width: 157px;
-    height: 200px;
-  }
-
-  .container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: scroll;
-    overflow-x: hidden;
-  }
-
-  .expander {
-    position: absolute;
-    background: #ddd;
-    top: auto;
-    left: 0;
-    width: 100%;
-    margin-top: 10px;
-    text-align: left;
-    height: 300px;
-    overflow: hidden;
-    transition:height 450ms ease;
-
-  }
-
-  .og-grid li.expanded > a::after {
-    top: 204px; /* top:204px is also reset for larger screens below */
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-bottom-color: #ddd;
-    border-width: 15px;
-    left: 50%;
-    margin: -20px 0 0 -15px;
-  }
-
-
-  .expand-inner {
-    padding: 50px 30px;
-    height: 100%;
-    opacity: 0;
-  }
-
-  /* Displays the list in "field: value" format */
-  .dl-inline {
-    overflow: hidden;
-    *zoom: 1; //for IE 7 and below
-  }
-  .dl-inline dt, .dl-inline dd {float:left;}
-  .dl-inline dd + dd {clear:both;}
-  .dl-inline dt {
-    margin: 0;
-    float: left;
-    clear: both;
-    font-weight: bold;
-  }
-  .dl-inline dt::after {content: ':';}
-  .dl-inline dd {margin-left: 1ex;}
-
-  button.expand-close-btn {
-    position: relative;
-    left: 90%;
-    top: -30px;
-  }
-
-  button.expand-edit-btn {
-    position: absolute;
-    left: 28px;
-    bottom: 10%;
-  }
-
-  button.expand-del-btn {
-    position: absolute;
-    left: 110px;
-    bottom: 10%;
-  }
-
-  div#expand-qr{
-    position: absolute;
-    top: 2.3%;
-    left: 60%;
-    width: 256px;
-    height: 256px;
-    background: white;
-    padding-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-bottom: 15px;
-    border-radius: 5px;
-  }
-
-  .grid-pass {
-    cursor: pointer;
-  }
-
+.dl-inline {
+  overflow: hidden;
+  *zoom: 1; //for IE 7 and below
+}
+.dl-inline dt, .dl-inline dd {
+  float: left;
+}
+.dl-inline dd + dd {
+  clear: both;
+}
+.dl-inline dt {
+  margin: 0;
+  float: left;
+  clear: both;
+  font-weight: bold;
+}
+.dl-inline dt::after {
+  content: ':';
+}
+.dl-inline dd {
+  margin-left: 1ex;
+}
+button.expand-close-btn {
+  position: relative;
+  left: 90%;
+  top: -30px;
+}
+button.expand-edit-btn {
+  position: absolute;
+  left: 28px;
+  bottom: 10%;
+}
+button.expand-del-btn {
+  position: absolute;
+  left: 110px;
+  bottom: 10%;
+}
+div#expand-qr {
+  position: absolute;
+  top: 2.3%;
+  left: 60%;
+  width: 256px;
+  height: 256px;
+  background: white;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  border-radius: 5px;
+}
+.grid-pass {
+  cursor: pointer;
+}
 /********************************************
  loading spinner
  -appears when you select & load an svg template
 ********************************************/
 
 .spinner {
-      position: fixed;
-      margin: 60px;
-      z-index: 102;
-      left: 42.5%;
-      width: 50px;
-      height: 30px;
-      text-align: center;
-      font-size: 10px;
-      display: none;
-    }
-
-    .spinner > div {
-      background-color: #fff;
-      height: 100%;
-      width: 6px;
-      display: inline-block;
-
-      -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
-      animation: stretchdelay 1.2s infinite ease-in-out;
-    }
-
-    .spinner .rect2 {
-      -webkit-animation-delay: -1.1s;
-      animation-delay: -1.1s;
-    }
-
-    .spinner .rect3 {
-      -webkit-animation-delay: -1.0s;
-      animation-delay: -1.0s;
-    }
-
-    .spinner .rect4 {
-      -webkit-animation-delay: -0.9s;
-      animation-delay: -0.9s;
-    }
-
-    .spinner .rect5 {
-      -webkit-animation-delay: -0.8s;
-      animation-delay: -0.8s;
-    }
-
-    @-webkit-keyframes stretchdelay {
-      0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
-      20% { -webkit-transform: scaleY(1.0) }
-    }
-
-    @keyframes stretchdelay {
-      0%, 40%, 100% {
-        transform: scaleY(0.4);
-        -webkit-transform: scaleY(0.4);
-      } 20% {
-        transform: scaleY(1.0);
-        -webkit-transform: scaleY(1.0);
-      }
-    }
-
+  position: fixed;
+  margin: 60px;
+  z-index: 102;
+  left: 42.5%;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  font-size: 10px;
+  display: none;
+}
+.spinner > div {
+  background-color: #fff;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  animation: stretchdelay 1.2s infinite ease-in-out;
+}
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+@-webkit-keyframes stretchdelay {
+  0%, 40%, 100% {
+    -webkit-transform: scaleY(0.4)
+  }
+  20% {
+    -webkit-transform: scaleY(1.0)
+  }
+}
+@keyframes stretchdelay {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }
+  20% {
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
+}
 /********************************************
     Next Page Arrow Button
 
 ********************************************/
 
-.next,.return {
+.next, .return {
   position: fixed;
   margin: 20px;
   right: 0;
   bottom: 0;
   z-index: 102;
 }
-
 .return {
   bottom: 80px;
 }
-
 /* style the button */
-.next .btn,.return .btn {
+
+.next .btn, .return .btn {
   width: 50px;
   height: 50px;
   color: #fff;
@@ -1058,19 +991,19 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   padding: 6px 2px 8px 2px;
   background-color: transparent;
 }
-
 /* set color to black during hover */
-.next .btn:hover,.return .btn:hover {
+
+.next .btn:hover, .return .btn:hover {
   color: #000;
   border-color: #000;
 }
-
 /* page 1 set the arrow in the center */
+
 .viewing-page-1 .next {
   left: 22%;
 }
-
 /* make the arrow bigger for page 1 */
+
 .viewing-page-1 .next .btn {
   width: 140px;
   height: 140px;
@@ -1078,48 +1011,46 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   font-size: 70px;
   display: none;
 }
-
 .viewing-page-12 .next .btn {
   display: none;
 }
-
 /* page 1 set the arrow in the center */
+
 .viewing-page-12 .return {
   left: 43%;
   top: 75%;
 }
-
 /* make the arrow bigger for page 1 */
+
 .viewing-page-12 .return .btn {
   width: 140px;
   height: 140px;
   border-radius: 70px;
   font-size: 70px;
 }
-
-
 /***********************************************************
    medium & larger screens
 
 ***********************************************************/
-@media (min-width: 48em) {
 
+@media (min-width: 48em) {
   /* section title */
+
   div.title {
     top: 30px;
   }
-
   div.title h1 {
-      font-size: 40px;
+    font-size: 40px;
   }
-
   /* div style for svg pass */
-  .section-content,
-  .fake-content {
+
+  .section-content, .fake-content {
     display: block;
     position: absolute;
     top: 0;
-    left: 20%;  /* left margin for medium screens */
+    left: 20%;
+    /* left margin for medium screens */
+
     width: 100%;
     height: 100%;
     /*border-bottom: 1px #707070 solid;*/
@@ -1127,71 +1058,67 @@ input[type="file"] /deep/ input[type="button"]:disabled {
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     backface-visibility: hidden;
-
     -webkit-perspective: 1000;
     -moz-perspective: 1000;
     perspective: 1000;
   }
-
   /* on medium screens getting started page centers the pass */
-  .viewing-page-2 .fake-content {
-    left:38%;
-  /*  z-index: -100;*/
-  }
 
+  .viewing-page-2 .fake-content {
+    left: 38%;
+    /*  z-index: -100;*/
+  }
   /* Dont scale down the pass for medium+ screens */
-   .fake-content /deep/ .pass-template.front
-   {
-    transition:all 1s ease;
+
+  .fake-content /deep/ .pass-template.front {
+    transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   }
-
   .fake-content /deep/ .pass-template.back {
-     transition:all 1s ease;
+    transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
   }
-
   /* front and back of pass, scale to 50% Page 2 */
+
   .viewing-page-2 .fake-content /deep/ .pass-template.front {
-    transition:all 1s ease;
+    transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
   }
   .viewing-page-2 .fake-content /deep/ .pass-template.back {
-    transition:all 1s ease;
+    transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
     transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
   }
+  /* Special page 9 back */
 
-/* Special page 9 back */
-.viewing-page-9 .fake-content /deep/ .pass-template.back {
-  transition:all 1s ease;
-  -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
-  -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
-  transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+  .viewing-page-9 .fake-content /deep/ .pass-template.back {
+    transition: all 1s ease;
+    -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+    -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+    transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   }
-
   /* The controls need to move up and align next to the pass on medium+ screens */
-  div.control{
-     top: 198px;
-     right: 40%;
-     font-size: 16px;
-     width: 130%;
-     max-width: 600px;
-     transform: translate3d(0, 0, 0) !important; /* undo right shift */
-  }
 
+  div.control {
+    top: 198px;
+    right: 40%;
+    font-size: 16px;
+    width: 130%;
+    max-width: 600px;
+    transform: translate3d(0, 0, 0) !important;
+    /* undo right shift */
+  }
   textarea#back-text {
     height: 130px;
   }
-
-  div#settings-content{
+  div#settings-content {
     top: auto;
     left: auto;
     right: 40%;
@@ -1199,80 +1126,85 @@ input[type="file"] /deep/ input[type="button"]:disabled {
     -moz-transform: scale(1.0);
     transform: scale(1.0);
   }
-
   /* set alert message to be in left corner */
-  .alert{
+
+  .alert {
     left: 0;
     transform: translate(0, 0);
   }
-
   .loc-tabs {
     bottom: 0;
   }
-
-  #loc-map { height: 180px; }
-
-  #color-select{
+  #loc-map {
+    height: 180px;
+  }
+  #color-select {
     right: 20%;
   }
-
   /* make header text larger on a medium + screen */
+
   .wrapper h1 {
     font-size: 70px;
-
   }
-
   .wrapper h2 {
     font-size: 1.5em;
-
   }
-
   /* page 1 set the arrow in the center */
+
   .viewing-page-1 .next {
     left: 42%;
   }
-
   /* svg grid passes can be bigger on bigger screens */
-  .og-grid li > a /deep/ svg,
-  button#new-pass  {
+
+  .og-grid li > a /deep/ svg, button#new-pass {
     width: 210px;
     height: 267px;
   }
-
   .og-grid li.expanded > a::after {
     top: 272px;
   }
-
   /*
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="250%" width="100%"><text x="-0" y="95%" fill="rgb(26, 24, 24)" textLength="105%" font-size="1200">1/12</text></svg>
   */
-  .page-1 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjEvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-2 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjIvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-3 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjMvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-4 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjQvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-5 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjUvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-6 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjYvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-7 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjcvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-8 {     background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjgvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-9 {  background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjkvMTI8L3RleHQ+PC9zdmc+');
-  }
 
+  .page-1 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjEvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-2 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjIvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-3 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjMvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-4 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjQvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-5 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjUvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-6 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjYvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-7 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjcvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-8 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjgvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-9 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjkvMTI8L3RleHQ+PC9zdmc+');
+  }
   /*
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="250%" width="100%"><text x="-10%" y="95%" fill="rgb(26, 24, 24)" textLength="110%" font-size="1200">12/12</text></svg>
   */
-  .page-10 {          background:url('data:image/svg+xml;base64,ICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiBoZWlnaHQ9IjI1MCUiIHdpZHRoPSIxMDAlIj48dGV4dCB4PSItMTAlIiB5PSI5NSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSIxMjAwIj4xMC8xMjwvdGV4dD48L3N2Zz4NCg==');
-  }
-  .page-11 {  background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTEwJSIgeT0iOTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iMTIwMCI+MTEvMTI8L3RleHQ+PC9zdmc+');
-  }
-  .page-12 {  background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTEwJSIgeT0iOTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iMTIwMCI+MTIvMTI8L3RleHQ+PC9zdmc+');
-  }
 
+  .page-10 {
+    background: url('data:image/svg+xml;base64,ICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiBoZWlnaHQ9IjI1MCUiIHdpZHRoPSIxMDAlIj48dGV4dCB4PSItMTAlIiB5PSI5NSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSIxMjAwIj4xMC8xMjwvdGV4dD48L3N2Zz4NCg==');
+  }
+  .page-11 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTEwJSIgeT0iOTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iMTIwMCI+MTEvMTI8L3RleHQ+PC9zdmc+');
+  }
+  .page-12 {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTEwJSIgeT0iOTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iMTIwMCI+MTIvMTI8L3RleHQ+PC9zdmc+');
+  }
 }

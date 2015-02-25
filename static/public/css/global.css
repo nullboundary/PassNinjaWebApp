@@ -4,23 +4,21 @@
 *********************************************/
 
 body {
-  font-family: 'Roboto','Helvetica Neue', sans-serif;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
-  background-color: rgb(50,45,45);
+  background-color: rgb(50, 45, 45);
   padding: 0;
   margin: 0;
   height: 100%;
 }
-
 h1 {
   margin-top: 50px;
-  color: rgb(240,30,0);
+  color: rgb(240, 30, 0);
   margin-bottom: 5px;
   font-size: 30px;
   font-weight: 100;
   text-align: center;
 }
-
 h2 {
   color: #ffffff;
   font-weight: 100;
@@ -29,202 +27,177 @@ h2 {
   font-size: 14px;
   font-weight: 300;
   text-align: center;
-
 }
-
 /* font stack for all components: */
-html, button, input, select, textarea,
-.pure-g [class *= "pure-u"] {
 
-  font-family: 'Roboto','Helvetica Neue', sans-serif;
+html, button, input, select, textarea, .pure-g [class * "pure-u"] {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
 }
-
 #auth-header {
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
-
 #notfound-header {
   display: block;
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
 }
-
 #notfound-img {
   display: block;
   margin-left: auto;
   margin-right: auto;
   border-radius: 10px;
 }
-
 button.light {
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid rgb(0, 0, 0);
   color: rgb(16, 16, 16);
 }
-
 .button-primary {
-  background-color: rgba(0,0,0,1.0);
-  border: 2px solid rgb(240,30,0);
-  color: rgb(255,255,255);
+  background-color: rgba(0, 0, 0, 1.0);
+  border: 2px solid rgb(240, 30, 0);
+  color: rgb(255, 255, 255);
 }
-
 .button-secondary {
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid rgb(0, 0, 0);
   color: rgb(16, 16, 16);
 }
-
 /********************************************
   Nav Bar Styles
 
 *********************************************/
+
 .nav-menu {
-    background: rgba(0,0,0,0.4);
-    border-bottom: 1px solid rgb(240,30,0);
-    z-index: 4;
-    position: relative;
-    height: 3.1em;
-    overflow: hidden;
-    -webkit-transition: height 0.5s;
-    -moz-transition: height 0.5s;
-    -ms-transition: height 0.5s;
-    transition: height 0.5s;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgb(240, 30, 0);
+  z-index: 4;
+  position: relative;
+  height: 3.1em;
+  overflow: hidden;
+  -webkit-transition: height 0.5s;
+  -moz-transition: height 0.5s;
+  -ms-transition: height 0.5s;
+  transition: height 0.5s;
 }
-
 .nav-menu.open {
-    height: 11em;
+  height: 11em;
 }
-
 .nav-menu img {
-  height:35px;
+  height: 35px;
 }
-
 .nav-menu ul {
   padding-top: 0.9em;
 }
-
 .custom-menu-right {
   text-align: left;
 }
-
 .custom-toggle {
-    width: 34px;
-    height: 34px;
-    display: block;
-    position: absolute;
-    margin-top: 10px;
-    top: 0;
-    right: 0;
-    display: block;
+  width: 34px;
+  height: 34px;
+  display: block;
+  position: absolute;
+  margin-top: 10px;
+  top: 0;
+  right: 0;
+  display: block;
 }
-
 .custom-toggle .bar {
-    background-color: #777;
-    display: block;
-    width: 20px;
-    height: 2px;
-    border-radius: 100px;
-    position: absolute;
-    top: 18px;
-    right: 7px;
-    -webkit-transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    -ms-transition: all 0.5s;
-    transition: all 0.5s;
+  background-color: #777;
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 100px;
+  position: absolute;
+  top: 18px;
+  right: 7px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  transition: all 0.5s;
 }
-
 .custom-toggle .bar:first-child {
-    -webkit-transform: translateY(-6px);
-    -moz-transform: translateY(-6px);
-    -ms-transform: translateY(-6px);
-    transform: translateY(-6px);
+  -webkit-transform: translateY(-6px);
+  -moz-transform: translateY(-6px);
+  -ms-transform: translateY(-6px);
+  transform: translateY(-6px);
 }
-
 .custom-toggle.x .bar {
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
-
 .custom-toggle.x .bar:first-child {
-    -webkit-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 /********************************************
  Modal Dialog Box
 
 **********************************************/
+
 button.close {
-  background:none!important;
-  border:none;
-  padding:0.5em 1em;
+  background: none!important;
+  border: none;
+  padding: 0.5em 1em;
   cursor: pointer;
   color: white;
   float: right;
   position: relative;
-
 }
-
 dialog.modal {
   position: absolute;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   margin: auto;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 6px;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  color: rgb(240,30,0);
-  background: rgb(50,45,45);
+  color: rgb(240, 30, 0);
+  background: rgb(50, 45, 45);
   display: none;
 }
-
 dialog[open].modal {
   display: block;
 }
-
 .modal::backdrop {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
-
 .modal + .backdrop {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
-
 /********************************************
   On tablets and other medium+-sized devices
 *********************************************/
+
 @media (min-width: 48em) {
-
-.custom-menu-right {
-      text-align: right;
-}
-
-.custom-toggle {
-      display: none;
-}
-
-.nav-menu {
-  height: 4.2em;
-  font-size: 1.1em;
-}
-
-.nav-menu img {
-  height:55px;
-  width: 220px;
-}
+  .custom-menu-right {
+    text-align: right;
+  }
+  .custom-toggle {
+    display: none;
+  }
+  .nav-menu {
+    height: 4.2em;
+    font-size: 1.1em;
+  }
+  .nav-menu img {
+    height: 55px;
+    width: 220px;
+  }
