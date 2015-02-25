@@ -157,67 +157,6 @@ button.light {
     -ms-transform: rotate(-45deg);
     transform: rotate(-45deg);
 }
-/*********************************/
-.home-menu.pure-menu-open {
-  background: rgba(0,0,0,0.4);
-  z-index: 4;
-  height: 50px;
-}
-.pure-menu.pure-menu-open.pure-menu-fixed {
-
-  /* Remove border from fixed menu. */
-  border-bottom: 1px solid rgb(240,30,0);
-  /* a higher z-index here because of the scroll-over effect. */
-  z-index: 4;
-}
-
-.home-menu a#header {
-  float: left;
-  clear: none;
-  overflow: hidden;
-  width: 260px;
-}
-
-.home-menu img {
-  height:35px;
-}
-
-.home-menu ul {
-  float: right;
-  padding-top: 15px;
-}
-
-.home-menu li a {
-  background: none;
-  border: none;
-}
-
-.home-menu li button {
-  background:none!important;
-  border:none;
-  padding:0.5em 1em;
-  cursor: pointer;
-  color: white;
-  top: -50px;
-  position: relative;
-  font-size: 70%;
-
-}
-
-.home-menu li button:hover,
-.home-menu li button:focus {
-  background: none;
-  border: none;
-  color: rgb(240,30,0);
-}
-
-.home-menu li a:hover,
-.home-menu li a:focus {
-  background: none;
-  border: none;
-  color: rgb(240,30,0);
-}
-
 /********************************************
  Modal Dialog Box
 
@@ -286,29 +225,6 @@ dialog[open].modal {
 }
 
 .nav-menu img {
-  height:55px;
-  width: 220px;
-}
-
-
-.navbar {
-font-size: 18px;
-}
-
-.home-menu.pure-menu-open {
-  height: 70px;
-}
-
-.home-menu li button {
-  top: 0;
-  position: relative;
-  font-size: 100%;
-  font-weight: 400;
-
-}
-
-.home-menu img {
-
   height:55px;
   width: 220px;
 }
