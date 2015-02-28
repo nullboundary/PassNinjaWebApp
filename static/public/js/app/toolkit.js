@@ -269,6 +269,11 @@
 			if (error) {
 				console.warn(error);
 
+				if (error.status === 0) { //timeout or connection refused
+					app.toolkit.alertDisplay('error', "Connection refused, server or network unavailable." );
+					return true;
+				}
+
 				if (error.status === 401 || error.status === 403) {
 					window.sessionStorage.removeItem('token'); //clear all sessions storages
 					window.sessionStorage.removeItem('models');

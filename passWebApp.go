@@ -35,6 +35,10 @@ var (
 	downloadServer = "http://local.pass.ninja:8001/pass/1/passes/"
 )
 
+//crypt set -keyring .pubring.gpg -endpoint http://10.1.42.1:4001 /passcerts/keypass keypass.json
+var secretKeyRing = ".secring.gpg"
+var emailFeedBack = NewEmailer()
+
 func init() {
 
 	goth.UseProviders(
@@ -53,6 +57,8 @@ func init() {
 	}
 	log.SetOutput(filter)
 
+	emailFeedBack.Init()
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -70,7 +76,7 @@ func main() {
 
 	//Login
 	root.Post("/auth/:provider", handleLogin)
-	root.Get("/auth/:provider/unlink/", handleUnlink)
+	root.Get("/auth/:provider/unlink", handleUnlink)
 	root.Get("/auth/success", handleLoginSuccess) //loads a login success page into oauth popup.(probably never seen)
 
 	//home page
@@ -92,10 +98,10 @@ func main() {
 	api := web.New()
 	root.Handle("/api/*", api)                                                                  //handle all things that require login
 	api.Use(requireLogin)                                                                       //login check middleware
-	api.Get("/api/v1/passes/", handleGetAllPass)                                                //get a list of all the users passes
+	api.Get("/api/v1/passes", handleGetAllPass)                                                 //get a list of all the users passes
 	api.Get("/api/v1/passes/:id", cji.Use(passIDVerify).On(handleGetPass))                      //get a specific pass data object
 	api.Get("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleGetPassLink))             //get a public link to a pass - or update pass variables.
-	api.Post("/api/v1/passes/", cji.Use(passReadVerify).On(handleCreatePass))                   //creates a new pass
+	api.Post("/api/v1/passes", cji.Use(passReadVerify).On(handleCreatePass))                    //creates a new pass
 	api.Patch("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleMutatePass))            //update pass variables.
 	api.Patch("/api/v1/passes/:id", cji.Use(passIDVerify, passReadVerify).On(handleUpdatePass)) //partial update of pass data
 
@@ -346,7 +352,7 @@ mutateLoop:
 		val, ok := customVars[key]
 		if !ok {
 			log.Printf("[WARN] mutate key not found:%s", key)
-			return fmt.Errorf("the submitted data is malformed")
+			return fmt.Errorf("mutate field key not found:%s", key)
 		}
 
 		fmt.Printf("%s -> %s\n", key, val)

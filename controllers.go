@@ -92,10 +92,57 @@ func handleAccountPage(c web.C, res http.ResponseWriter, req *http.Request) {
 //////////////////////////////////////////////////////////////////////////
 func handleFeedback(c web.C, res http.ResponseWriter, req *http.Request) {
 
-	//govalidator.IsAlphanumeric(str)
+	db, err := GetDbType(c)
+	utils.Check(err)
+	userID := c.Env["jwt-userid"].(string)
+	msgUser := &userModel{}
 
-	//emailVerify := NewEmailer()
-	//go emailVerify.Send(user.Email, emailtoken, url) //send concurrently
+	//if user not found (shouldn't happen unless token validtion fail!)
+	if ok, _ := db.FindById("users", userID, &msgUser); !ok {
+		log.Println("[ERROR] user not found %s", userID)
+		utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
+		return
+	}
+
+	var fbmsg map[string]string
+
+	if err := utils.ReadJson(req, &fbmsg); err != nil {
+		log.Printf("[ERROR] read json: %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf("message json malformed"), http.StatusBadRequest)
+		return
+	}
+
+	//TODO: whitelist validator!
+	/*if !govalidator.IsUTFLetterNumeric(fbmsg["msg"]) {
+		log.Printf("[ERROR] feedback message not valid")
+		utils.JsonErrorResponse(res, fmt.Errorf("message not valid"), http.StatusBadRequest)
+		return
+	}*/
+
+	//hardcoded to make sure nothing else slips through
+	var msgType string
+	switch fbmsg["fbtype"] {
+	case "Suggestion":
+		msgType = "Suggestion"
+	case "Report a bug":
+		msgType = "Report a bug"
+	case "Complaint":
+		msgType = "Complaint"
+	case "Question":
+		msgType = "Question"
+	default:
+		log.Printf("[WARN] Feedback Type: %s not found", fbmsg["fbtype"])
+		utils.JsonErrorResponse(res, fmt.Errorf("not valid type"), http.StatusBadRequest)
+		return
+	}
+
+	userRequest := fmt.Sprintf("%s - %s", req.RemoteAddr, req.UserAgent())
+
+	go emailFeedBack.Send(msgType, msgUser.User.Name, msgUser.Email, msgUser.SubPlan, userRequest, fbmsg["msg"]) //send concurrently
+
+	receipt := map[string]string{"status": "success", "time": time.Now().String()}
+	err = utils.WriteJson(res, receipt, true)
+	utils.Check(err)
 
 }
 
@@ -163,7 +210,7 @@ func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	if passData.Status != "ready" {
 		log.Println("[WARN] Requested Pass: %s is not ready for distribution!", passData.Name)
-		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready for sharing"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete"), http.StatusForbidden)
 		return
 	}
 
@@ -193,7 +240,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	//pass ready to be mutated? Or of the wrong type
 	if passData.Status != "api" {
 		log.Println("[WARN] requested Pass: %s is not ready or configurable", passData.Name)
-		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is not ready or configurable"), http.StatusNotFound)
+		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete or not mutatable"), http.StatusForbidden)
 		return
 	}
 
@@ -201,7 +248,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	//read json doc of variables to change
 	if err := utils.ReadJson(req, &customVars); err != nil {
 		log.Printf("[ERROR] read json error: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("the submitted data is malformed"), http.StatusBadRequest)
+		utils.JsonErrorResponse(res, fmt.Errorf("The submitted pass JSON structure is malformed"), http.StatusBadRequest)
 		return
 	}
 
@@ -219,7 +266,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	err = db.Add("passMutate", passData)
 	if err != nil { //passMutate table holds mutated ready passes for download.
 		log.Printf("[ERROR] add to table:passMutate %s", err)
-		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occurred creating the pass"), http.StatusConflict)
 		return
 	}
 
@@ -272,7 +319,7 @@ func handleGetAllPass(c web.C, res http.ResponseWriter, req *http.Request) {
 	if ok, err := db.FindAllEq("pass", filter, &passList); !ok {
 		if err != nil {
 			log.Printf("[ERROR] db findAllEq %s", err)
-			utils.JsonErrorResponse(res, fmt.Errorf("an error has occured retrieving pass data"), http.StatusInternalServerError)
+			utils.JsonErrorResponse(res, fmt.Errorf("an error has occurred retrieving pass data"), http.StatusInternalServerError)
 			return
 		}
 	}
@@ -307,12 +354,12 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	err = db.Add("pass", newPass)
 	if err != nil {
 		log.Printf("[ERROR]%s adding pass: %s to db", err, newPass.Name)
-		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured creating the pass"), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occurred creating the pass"), http.StatusConflict)
 		return
 	}
 
 	receipt := map[string]string{"id": newPass.Id, "time": newPass.Updated.String()}
-	err = utils.WriteJson(res, receipt, true)
+	err = utils.WriteJson(res, receipt, true) //TODO: change to 201 created?
 	utils.Check(err)
 
 }
@@ -353,7 +400,7 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	_, err = db.Merge("pass", "id", passInputFrag.Id, passInputFrag)
 	if err != nil {
 		log.Printf("[ERROR] %s - merging pass: %s to db", err, passInputFrag.Name)
-		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occured updating the pass"), http.StatusInternalServerError)
+		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occurred updating the pass"), http.StatusConflict)
 		return
 	}
 

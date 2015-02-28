@@ -25,13 +25,19 @@
     d3.select('button#btn-del-back-field')
       .on('click', onDelField);
 
+    if(pb.template().keyDoc[pb.passType()].backFields){
+      d3.select('button#btn-del-back-field').call(tk.enable);
+    }
+
     //add handler for add field button
     d3.select('button#btn-add-back-field')
       .on('click', onAddField);
 
-    //add handler for update field button
-    d3.select('button#btn-update-back-field')
-      .on('click', onUpdateField);
+    d3.select('input#back-label')
+      .on('input', onUpdateField);
+
+    d3.select('textarea#back-text')
+      .on('input', onUpdateField);
 
     //add a newline for enter key in textarea.
     d3.select('textarea#back-text')
@@ -338,7 +344,7 @@
 
       //set legend
       d3.select('#back-legend')
-        .text("Back Field " + (parseInt(index)+1));
+        .text("Back Field " + (parseInt(index) + 1));
 
     });
 
@@ -351,10 +357,15 @@
 	 ***********************************************************/
 
   function onDelField() {
+
     d3.event.preventDefault();
     var backFields = pb.template().keyDoc[pb.passType()].backFields;
-
     backFields.splice(editGroup.index, 1); //remove this field data from the keyDoc
+
+    if(backFields.length <= 0){ //disable delete button if no fields to delete.
+      delete pb.template().keyDoc[pb.passType()].backFields;
+      d3.select(this).call(tk.disable);
+    }
 
     setBackFields2();
 
@@ -420,8 +431,12 @@
 
     setBackFields2();
 
+    if(backFields.length > 0){
+      d3.select('#btn-del-back-field').call(tk.enable);
+    }
+
     //select and highlight the new rect.
-    d3.select('#'+editGroup.groupId).select('rect').each(onSelectBackField);
+    d3.select('#' + editGroup.groupId).select('rect').each(onSelectBackField);
 
   }
 
@@ -508,6 +523,10 @@
       rectHeight = rectHeight + textHeight + 25;
       console.log('rectHeight:' + rectHeight + ' bbOx:' + textHeight);
       backFieldRect.attr('height', rectHeight + 25);
+
+      if (rectHeight <= 0){ //no fields, make the background rectangle 0 height
+        backFieldRect.attr('height', 0);
+      }
 
     }
   }

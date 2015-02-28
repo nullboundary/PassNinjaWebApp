@@ -55,7 +55,7 @@
         }
       });
 
-      addSwipeEvent();
+    addSwipeEvent();
 
 
   }
@@ -109,9 +109,9 @@
 
             console.log('after: ' + app.passEditor[key].name());
 
-          //  if (app.passEditor[key].hasOwnProperty('xray')) {
-          //    app.passEditor[key].xray(true);
-        //    }
+            //  if (app.passEditor[key].hasOwnProperty('xray')) {
+            //    app.passEditor[key].xray(true);
+            //    }
             if (app.passEditor[key].hasOwnProperty('handler')) {
               app.passEditor[key].handler();
             }
@@ -185,7 +185,7 @@
 	***********************************************************/
   function create(jsonData) {
 
-    d3.json('/api/v1/passes/')
+    d3.json('/api/v1/passes')
       .header("Content-Type", "application/json")
       .header("Authorization", "Bearer " + app.toolkit.getToken())
       .post(JSON.stringify(jsonData), requestHandler);
@@ -307,69 +307,72 @@
 	 ***********************************************************/
   var onFrontSVGLoad = function(error, xml) {
 
-    if (onSVGLoad(error, xml)) {
-      initEditor();
-    }
-
-  }
-  /***********************************************************
-
-
-  ***********************************************************/
-  function addSwipeEvent(){
-
-    var swipeEl = d3.select('section.active div.pure-g').node();
-
-    console.log(swipeEl);
-    app.toolkit.swipeEvents(swipeEl);
-
-    var sLeft = function(event) {
-      console.log("LEFT");
-      event.preventDefault();
-      moveLeft(swipeEl);
+      if (onSVGLoad(error, xml)) {
+        initEditor();
+      }
 
     }
-    document.removeEventListener('swipeLeft', sLeft);
-    document.addEventListener('swipeLeft', sLeft);
+    /***********************************************************
 
-    var sRight = function(event) {
-      event.preventDefault();
-      moveRight(swipeEl);
+
+    ***********************************************************/
+  function addSwipeEvent() {
+
+      if (!window.matchMedia("(min-width: 48em)").matches) {
+
+        var swipeEl = d3.select('section.active div.pure-g').node();
+
+        console.log(swipeEl);
+        app.toolkit.swipeEvents(swipeEl);
+
+        var sLeft = function(event) {
+          console.log("LEFT");
+          event.preventDefault();
+          moveLeft(swipeEl);
+
+        }
+        document.removeEventListener('swipeLeft', sLeft);
+        document.addEventListener('swipeLeft', sLeft);
+
+        var sRight = function(event) {
+          event.preventDefault();
+          moveRight(swipeEl);
+        }
+
+        document.removeEventListener('swipeRight', sRight);
+        document.addEventListener('swipeRight', sRight);
+      }
+
     }
-
-    document.removeEventListener('swipeRight', sRight);
-    document.addEventListener('swipeRight',sRight);
-
-  }
-  /***********************************************************
+    /***********************************************************
 
 
-  ***********************************************************/
+    ***********************************************************/
   function moveLeft(swipeEl) {
 
-    //get the transform height for the pass content
-    var st = window.getComputedStyle(d3.select('div.fake-content').node(), null);
-    var tr = st.getPropertyValue("-webkit-transform") ||
-    st.getPropertyValue("-moz-transform") ||
-    st.getPropertyValue("-ms-transform") ||
-    st.getPropertyValue("-o-transform") ||
-    st.getPropertyValue("transform");
+      //get the transform height for the pass content
+      var st = window.getComputedStyle(d3.select('div.fake-content').node(), null);
+      var tr = st.getPropertyValue("-webkit-transform") ||
+        st.getPropertyValue("-moz-transform") ||
+        st.getPropertyValue("-ms-transform") ||
+        st.getPropertyValue("-o-transform") ||
+        st.getPropertyValue("transform");
 
-    var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
-    var transY = matrix[matrix.length-1];
-    console.log(matrix);
+      var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
+      var transY = matrix[matrix.length - 1];
+      console.log(matrix);
 
-    d3.select(swipeEl).attr('style', 'transform: translate3d(-120%, 0, 0); ');
-    d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:translate3d(-120%,'+ transY +'px, 0) !important;')
-  }
-  /***********************************************************
+      d3.select(swipeEl).attr('style', 'transform: translate3d(-120%, 0, 0); ');
+      d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:translate3d(-120%,' + transY + 'px, 0) !important;')
+    }
+    /***********************************************************
 
 
-  ***********************************************************/
+    ***********************************************************/
   function moveRight(swipeEl) {
     d3.select('div.fake-content')
-    .attr('style', null)
-    .attr('style', 'transition: all 0.5s');
+      .attr('style', null)
+      .attr('style', 'transition: all 0.5s');
     d3.select(swipeEl).attr('style', null);
   }
 

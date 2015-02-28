@@ -103,7 +103,7 @@
 <g class="barcode-btn-group" id="barcode-group">
 		<rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect"/>
 		<image id="barcode" style="overflow:visible;"></image>
-		<text id="alt-text">sample</text>
+		<text class="alt-text">sample</text>
 </g>
 <!-- ticket fold line -->
 <line class="fold-line" x1="17.67" y1="62.8" x2="297.67" y2="62.84"/>

@@ -3,9 +3,10 @@ package main
 import (
 	"bitbucket.org/cicadaDev/utils"
 	"bytes"
+	"encoding/json"
 	"net/smtp"
-	"os"
 	"text/template"
+	"time"
 )
 
 type emailer struct {
@@ -19,28 +20,33 @@ type emailServer struct {
 	Username string
 	Password string
 	Address  string
+	Url      string
 	Port     string
 }
 
 type smtpTemplate struct {
-	From      string
-	To        string
-	Subject   string
-	VerifyURL string
+	From        string
+	To          string
+	Subject     string
+	UserName    string
+	UserEmail   string
+	UserSubPlan string
+	UserReq     string
+	SendTime    time.Time
+	Message     string
 }
 
 const emailTemplate = `From: {{.From}}
 To: {{.To}}}
 Subject: {{.Subject}}
-Welcome to Pass Ninja!
 
-Verify yourself and Lets make some passes!
-To get started, click the link below:
+User name: {{.UserName}}
+User email: {{.UserEmail}}
+User subscription: {{.UserSubPlan}}
+Browser Request Info: {{.UserReq}}
+Time sent: {{.SendTime}}
 
-{{.VerifyURL}}
-
-Sincerely,
-{{.From}}
+{{.Message}}
 `
 
 //////////////////////////////////////////////////////////////////////////
@@ -59,10 +65,38 @@ func NewEmailer() *emailer {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func (mail *emailer) Send(to string, token string, url string) {
+func (mail *emailer) Init() {
+
+	//load crypt pass key from json file
+	var emailMap map[string]interface{}
+	emailVar, err := utils.GetCryptKey(secretKeyRing, "/email/feedback")
+	utils.Check(err)
+	err = json.Unmarshal(emailVar, &emailMap)
+	utils.Check(err)
+
+	username := emailMap["username"].(string)
+	pw := emailMap["pass"].(string)
+	addr := emailMap["address"].(string)
+	url := emailMap["url"].(string)
+	port := emailMap["port"].(string)
+
+	server := &emailServer{username, pw, addr, url, port}
+	mail.Server = server
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func (mail *emailer) Send(feedBackType string, userName string, userEmail string, userSubPlan string, userReq string, message string) {
+
 	mail.connect()
-	mail.create(to, token, url)
-	mail.deliver(to)
+	mail.create(feedBackType, userName, userEmail, userSubPlan, userReq, message)
+	mail.deliver(mail.Server.Address)
+	mail.EmailDoc.Reset() //its sent clear the buffer
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -73,14 +107,7 @@ func (mail *emailer) Send(to string, token string, url string) {
 //////////////////////////////////////////////////////////////////////////
 func (mail *emailer) connect() {
 
-	username := os.Getenv("PASS_APP_EMAIL_USERNAME")
-	pw := os.Getenv("PASS_APP_EMAIL_PW")
-	url := os.Getenv("PASS_APP_EMAIL_URL")
-	port := os.Getenv("PASS_APP_EMAIL_PORT")
-
-	server := &emailServer{username, pw, url, port}
-	mail.Server = server
-	mail.Auth = smtp.PlainAuth("", server.Username, server.Password, server.Address)
+	mail.Auth = smtp.PlainAuth("", mail.Server.Username, mail.Server.Password, mail.Server.Url)
 
 }
 
@@ -90,13 +117,18 @@ func (mail *emailer) connect() {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func (mail *emailer) create(to string, token string, url string) {
+func (mail *emailer) create(feedBackType string, userName string, userEmail string, userSubPlan string, userReq string, message string) {
 
 	context := &smtpTemplate{
-		"Pass Ninja",
-		to,
-		"Email Verification",
-		url,
+		"User Feedback",
+		"Pass Ninja Support",
+		feedBackType,
+		userName,
+		userEmail,
+		userSubPlan,
+		userReq,
+		time.Now(),
+		message,
 	}
 
 	//create the template from the string. Could load from a file?
@@ -118,7 +150,7 @@ func (mail *emailer) create(to string, token string, url string) {
 //////////////////////////////////////////////////////////////////////////
 func (mail *emailer) deliver(userEmail string) {
 
-	addressPort := mail.Server.Address + ":" + mail.Server.Port // in our case, "smtp.google.com:587"
+	addressPort := mail.Server.Url + ":" + mail.Server.Port // in our case, "smtp.google.com:587"
 
 	err := smtp.SendMail(addressPort, mail.Auth, mail.Server.Username, []string{userEmail}, mail.EmailDoc.Bytes())
 	utils.Check(err)

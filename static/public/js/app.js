@@ -101,7 +101,7 @@
 
     //on click dialog close button
     d3.select('#feedback-close').on('click',function() {
-      dialog.close();
+      closeFeedback(dialog);
     });
 
     //click outside modal box
@@ -112,8 +112,53 @@
       if (clickedInDialog(dialog, d3.event)) { //don't close if clicked inside modal
         return;
       }
-      dialog.close();
+      closeFeedback(dialog);
     });
+
+    //click send button
+    d3.select('#feedback-send').on('click', sendFeedback);
+
+  }
+
+  function closeFeedback(dialog) {
+    d3.select('#feedback-title').transition().text('Say Hello');
+    dialog.close();
+  }
+
+  /***********************************************************
+
+
+  ***********************************************************/
+  function sendFeedback() {
+
+    var feedbackType = d3.select('#feedback-type').node().value;
+    var feedbackMessage = d3.select('#feedback-text').node().value;
+
+    //don't send if empty textarea
+    if (feedbackMessage == ""){
+      return;
+    }
+
+    var feedback = {
+      'fbtype': feedbackType,
+      'msg': feedbackMessage
+    };
+
+    d3.json('/accounts/feedback')
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer " + app.toolkit.getToken())
+      .post(JSON.stringify(feedback), function(error, data) {
+
+        if (error) {
+          console.warn(error);
+          d3.select('#feedback-title').transition().text('Send Failed!');
+          return;
+        }
+        console.log(data);
+        d3.select('#feedback-title').transition().text('Thank you!');
+        d3.select('#feedback-text').node().value = ""; //clear it
+        feedback = {};
+      });
 
   }
 

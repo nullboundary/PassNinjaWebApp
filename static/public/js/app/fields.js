@@ -1,4 +1,4 @@
-(function(app,tk, pb, $, undefined) {
+(function(app, tk, pb, $, undefined) {
 
   'use strict';
 
@@ -45,7 +45,7 @@
       });
 
     d3.select('#align-format')
-      .on('input', function(){
+      .on('input', function() {
         onAlignStyle(this.value);
       });
 
@@ -71,13 +71,13 @@
 
 
   ***********************************************************/
-  function setHighLight() {
+  function setHighLight(selectID) {
     //set and clear select highlight style with 'select class'
     var pass = pb.svg();
-    pass.selectAll('rect.text-btn-rect')
+    pass.select('rect.select')
       .attr('class', 'text-btn-rect'); //clear all
 
-    pass.select('g#' + editGroup.svgId + ' rect')
+    pass.select('g#' + selectID + ' rect')
       .attr('class', 'text-btn-rect select'); //highlight
   }
 
@@ -110,7 +110,7 @@
 
     //update the legend in settings form to display the id of the field
     var type = editGroup.dataType.slice(0, -6);
-    var legend =  type + " field " + editGroup.svgNum;
+    var legend = type + " field " + editGroup.svgNum;
     d3.select('div#legend-header')
       .text(legend);
 
@@ -147,7 +147,7 @@
 
     var fieldData = {};
     d3.select(selection).each(function(d) {
-    fieldData = d;
+      fieldData = d;
     });
 
     editGroup = {
@@ -179,7 +179,7 @@
       configTextInputs();
 
       //highlight selected group
-      setHighLight();
+      setHighLight(editGroup.svgId);
 
       //enable all buttons
       tk.enable('button#btn-del-field', 'button#btn-add-field');
@@ -240,7 +240,7 @@
       //load svg xml + place into document
       d3.html(uri, function(html) {
 
-        d3.select('div#format-control').node().appendChild(html);
+        d3.select('div#sub-format-control').node().appendChild(html);
         //add handler for currency selector
         d3.select('#currency')
           .call(tk.hide)
@@ -266,7 +266,10 @@
     tk.disable('#value-format', '#align-format', '#btn-del-field', '#btn-add-field', '#popValue');
 
     //hide them if their not already
-    tk.hide('#currency', '#number-format', '#timeDate-format');
+    tk.hide('#currency', '#timeDate-format');
+    tk.disable('#number-format');
+    tk.show('#number-format');
+
 
     //update the legend in settings form to display the id of the field
     d3.select('div#legend-header')
@@ -277,6 +280,13 @@
       .property('value', targetLabel)
       .on('input', onLogoSubmit)
       .call(tk.enable);
+
+      //set and clear select highlight style with 'select class'
+      var pass = pb.svg();
+      pass.select('rect.select').attr('class', 'text-btn-rect');
+      pass.select('g.logo rect')
+        .attr('class', 'text-btn-rect select')
+        .on('click', onLogoRectClick);
 
   }
 
@@ -292,16 +302,12 @@
     setEditGroup(this);
     var fieldGroup = pb.template().keyDoc[pb.passType()][editGroup.dataType];
 
-    //set and clear select highlight style with 'select class'
-    pb.svg().selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
-    d3.select(this).attr('class', 'text-btn-rect select');
-
     if (fieldGroup.length) {
       //setup text and attach handlers for text input controls
       configTextInputs();
     }
     //enable select inputs and buttons
-    tk.enable('#value-format','#align-format','#btn-del-field', '#btn-add-field');
+    tk.enable('#value-format', '#align-format', '#btn-del-field', '#btn-add-field');
 
     //disable add or delete button
     if (editGroup.svgType == "header") { //disable the add button for header. (only 1 field allowed)
@@ -375,8 +381,9 @@
       currencySelect.node().value = dataSet.currencyCode;
       tk.show(currencySelect);
 
-    } else {   //set defaults
+    } else { //set defaults
       valueSelect.node().value = 'Text';
+      tk.show('#number-format');
 
     }
 
@@ -389,6 +396,10 @@
     } else {
       d3.select('#align-format').node().value = 'PKTextAlignmentNatural';
     }
+
+    //set and clear select highlight style with 'select class'
+    pb.svg().select('rect.select').attr('class', 'text-btn-rect');
+    d3.select(this).attr('class', 'text-btn-rect select');
 
   }
 
@@ -519,6 +530,7 @@
       case 'Number': //----------------------------------------------
 
         tk.hide('#currency', '#timeDate-format');
+        tk.enable('#number-format');
         tk.show('#number-format');
         break;
 
@@ -557,7 +569,9 @@
         break;
 
       default: //----------------------------------------------
-        tk.hide('#currency', '#number-format', '#timeDate-format');
+        tk.disable('#number-format');
+        tk.show('#number-format');
+        tk.hide('#currency', '#timeDate-format');
     }
 
 
@@ -568,7 +582,7 @@
 
 
   ***********************************************************/
-  function clearStyle(){
+  function clearStyle() {
 
     for (var key in editGroup.data) {
       if (!editGroup.data.hasOwnProperty(key)) {
@@ -576,7 +590,7 @@
         continue;
       }
       //don't delete key, label, or value.
-      if(key == 'key'){
+      if (key == 'key') {
         continue;
       } else if (key == 'label') {
         continue;
@@ -598,7 +612,7 @@
       editGroup.data.label = d3.select('input#popLabel').node().value.toUpperCase(); //get input box label
 
       if (!valueIsSet) {
-        if (editGroup.data.numberStyle || editGroup.data.currencyCode){
+        if (editGroup.data.numberStyle || editGroup.data.currencyCode) {
           editGroup.data.value = Number(d3.select('input#popValue').node().value);
         } else {
           editGroup.data.value = d3.select('input#popValue').node().value;
@@ -614,7 +628,16 @@
       app.passBuilder.fields.set(fieldArray, editGroup.svgType); //update svg fields
 
       //highlight selected group
-      setHighLight();
+      setHighLight(editGroup.svgId);
+
+      //submitting text rebuilds all the text field rects. Add the event back.
+      var pass = pb.svg();
+      pass.selectAll('rect.text-btn-rect')
+        .on('click', onTextRectClick); //add event to new rect
+
+        pass.select('g.logo rect') //logo too.
+          .on('click', onLogoRectClick);
+
 
     }
     /***********************************************************
@@ -667,10 +690,10 @@
 
     //set and clear select highlight style with 'select class'
     var pass = pb.svg();
-    pass.selectAll('rect.text-btn-rect').attr('class', 'text-btn-rect');
+    pass.select('rect.select').attr('class', 'text-btn-rect');
     pass.select('g.logo rect')
-    .attr('class', 'text-btn-rect select')
-    .on('click', onLogoRectClick);
+      .attr('class', 'text-btn-rect select')
+      .on('click', onLogoRectClick);
 
   }
 
@@ -726,7 +749,7 @@
   Handler
 
   ***********************************************************/
-  function onAlignStyle(value){
+  function onAlignStyle(value) {
 
     editGroup.data.textAlignment = value;
     onTextSubmit();
@@ -860,4 +883,4 @@
 
   };
 
-}(window.passNinja,passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(window.passNinja, passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));

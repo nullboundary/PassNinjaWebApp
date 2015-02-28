@@ -61,18 +61,18 @@ h1 span {
   font-size: 26px;
   margin: 0 5px;
   text-transform: capitalize;
+  background: rgb(0, 0, 0);
   background: rgba(0, 0, 0, 0.85);
   display: inline-block;
   color: #6D461D;
-  border-radius: 5px 5px;
   -webkit-border-radius: 5px 5px;
   -moz-border-radius: 5px 5px;
+  border-radius: 5px 5px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
   padding: 3px 10px;
 }
 div.title h2 {
   color: #ffffff;
-  font-weight: 100;
   margin-top: 0;
   margin-bottom: 40px;
   font-size: 14px;
@@ -144,7 +144,7 @@ body {
 /* Passtype Selection Grid */
 
 .passtype-grid {
-  margin: 0px;
+  margin: 0;
   padding: 10px;
   /*background: rgba(0,0,0,0.5);*/
 
@@ -307,6 +307,8 @@ body /deep/ .text-btn-group text {
   transition: all 1s ease;
   -webkit-transform: translate3d(200%, 300px, 0) !important;
   -moz-transform: translate3d(200%, 300px, 0) !important;
+  -o-transform: translate3d(200%, 300px, 0) !important;
+  -ms-transform: translate3d(200%, 300px, 0) !important;
   transform: translate3d(200%, 300px, 0) !important;
 }
 /* move the slider into screen */
@@ -315,6 +317,8 @@ body /deep/ .text-btn-group text {
   transition: all 1s ease;
   -webkit-transform: translate3d(0px, 400px, 0) !important;
   -moz-transform: translate3d(0px, 400px, 0) !important;
+  -ms-transform: translate3d(0px, 400px, 0) !important;
+  -o-transform: translate3d(0px, 400px, 0) !important;
   transform: translate3d(0px, 400px, 0) !important;
 }
 /********************************************
@@ -329,7 +333,7 @@ body /deep/ .text-btn-group text {
   bottom: 0;
   z-index: 101;
   width: 301px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   padding: 8px 35px 8px 14px;
   color: #c09853;
   background-color: #fcf8e3;
@@ -341,6 +345,7 @@ body /deep/ .text-btn-group text {
 }
 .alert-success {
   color: rgb(255, 255, 255);
+  background-color: rgb(50, 45, 45);
   background-color: rgba(50, 45, 45, 0);
   text-shadow: none;
   border-color: rgb(240, 30, 0);
@@ -365,7 +370,6 @@ body /deep/ .text-btn-group text {
   border: none;
   font-size: 20px;
   font-weight: 400;
-  line-height: 18px;
   color: #000000;
   text-shadow: 0 1px 0 #ffffff;
   opacity: 0.2;
@@ -399,23 +403,33 @@ div.control {
   position: relative;
   top: 270px;
   z-index: 2;
+  -webkit-transform: translate3d(120%, -97%, 0) !important;
+  -moz-transform: translate3d(120%, -97%, 0) !important;
+  -o-transform: translate3d(120%, -97%, 0) !important;
+  -ms-transform: translate3d(120%, -97%, 0) !important;
   transform: translate3d(120%, -97%, 0) !important;
   /*shift right for small screens */
 }
+
+/* float del and new buttons right */
+.control-btn-group {
+  float: right;
+}
+
+/* override and reduce pure label width */
+.pure-form-aligned .pure-control-group label {
+  width: 6em;
+}
+
 div.pure-g {
   transition: all 0.5s;
 }
 div.control legend {
   color: rgb(255, 0, 0);
-  height: 33px;
 }
 div.legend-add {
   float: right;
-  /*width: 30px;*/
-
   top: -27px;
-  /*right: 63px;*/
-
   position: relative;
 }
 div.legend-add button {
@@ -427,6 +441,7 @@ select#currency {
   max-width: 26%;
 }
 .ninja-theme {
+  background: rgb(0, 0, 0);
   background: rgba(0, 0, 0, 0.70);
 }
 #loc-map {
@@ -462,6 +477,8 @@ div#settings-content {
   z-index: 1;
   -webkit-transform: scale(0.7);
   -moz-transform: scale(0.7);
+  -ms-transform: scale(0.7);
+  -o-transform: scale(0.7);
   transform: scale(0.7);
   opacity: 0.0;
 }
@@ -470,6 +487,7 @@ table {
 }
 tr {
   color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.70);
 }
 #loc-table th, #beacon-table th {
@@ -492,8 +510,9 @@ tbody tr.select {
   /* override pure button style */
 
   background-color: rgb(240, 30, 0);
+  border: 2px solid rgb(0, 0, 0);
   border: 2px solid rgba(240, 30, 0, 0.0);
-  color: rgba(0, 0, 0, 1.0);
+  color: rgb(0, 0, 0);
 }
 /*
 .pure-button {
@@ -507,7 +526,7 @@ tbody tr.select {
 input[type="file"] /deep/ input[type="button"] {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
-  background-color: rgba(0, 0, 0, 1.0);
+  background-color: rgb(0, 0, 0);
   border: 2px solid rgb(240, 30, 0);
   color: rgb(255, 255, 255);
   padding: 0.5em 1em;
@@ -517,8 +536,9 @@ input[type="file"] /deep/ input[type="button"] {
 }
 input[type="file"] /deep/ input[type="button"]:hover:enabled {
   background-color: rgb(240, 30, 0);
+  border: 2px solid rgb(0, 0, 0);
   border: 2px solid rgba(240, 30, 0, 0.0);
-  color: rgba(0, 0, 0, 1.0);
+  color: rgb(0, 0, 0);
 }
 input[type="file"] /deep/ input[type="button"]:disabled {
   background-image: none;
@@ -559,6 +579,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   /*  font-size: 24px; */
 
   font-weight: 300;
+  background: rgb(55, 55, 55);
   background: rgba(255, 255, 255, 0.2);
   cursor: pointer;
   position: relative;
@@ -569,10 +590,12 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 0.2s ease-in-out;
 }
 .loc-tabs label.tab-label:hover {
+  background: rgb(128, 128, 128);
   background: rgba(255, 255, 255, 0.5);
   top: -20px;
 }
 [id^=tab]:checked + label.tab-label {
+  background: rgb(0, 0, 0);
   background: rgba(0, 0, 0, 0.70);
   color: rgb(255, 0, 0);
   z-index: 3;
@@ -584,12 +607,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   z-index: 2;
   display: none;
   width: 100%;
-  /*font-size: 20px; */
-  /* line-height: 140%; */
-
   padding-top: 10px;
-  /*background: #08C; */
-
   padding: 15px;
   color: rgb(255, 0, 0);
   position: absolute;
@@ -601,6 +619,19 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   -moz-animation-duration: 0.5s;
   animation-duration: 0.5s;
 }
+
+#pass-qr {
+  margin: 0 auto;
+}
+
+.qr-format{
+width: 256px;
+height: 256px;
+background: white;
+padding: 15px 15px 15px 15px;
+border-radius: 5px;
+}
+
 /********************************************
  Pass transition between scroll pages
 
@@ -631,6 +662,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   backface-visibility: hidden;
   -webkit-transform-origin: center center;
   -moz-transform-origin: center center;
+  -ms-transform-origin: center center;
+  -o-transform-origin: center center;
   transform-origin: center center;
   position: absolute;
 }
@@ -662,6 +695,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 1s ease;
   -webkit-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
   -moz-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
+  -ms-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
+  -o-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
   transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(180deg) !important;
 }
 /* front of pass, standard sizing and positioning */
@@ -670,6 +705,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 1s ease;
   -webkit-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
   -moz-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
+  -ms-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
+  -o-transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
   transform: translate3d(10%, 16%, 0) scale(0.7) rotateY(0deg) !important;
 }
 /* front of pass, scale to 40% */
@@ -678,12 +715,16 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
+  -ms-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
+  -o-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
   transform: translate3d(0, 40%, 0) scale(0.4) rotateY(0deg) !important;
 }
 .viewing-page-2 .fake-content /deep/ .pass-template.back {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
   -moz-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
+  -ms-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
+  -o-transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
   transform: translate3d(0, 40%, 0) scale(0.4) rotateY(180deg) !important;
 }
 /* page transitions */
@@ -692,6 +733,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -980%, 0) !important;
   -moz-transform: translate3d(0, -980%, 0) !important;
+  -ms-transform: translate3d(0, -980%, 0) !important;
+  -o-transform: translate3d(0, -980%, 0) !important;
   transform: translate3d(0, -980%, 0) !important;
   /*  z-index: -100;place the pass behind the text input */
 }
@@ -699,54 +742,72 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -900%, 0) !important;
   -moz-transform: translate3d(0, -900%, 0) !important;
+  -ms-transform: translate3d(0, -900%, 0) !important;
+  -o-transform: translate3d(0, -900%, 0) !important;
   transform: translate3d(0, -900%, 0) !important;
 }
 .viewing-page-4 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -800%, 0) !important;
   -moz-transform: translate3d(0, -800%, 0) !important;
+  -ms-transform: translate3d(0, -800%, 0) !important;
+  -o-transform: translate3d(0, -800%, 0) !important;
   transform: translate3d(0, -800%, 0) !important;
 }
 .viewing-page-5 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -700%, 0) !important;
   -moz-transform: translate3d(0, -700%, 0) !important;
+  -ms-transform: translate3d(0, -700%, 0) !important;
+  -o-transform: translate3d(0, -700%, 0) !important;
   transform: translate3d(0, -700%, 0) !important;
 }
 .viewing-page-6 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -600%, 0) !important;
   -moz-transform: translate3d(0, -600%, 0) !important;
+  -ms-transform: translate3d(0, -600%, 0) !important;
+  -o-transform: translate3d(0, -600%, 0) !important;
   transform: translate3d(0, -600%, 0) !important;
 }
 .viewing-page-7 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -500%, 0) !important;
   -moz-transform: translate3d(0, -500%, 0) !important;
+  -ms-transform: translate3d(0, -500%, 0) !important;
+  -o-transform: translate3d(0, -500%, 0) !important;
   transform: translate3d(0, -500%, 0) !important;
 }
 .viewing-page-8 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -400%, 0) !important;
   -moz-transform: translate3d(0, -400%, 0) !important;
+  -ms-transform: translate3d(0, -400%, 0) !important;
+  -o-transform: translate3d(0, -400%, 0) !important;
   transform: translate3d(0, -400%, 0) !important;
 }
 .viewing-page-9 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -300%, 0) !important;
   -moz-transform: translate3d(0, -300%, 0) !important;
+  -ms-transform: translate3d(0, -300%, 0) !important;
+  -o-transform: translate3d(0, -300%, 0) !important;
   transform: translate3d(0, -300%, 0) !important;
 }
 .viewing-page-10 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -200%, 0) !important;
   -moz-transform: translate3d(0, -200%, 0) !important;
+  -ms-transform: translate3d(0, -200%, 0) !important;
+  -o-transform: translate3d(0, -200%, 0) !important;
   transform: translate3d(0, -200%, 0) !important;
 }
 .viewing-page-11 .fake-content {
   transition: all 1s ease;
   -webkit-transform: translate3d(0, -100%, 0) !important;
   -moz-transform: translate3d(0, -100%, 0) !important;
+  -ms-transform: translate3d(0, -100%, 0) !important;
+  -o-transform: translate3d(0, -100%, 0) !important;
   transform: translate3d(0, -100%, 0) !important;
 }
 .viewing-page-12 .fake-content {
@@ -758,6 +819,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
+  -ms-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
+  -o-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
   transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(-180deg) !important;
 }
 /* Special page 9 back */
@@ -766,6 +829,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 1s ease;
   -webkit-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
   -moz-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
+  -ms-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
+  -o-transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
   transform: translate3d(10%, 20%, 0) scale(0.7) rotateY(0deg) !important;
 }
 /********************************************
@@ -782,6 +847,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   transition: all 0.15s ease;
   -webkit-transform: translate3d(0, 0, 0) scale(1.05) !important;
   -moz-transform: translate3d(0, 0, 0) scale(1.05) !important;
+  -ms-transform: translate3d(0, 0, 0) scale(1.05) !important;
+  -o-transform: translate3d(0, 0, 0) scale(1.05) !important;
   transform: translate3d(0, 0, 0) scale(1.05) !important;
   cursor: pointer;
 }
@@ -855,7 +922,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 
 .dl-inline {
   overflow: hidden;
-  *zoom: 1; //for IE 7 and below
+  *zoom: 1; /*for IE 7 and below*/
 }
 .dl-inline dt, .dl-inline dd {
   float: left;
@@ -875,17 +942,17 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 .dl-inline dd {
   margin-left: 1ex;
 }
-button.expand-close-btn {
+.expand-close-btn {
   position: relative;
   left: 90%;
   top: -30px;
 }
-button.expand-edit-btn {
+.expand-edit-btn {
   position: absolute;
   left: 28px;
   bottom: 10%;
 }
-button.expand-del-btn {
+.expand-del-btn {
   position: absolute;
   left: 110px;
   bottom: 10%;
@@ -894,14 +961,7 @@ div#expand-qr {
   position: absolute;
   top: 2.3%;
   left: 60%;
-  width: 256px;
-  height: 256px;
-  background: white;
-  padding-top: 15px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-bottom: 15px;
-  border-radius: 5px;
+
 }
 .grid-pass {
   cursor: pointer;
@@ -928,40 +988,47 @@ div#expand-qr {
   width: 6px;
   display: inline-block;
   -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  -moz-animation: stretchdelay 1.2s infinite ease-in-out;
   animation: stretchdelay 1.2s infinite ease-in-out;
 }
 .spinner .rect2 {
   -webkit-animation-delay: -1.1s;
+  -moz-animation-delay: -1.1s;
   animation-delay: -1.1s;
 }
 .spinner .rect3 {
   -webkit-animation-delay: -1.0s;
+  -moz-animation-delay: -1.0s;
   animation-delay: -1.0s;
 }
 .spinner .rect4 {
   -webkit-animation-delay: -0.9s;
+  -moz-animation-delay: -0.9s;
   animation-delay: -0.9s;
 }
 .spinner .rect5 {
   -webkit-animation-delay: -0.8s;
+  -moz-animation-delay: -0.8s;
   animation-delay: -0.8s;
 }
 @-webkit-keyframes stretchdelay {
   0%, 40%, 100% {
-    -webkit-transform: scaleY(0.4)
+    -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
   }
   20% {
-    -webkit-transform: scaleY(1.0)
+    -webkit-transform: scaleY(1.0);
+    transform: scaleY(1.0);
   }
 }
 @keyframes stretchdelay {
   0%, 40%, 100% {
-    transform: scaleY(0.4);
     -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
   }
   20% {
-    transform: scaleY(1.0);
     -webkit-transform: scaleY(1.0);
+    transform: scaleY(1.0);
   }
 }
 /********************************************
@@ -1074,12 +1141,16 @@ div#expand-qr {
     transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+    -ms-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+    -o-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   }
   .fake-content /deep/ .pass-template.back {
     transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
+    -ms-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
+    -o-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
   }
   /* front and back of pass, scale to 50% Page 2 */
@@ -1088,12 +1159,16 @@ div#expand-qr {
     transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
+    -ms-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
+    -o-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
     transform: translate3d(0, 50%, 0) scale(0.5) rotateY(0deg) !important;
   }
   .viewing-page-2 .fake-content /deep/ .pass-template.back {
     transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
+    -ms-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
+    -o-transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
     transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
   }
   /* Special page 9 back */
@@ -1102,6 +1177,8 @@ div#expand-qr {
     transition: all 1s ease;
     -webkit-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
     -moz-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+    -ms-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
+    -o-transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   }
   /* The controls need to move up and align next to the pass on medium+ screens */
@@ -1112,6 +1189,10 @@ div#expand-qr {
     font-size: 16px;
     width: 130%;
     max-width: 600px;
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    -moz-transform: translate3d(0, 0, 0) !important;
+    -ms-transform: translate3d(0, 0, 0) !important;
+    -o-transform: translate3d(0, 0, 0) !important;
     transform: translate3d(0, 0, 0) !important;
     /* undo right shift */
   }
@@ -1124,12 +1205,18 @@ div#expand-qr {
     right: 40%;
     -webkit-transform: scale(1.0);
     -moz-transform: scale(1.0);
+    -ms-transform: scale(1.0);
+    -o-transform: scale(1.0);
     transform: scale(1.0);
   }
   /* set alert message to be in left corner */
 
   .alert {
     left: 0;
+    -webkit-transform: translate(0, 0);
+    -moz-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
     transform: translate(0, 0);
   }
   .loc-tabs {
@@ -1207,4 +1294,5 @@ div#expand-qr {
   .page-12 {
     background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTEwJSIgeT0iOTUlIiBmaWxsPSJyZ2IoMjYsIDI0LCAyNCkiIHRleHRMZW5ndGg9IjExMCUiIGZvbnQtc2l6ZT0iMTIwMCI+MTIvMTI8L3RleHQ+PC9zdmc+');
   }
+
 }

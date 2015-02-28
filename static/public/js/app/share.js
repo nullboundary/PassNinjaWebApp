@@ -60,9 +60,9 @@
 
           //draw qr code
           var qrcode = new QRCode(d3.select('#pass-qr').node(), {
-            text: link,
-            width: 128,
-            height: 128,
+            text: data.url,
+            width: 256,
+            height: 256,
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.Q

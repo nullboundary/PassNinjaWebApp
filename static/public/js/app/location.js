@@ -95,6 +95,7 @@
         maxZoom: 18
       }).addTo(map);
 
+
       /* toolserver.org is down. Can't find new link.
       var OpenStreetMap_BlackAndWhite = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http: //openstreetmap.org">OpenStreetMap</a>',
@@ -119,6 +120,10 @@
         setView: true,
         maxZoom: 16
       });
+
+    /*  map.on('dragstart', function(e) {
+        L.DomEvent.stopPropagation;
+      }); */
 
       map.on('geosearch_foundlocations', function(e) {
 

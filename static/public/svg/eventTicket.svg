@@ -98,6 +98,6 @@
 <g class="barcode-btn-group" id="barcode-group">
 		<rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect"/>
 		<image id="barcode" style="overflow:visible;"></image>
-		<text id="alt-text">SAMPLE</text>
+		<text class="alt-text">SAMPLE</text>
 </g>
 </svg>

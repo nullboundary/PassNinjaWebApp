@@ -211,7 +211,7 @@
       expander
       .each(function(d) {
 
-
+        //find the darkest color on the pass
         var colorDark;
         var color1 = tinycolor(d.keyDoc.labelColor);
         var color2 = tinycolor(d.keyDoc.foregroundColor);
@@ -451,7 +451,7 @@
 
       if (app.getNumPassModel() == 0){
         //get all user passes from server
-        d3.json("/api/v1/passes/")
+        d3.json("/api/v1/passes")
         .header("Authorization", "Bearer " + app.toolkit.getToken())
         .get(bindPassData);
       } else {

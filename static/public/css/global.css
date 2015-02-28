@@ -21,15 +21,14 @@ h1 {
 }
 h2 {
   color: #ffffff;
-  font-weight: 100;
   margin-top: 0;
   margin-bottom: 40px;
   font-size: 14px;
   font-weight: 300;
   text-align: center;
 }
-/* font stack for all components: */
 
+/* font stack for all components: */
 html, button, input, select, textarea, .pure-g [class * "pure-u"] {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
@@ -51,17 +50,20 @@ html, button, input, select, textarea, .pure-g [class * "pure-u"] {
   margin-right: auto;
   border-radius: 10px;
 }
-button.light {
+.button-light {
+  background-color: #E6E6E6; /*fallback*/
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid rgb(0, 0, 0);
   color: rgb(16, 16, 16);
 }
 .button-primary {
+  background-color: #E6E6E6; /*fallback*/
   background-color: rgba(0, 0, 0, 1.0);
   border: 2px solid rgb(240, 30, 0);
   color: rgb(255, 255, 255);
 }
 .button-secondary {
+  background-color: #E6E6E6; /*fallback*/
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid rgb(0, 0, 0);
   color: rgb(16, 16, 16);
@@ -72,16 +74,19 @@ button.light {
 *********************************************/
 
 .nav-menu {
+  background: #000000; /*fallback black*/
   background: rgba(0, 0, 0, 0.4);
   border-bottom: 1px solid rgb(240, 30, 0);
   z-index: 4;
   position: relative;
   height: 3.1em;
+  margin-bottom: -3.1em;
   overflow: hidden;
-  -webkit-transition: height 0.5s;
-  -moz-transition: height 0.5s;
-  -ms-transition: height 0.5s;
   transition: height 0.5s;
+  -o-transition: height 0.5s;
+  -moz-transition: height 0.5s;
+  -webkit-transition: height 0.5s;
+  -ms-transition: height 0.5s;
 }
 .nav-menu.open {
   height: 11em;
@@ -103,7 +108,6 @@ button.light {
   margin-top: 10px;
   top: 0;
   right: 0;
-  display: block;
 }
 .custom-toggle .bar {
   background-color: #777;
@@ -115,6 +119,7 @@ button.light {
   top: 18px;
   right: 7px;
   -webkit-transition: all 0.5s;
+  -o-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -ms-transition: all 0.5s;
   transition: all 0.5s;
@@ -122,18 +127,21 @@ button.light {
 .custom-toggle .bar:first-child {
   -webkit-transform: translateY(-6px);
   -moz-transform: translateY(-6px);
+  -o-transform: translateY(-6px);
   -ms-transform: translateY(-6px);
   transform: translateY(-6px);
 }
 .custom-toggle.x .bar {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
 .custom-toggle.x .bar:first-child {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
@@ -143,7 +151,7 @@ button.light {
 **********************************************/
 
 button.close {
-  background: none!important;
+  background: none;
   border: none;
   padding: 0.5em 1em;
   cursor: pointer;
@@ -156,6 +164,7 @@ dialog.modal {
   left: 0;
   right: 0;
   margin: auto;
+  border: 1px solid rgb(0, 0, 0); /*fallback black */
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 6px;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
@@ -172,6 +181,7 @@ dialog[open].modal {
   left: 0;
   right: 0;
   bottom: 0;
+  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.8);
 }
 .modal + .backdrop {
@@ -180,6 +190,7 @@ dialog[open].modal {
   left: 0;
   right: 0;
   bottom: 0;
+  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.8);
 }
 /********************************************
@@ -195,9 +206,11 @@ dialog[open].modal {
   }
   .nav-menu {
     height: 4.2em;
+    margin-bottom: -4.2em;
     font-size: 1.1em;
   }
   .nav-menu img {
     height: 55px;
     width: 220px;
   }
+}

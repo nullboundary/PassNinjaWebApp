@@ -85,8 +85,9 @@
         pb.template().keyDoc.barcode = {}; //add new barcode object
       }
       pb.template().keyDoc.barcode.format = this.value;
-      app.passBuilder.barcode.set();
     }
+
+    app.passBuilder.barcode.set();
 
   }
 
