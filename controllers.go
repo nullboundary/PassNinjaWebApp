@@ -25,7 +25,7 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("[DEBUG] handleStatic %s", req.URL.Path[1:])
 
-	dir := "static/public"
+	dir := "/usr/share/ninja/www/static/public"
 	fs := http.FileServer(http.Dir(dir))
 	cleanFiles := noDirListing(dir, fs)
 	files := http.StripPrefix("/assets/", cleanFiles)
@@ -44,17 +44,15 @@ func handleIndex(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("[DEBUG] handleIndex %s", req.URL.Path[1:])
 
-	sidValue, err := createJWToken("sid", csrfKey, utils.RandomStr(16))
+	sidcookie, err := createSessionID()
 	if err != nil {
-		log.Printf("[ERROR] createJWTToken failed: %s", err.Error())
-		utils.JsonErrorResponse(res, fmt.Errorf("bad request"), http.StatusBadRequest)
+		log.Printf("[ERROR] creating sid %s", err.Error())
+		utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusInternalServerError)), http.StatusInternalServerError)
 		return
 	}
-	log.Println(sidValue["sid"])
-	sidcookie := &http.Cookie{Name: "sid", Value: sidValue["sid"]}
-	http.SetCookie(res, sidcookie)
 
-	http.ServeFile(res, req, "static/public/index.html")
+	http.SetCookie(res, sidcookie)
+	http.ServeFile(res, req, "/usr/share/ninja/www/static/public/index.html")
 
 }
 
@@ -67,7 +65,7 @@ func handleIndex(c web.C, res http.ResponseWriter, req *http.Request) {
 func handleLoginSuccess(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("[DEBUG] handleLoginSuccess %s", req.URL.Path[1:])
-	http.ServeFile(res, req, "static/public/success.html")
+	http.ServeFile(res, req, "/usr/share/ninja/www/static/public/success.html")
 
 }
 
@@ -80,7 +78,7 @@ func handleLoginSuccess(c web.C, res http.ResponseWriter, req *http.Request) {
 func handleAccountPage(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("[DEBUG] handlePassListPage %s", req.URL.Path[1:])
-	http.ServeFile(res, req, "static/auth/accounts.html")
+	http.ServeFile(res, req, "/usr/share/ninja/www/static/auth/accounts.html")
 
 }
 
@@ -99,7 +97,7 @@ func handleFeedback(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	//if user not found (shouldn't happen unless token validtion fail!)
 	if ok, _ := db.FindById("users", userID, &msgUser); !ok {
-		log.Println("[ERROR] user not found %s", userID)
+		log.Printf("[ERROR] user not found %s", userID)
 		utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
 		return
 	}
@@ -164,7 +162,7 @@ func handlePassSample(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	switch passType {
 	case "boardingPass":
-		templateID = "pass.ninja.pass.template.boardingpass" //TODO spelling mistake in DB
+		templateID = "pass.ninja.pass.template.boardingPass"
 	case "coupon":
 		templateID = "pass.ninja.pass.template.coupon"
 	case "eventTicket":
@@ -209,7 +207,7 @@ func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
 	passData := c.Env["passData"].(pass) //get pass from passIDVerify middleware
 
 	if passData.Status != "ready" {
-		log.Println("[WARN] Requested Pass: %s is not ready for distribution!", passData.Name)
+		log.Printf("[WARN] Requested Pass: %s is not ready for distribution!", passData.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete"), http.StatusForbidden)
 		return
 	}
@@ -239,7 +237,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	//pass ready to be mutated? Or of the wrong type
 	if passData.Status != "api" {
-		log.Println("[WARN] requested Pass: %s is not ready or configurable", passData.Name)
+		log.Printf("[WARN] requested Pass: %s is not ready or configurable", passData.Name)
 		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete or not mutatable"), http.StatusForbidden)
 		return
 	}
@@ -273,7 +271,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	passURL := downloadServer + passData.FileName
 	log.Println(passURL)
 
-	receipt := map[string]string{"name": passData.Name, "url": passURL}
+	receipt := map[string]string{"name": passData.Name, "url": passURL} //should return a unique serial so it can be accessed again?
 	err = utils.WriteJson(res, receipt, true)
 	utils.Check(err)
 
@@ -377,6 +375,8 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	utils.Check(err)
 
 	passInputFrag := c.Env["passInput"].(pass) //get the input fragment data from passReadVerify middleware
+	userID := c.Env["jwt-userid"].(userModel)
+	passUser := &userModel{}
 
 	//read the frag check for a mutateList, if there append it from the previous mutate list.
 	if len(passInputFrag.MutateList) > 0 {
@@ -388,12 +388,16 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	//TODO: set status to "ready" here rather than in frontend. Also finalize all required data
 	if passInputFrag.Status == "ready" || passInputFrag.Status == "api" {
-		//Unique PassTypeId for the db and the pass file name
-		idHash := utils.GenerateFnvHashID(passInputFrag.Name, time.Now().String()) //generate a hash using pass orgname + color + time
-		passName := strings.Replace(passInputFrag.Name, " ", "-", -1)              //remove spaces from organization name
-		fileName := fmt.Sprintf("%s-%d", passName, idHash)
-		passInputFrag.FileName = govalidator.SafeFileName(fileName)
-		log.Println(passInputFrag.FileName)
+
+		//generateFileName makes a unique Id for the pass file name
+		passInputFrag.FileName = generateFileName(passInputFrag.Name)
+
+		if ok, _ := db.FindById("users", userID, &passUser); !ok {
+			log.Printf("[ERROR] user not found %s", userID)
+			utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
+			return
+		}
+		passInputFrag.DownloadCount = passUser.SubPlan //count down from limit
 
 	}
 
@@ -487,7 +491,7 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 		if ok, err := db.FindById("users", user.UserID, &newUser); !ok { //if user not found
 
 			if err != nil {
-				log.Println("[ERROR] %s", err)
+				log.Printf("[ERROR] %s", err)
 				utils.JsonErrorResponse(res, fmt.Errorf("Internal error"), http.StatusInternalServerError)
 				return
 			}
@@ -497,11 +501,14 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 			newUser.Email = user.Email
 			newUser.OAuthProvider = provider.Name()
 			newUser.User = user //all details from oauth login
+			newUser.Subscriber = false
+			newUser.SubPlan = FreePlan
 			newUser.Created = time.Now()
+			newUser.LastLogin = time.Now()
 
 			err := db.Add("users", newUser)
 			if err != nil {
-				log.Println("[ERROR] %s - problem adding user %s to db", err, newUser.ID)
+				log.Printf("[ERROR] %s - problem adding user %s to db", err, newUser.ID)
 				utils.JsonErrorResponse(res, fmt.Errorf("this user account already exists"), http.StatusConflict)
 				return
 			}
@@ -585,8 +592,8 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 func handleNotFound(res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("[WARN] 404 Not Found %s", req.URL.Path[1:])
-	http.ServeFile(res, req, "static/public/notfound.html")
-
-	res.WriteHeader(http.StatusNotFound) //TODO: doesnt set 404, file already served!
+	res.Header().Set("Content-Type", "text/html; charset=utf-8")
+	res.WriteHeader(http.StatusNotFound)
+	notFoundTemplate.Execute(res, nil)
 
 }

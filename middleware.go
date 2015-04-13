@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/cicadaDev/storer"
 	"bitbucket.org/cicadaDev/utils"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/nullboundary/govalidator"
@@ -21,7 +22,7 @@ import (
 func passReadVerify(c *web.C, h http.Handler) http.Handler {
 	handler := func(res http.ResponseWriter, req *http.Request) {
 
-		malformError := fmt.Errorf("the submitted pass data is malformed")
+		malformError := fmt.Errorf("The submitted pass JSON structure is malformed")
 		passID := getIDType(*c) //get passID from passIDVerify middleware
 
 		passInput := pass{}
@@ -61,7 +62,7 @@ func passReadVerify(c *web.C, h http.Handler) http.Handler {
 func passIDVerify(c *web.C, h http.Handler) http.Handler {
 	handler := func(res http.ResponseWriter, req *http.Request) {
 
-		notFoundError := fmt.Errorf("pass not found")
+		notFoundError := fmt.Errorf("pass matching ID not found")
 		db, err := GetDbType(*c)
 		utils.Check(err)
 
@@ -91,6 +92,7 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 
 		//pass id is a token, verify it - checks to make sure the correct user is matching the pass id
 		if verifyPassIDToken(passID, passData.Name, userID) != nil {
+			log.Println("[WARN] Pass ID token not valid")
 			utils.JsonErrorResponse(res, notFoundError, http.StatusNotFound)
 			return
 		}
@@ -106,7 +108,7 @@ func passIDVerify(c *web.C, h http.Handler) http.Handler {
 //////////////////////////////////////////////////////////////////////////
 //
 //	requireLogin is a goji middlware that validates a JWT token to allow access to
-//	user functions/pages
+//	user pages
 //
 //////////////////////////////////////////////////////////////////////////
 func requireLogin(c *web.C, h http.Handler) http.Handler {
@@ -126,7 +128,51 @@ func requireLogin(c *web.C, h http.Handler) http.Handler {
 			h.ServeHTTP(w, r)
 
 		} else {
-			w.WriteHeader(http.StatusUnauthorized) //user is not authorized
+
+			log.Printf("[WARN] Unauthorized: %s", r.URL.Path[1:])
+			sidcookie, err := createSessionID()
+			if err != nil {
+				log.Printf("[ERROR] creating sid %s", err.Error())
+			}
+			sidcookie.Path = "/"
+			http.SetCookie(w, sidcookie)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusUnauthorized)
+			loginTemplate.Execute(w, nil)
+
+		}
+
+	}
+
+	return http.HandlerFunc(fn)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	requireAPILogin is a goji middlware that validates a JWT token to allow access to
+//	user API Methods
+//
+//////////////////////////////////////////////////////////////////////////
+func requireAPILogin(c *web.C, h http.Handler) http.Handler {
+
+	fn := func(w http.ResponseWriter, r *http.Request) {
+
+		log.Println("[DEBUG] requireAPILogin")
+
+		jwtoken, err := parseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
+			return jWTokenKey, nil
+		})
+
+		if err == nil && jwtoken.Valid {
+
+			log.Println(r.URL.String())
+			c.Env["jwt-userid"] = jwtoken.Claims["sub"].(string) //add the id to the context
+			h.ServeHTTP(w, r)
+
+		} else {
+			log.Printf("[WARN] Unauthorized: %s", r.URL.Path[1:])
+			utils.JsonErrorResponse(w, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
 		}
 
 	}
@@ -150,14 +196,18 @@ func AddDb(c *web.C, h http.Handler) http.Handler {
 
 		if _, ok := c.Env["db"]; !ok { //test is the db is already added
 
+			//connect to db
 			rt := storer.NewReThink()
-			var err error
-			rt.Url, err = utils.GetEtcdKey("db/url") //os.Getenv("PASS_APP_DB_URL")
+			dbConn, err := utils.GetEtcdKey("db/conn")
 			utils.Check(err)
-			rt.Port, err = utils.GetEtcdKey("db/port") //os.Getenv("PASS_APP_DB_PORT")
+
+			//load db info from json file
+			var dbMap map[string]interface{}
+			err = json.Unmarshal([]byte(dbConn), &dbMap)
 			utils.Check(err)
-			rt.DbName, err = utils.GetEtcdKey("db/name") //os.Getenv("PASS_APP_DB_NAME")
-			utils.Check(err)
+			rt.Url = dbMap["url"].(string)
+			rt.Port = dbMap["port"].(string)
+			rt.DbName = dbMap["name"].(string)
 
 			s := storer.Storer(rt) //abstract cb to a Storer
 			s.Conn()

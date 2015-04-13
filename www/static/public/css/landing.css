@@ -1,0 +1,319 @@
+.pure-g [class *="pure-u"] {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+/*********************************************
+	General Splash Image styles
+
+**********************************************/
+
+.splash-container {
+    /*background: url('/assets/img/bgmain.svg') no-repeat center center fixed;*/
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background: transparent url('/assets/img/bgmain.svg') 0 0 no-repeat fixed;
+    z-index: 1;
+    overflow: hidden;
+    /* The following styles are required for the "scroll-over" effect */
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed !important;
+}
+
+.splash {
+    /* absolute center .splash within .splash-container */
+    height: 50%;
+    margin: 0 auto;
+    text-align: center;
+    /* text-transform: uppercase; */
+}
+
+/* This is the main heading that appears on the ninja red tools image section */
+.splash-head {
+    font-size: 2.5em;
+    color: white;
+    background: rgb(0,0,0); /* fallback */
+    background: rgba(0,0,0,0.80);
+    /*border: 3px solid white;*/
+    padding: 1em 1.6em;
+    font-weight: 100;
+    border-radius: 5px;
+    line-height: 1em;
+}
+
+/* This is the subheading that appears on the ninja red tools image section */
+.splash-subhead {
+    color: white;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+ /*********************************************
+	This represents the content area
+	(everything below the splash section)
+
+**********************************************/
+
+.content-wrapper {
+    /* These styles are required for the "scroll-over" effect */
+    position: absolute;
+    top: 87%;
+    width: 100%;
+    min-height: 12%;
+    z-index: 2;
+    background: rgb(24, 24, 24);
+    border-top: 1px solid rgb(240, 30, 0);
+
+}
+
+.content {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.content p {
+  color: #777;
+}
+
+.content i {
+  color: rgb(240, 30, 0);
+}
+
+/* This is the class used for the main content headers (<h2>) */
+.content-head {
+    font-weight: 100;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 2em 0 1em;
+}
+
+/* This is a modifier class used when the content-head is inside a ribbon */
+.content-head-ribbon {
+    color: white;
+}
+
+/* This is the class used for the content sub-headers (<h3>) */
+.content-subhead {
+    color: #fff;
+    font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 100;
+}
+
+.content-subhead i {
+    margin-right: 7px;
+}
+
+/* This is the class used for the dark-background areas. */
+.ribbon {
+    background: #2d3e50;
+    color: #aaa;
+}
+
+/* This is the class used for the footer */
+.footer {
+    background: #111;
+}
+
+.l-box {
+    padding: 2.5em;
+}
+
+.l-box-lrg {
+    padding: 2em;
+    border-bottom: 1px solid rgb(0,0,0); /* fallback color */
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.is-center {
+    text-align: center;
+}
+
+/********************************************
+ Pricing Tables
+
+ ********************************************/
+.pricing-tables {
+margin-bottom: 3.125em;
+text-align: center;
+border: 1px solid #777;
+margin: 0 0.5em 2em;
+max-width: 980px;
+margin: 0 auto;
+
+}
+
+.pricing-table-free .pricing-table-header {
+background: #517992;
+padding-bottom: 2.53em;
+}
+
+.pricing-table-enterprise .pricing-table-header {
+background: rgb(240, 30, 0);
+}
+
+.pricing-table-header {
+background: #111;
+color: #fff;
+}
+
+.pricing-table-header h2 {
+  margin: 0;
+  padding-top: 2em;
+  font-size: 1em;
+  font-weight: normal;
+}
+
+.pricing-table-price {
+  font-size: 4em;
+  margin: 0.2em 0 0;
+  font-weight: 100;
+}
+
+.pricing-table-price span {
+  display: block;
+  text-transform: uppercase;
+  font-size: 0.2em;
+  padding-bottom: 2em;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pricing-table-list {
+list-style-type: none;
+margin: 0;
+padding: 0;
+text-align: center;
+}
+
+.pricing-table-list li {
+  padding: 0.8em 0;
+  background: #f7f7f7;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.button-start {
+  padding: 2em 2.5em;
+  border-radius: 10px;
+  margin-top: 2em;
+  margin-bottom: 4em;
+  color: #fff;
+  background-color: rgb(0, 0, 0);
+  border: 1px solid #F01E00;
+  box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.37);
+}
+
+.horz-center {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+/********************************************
+  Footer
+
+**********************************************/
+.footer {
+  color: #777;
+  background-color: #322D2D;
+}
+
+.footer h3 {
+  color: #fff;
+}
+
+.footer ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer a {
+  color: #777;
+  text-decoration: none;
+}
+
+
+/********************************************
+  Login Modal Dialog
+
+**********************************************/
+dialog#login-modal {
+  height:205px;
+  width:300px;
+}
+
+dialog#login-modal h1{
+  float: left;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+i#login-spin{
+  display:none;
+}
+
+/********************************************
+	Terms and Conditions Popover Styles
+
+**********************************************/
+textarea#terms {
+    width: 18em;
+    height: 20em;
+}
+
+
+/***********************************************************
+   medium & larger screens
+
+***********************************************************/
+@media (min-width: 65em) {
+
+  .splash-container{
+    background: url('/assets/img/bgmain.svg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+
+  .splash {
+      /* absolute center .splash within .splash-container */
+      width: 40%;
+      height: 50%;
+      margin: auto;
+      position: absolute;
+      top: 100px; left: 0; bottom: 0; right: 0;
+      text-align: center;
+      /* text-transform: uppercase; */
+  }
+
+  /* This is the main heading that appears on the ninja red tools image section */
+  .splash-head {
+      font-size: 2.5em;
+      color: white;
+      background: rgb(0,0,0); /* fallback */
+      background: rgba(0,0,0,0.80);
+      /*border: 3px solid white;*/
+      padding: 1em 1.6em;
+      font-weight: 100;
+      border-radius: 5px;
+      line-height: 1em;
+  }
+
+  .button-start {
+    padding: 2em 8em;
+    background-color: rgb(240, 30, 0);
+    border: 1px solid rgba(0,0,0,0);
+
+  }
+
+	textarea#terms {
+	    width: 33em;
+	    height: 20em;
+	}
+
+}

@@ -1,12 +1,23 @@
 package main
 
 import (
-	"bitbucket.org/cicadaDev/utils"
 	"bytes"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/base64"
+	"flag"
 	"fmt"
+	"html/template"
+	"image/png"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"path"
+	"strings"
+	"time"
+
+	"bitbucket.org/cicadaDev/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hashicorp/logutils"
 	"github.com/lidashuang/goji_gzip"
@@ -18,28 +29,24 @@ import (
 	"github.com/zenazn/goji/graceful"
 	"github.com/zenazn/goji/web"
 	"github.com/zenazn/goji/web/middleware"
-	"image/png"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
-	"path"
-	"strings"
-	"time"
 )
 
 var (
-	passTokenKey   = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
-	csrfKey        = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
-	jWTokenKey     = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`) //TODO: lets make a new key and put this somewhere safer!
-	downloadServer = "http://local.pass.ninja:8001/pass/1/passes/"
+	passTokenKey     = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`)      //TODO: lets make a new key and put this somewhere safer!
+	csrfKey          = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`)      //TODO: lets make a new key and put this somewhere safer!
+	jWTokenKey       = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`)      //TODO: lets make a new key and put this somewhere safer!
+	downloadServer   = "https://local.pass.ninja:8001/pass/1/passes/" //(https://vendor.pass.ninja/pass/1/passes)
+	loginTemplate    *template.Template
+	notFoundTemplate *template.Template
+	emailFeedBack    = NewEmailer()
+	secretKeyRing    = "/etc/ninja/tls/.secring.gpg" //crypt set -keyring .pubring.gpg -endpoint http://10.1.42.1:4001 /email/feedback emailvar.json
+	bindUrl          string                          //flag var for binding to a specific port
 )
 
-//crypt set -keyring .pubring.gpg -endpoint http://10.1.42.1:4001 /passcerts/keypass keypass.json
-var secretKeyRing = ".secring.gpg"
-var emailFeedBack = NewEmailer()
-
 func init() {
+
+	flag.StringVar(&bindUrl, "bindurl", "http://localhost:10443", "The public ip address and port number for this server to bind to")
+	flag.Parse()
 
 	goth.UseProviders(
 		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "https://local.pass.ninja/auth/success"),
@@ -57,7 +64,24 @@ func init() {
 	}
 	log.SetOutput(filter)
 
+	//load etcd service url from env variables
+	etcdAddr := utils.SetEtcdURL()
+	log.Printf("[DEBUG] etcd: %s", etcdAddr)
+
 	emailFeedBack.Init()
+
+	//load login page as template.
+	var err error
+	loginTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/login.html")
+	if err != nil {
+		log.Fatalf("[ERROR] %s", err)
+	}
+
+	//load notfound.html as template
+	notFoundTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/notfound.html")
+	if err != nil {
+		log.Fatalf("[ERROR] %s", err)
+	}
 
 }
 
@@ -97,7 +121,7 @@ func main() {
 	//API
 	api := web.New()
 	root.Handle("/api/*", api)                                                                  //handle all things that require login
-	api.Use(requireLogin)                                                                       //login check middleware
+	api.Use(requireAPILogin)                                                                    //login check middleware
 	api.Get("/api/v1/passes", handleGetAllPass)                                                 //get a list of all the users passes
 	api.Get("/api/v1/passes/:id", cji.Use(passIDVerify).On(handleGetPass))                      //get a specific pass data object
 	api.Get("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleGetPassLink))             //get a public link to a pass - or update pass variables.
@@ -109,12 +133,16 @@ func main() {
 
 	root.Use(AddDb) //comment out to remove db function for testing
 
+	//annouce the server on etcd for vulcand
+	announceEtcd()
+
 	//customCA Server is only used for testing
 	customCAServer := &graceful.Server{Addr: ":10443", Handler: root}
-	customCAServer.TLSConfig = addRootCA("tls/myCA.cer")
-	customCAServer.ListenAndServeTLS("tls/mycert1.cer", "tls/mycert1.key")
+	customCAServer.TLSConfig = addRootCA("/etc/ninja/tls/myCA.cer")
+	customCAServer.ListenAndServeTLS("/etc/ninja/tls/mycert1.cer", "/etc/ninja/tls/mycert1.key")
 
-	//graceful.ListenAndServeTLS(":10443", "tls/mycert1.cer", "tls/mycert1.key", root)
+	//graceful.ListenAndServe(":8080", root) //no tls
+	//graceful.ListenAndServeTLS(":10443", "/etc/ninja/tls/mycert1.cer", "/etc/ninja/tls/mycert1.key", root) //official certificate
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -146,6 +174,40 @@ func addRootCA(filepath string) *tls.Config {
 //
 //
 //////////////////////////////////////////////////////////////////////////
+func announceEtcd() {
+
+	sz := len(bindUrl)
+	servernum := "01"
+	if sz > 2 {
+		servernum = bindUrl[sz-2:]
+	}
+	///vulcand/backends/b1/servers/srv2 '{"URL": "http://localhost:5001"}'
+	utils.HeartBeatEtcd("vulcand/backends/passninja/servers/svr"+servernum, `{"URL": "`+bindUrl+`"}`, 5)
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+// generateFileName makes a unique Id for the pass file name
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func generateFileName(passName string) string {
+
+	idHash := utils.GenerateFnvHashID(passName, time.Now().String()) //generate a hash using pass orgname + color + time
+	passFileName := strings.Replace(passName, " ", "-", -1)          //remove spaces from organization name
+	fileName := fmt.Sprintf("%s-%d", passFileName, idHash)
+	log.Printf("[DEBUG] %s", fileName)
+
+	return govalidator.SafeFileName(fileName)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
 func addValidators() {
 
 	//check barcode format is 1 of 3 types
@@ -168,7 +230,7 @@ func addValidators() {
 	textAlignTypes := []string{"PKTextAlignmentLeft", "PKTextAlignmentCenter", "PKTextAlignmentRight", "PKTextAlignmentNatural"}
 	addListValidator("align", textAlignTypes)
 
-	//check barcode format is 1 of 3 types
+	//check if passtype is one of 5 types
 	passTypes := []string{"boardingPass", "coupon", "eventTicket", "generic", "storeCard"}
 	addListValidator("passtypes", passTypes)
 
@@ -234,6 +296,23 @@ func addListValidator(key string, typeList []string) {
 		}
 		return false
 	})
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func createSessionID() (*http.Cookie, error) {
+
+	sidValue, err := createJWToken("sid", csrfKey, utils.RandomStr(16))
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("[DEBUG] %s", sidValue["sid"])
+	return &http.Cookie{Name: "sid", Value: sidValue["sid"]}, nil
 
 }
 
@@ -355,7 +434,7 @@ mutateLoop:
 			return fmt.Errorf("mutate field key not found:%s", key)
 		}
 
-		fmt.Printf("%s -> %s\n", key, val)
+		//fmt.Printf("%s -> %s\n", key, val)
 		//sKey := []rune(key)           //aux4: starts as
 		//fieldType := sKey[:len(sKey)] //aux: first part
 		//index := sKey[len(sKey):]     //4: second part

@@ -1,0 +1,27 @@
+[Unit]
+Description=Pass Ninja webapp
+After=etcd.service
+After=docker.service
+After=ninjadb1.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+Restart=on-failure
+RestartSec=5
+ExecStartPre=-/usr/bin/docker kill ninjawebapp1
+ExecStartPre=-/usr/bin/docker rm ninjawebapp1
+
+ExecStart=/usr/bin/docker run --name ninjawebapp1             \
+  -v /home/core/passNinja/www:/usr/share/ninja/www            \
+  -v /home/core/passNinja/tls:/etc/ninja/tls                  \
+  -v /home/core/passNinja:/go/src/bitbucket.org/passNinja     \
+  --link ninjadb1:ninjadb                                     \
+  -p 443:10443                                                \
+  passninja/build-web ./passNinja -bindurl http://${COREOS_PUBLIC_IPV4}:443
+
+ExecStop=/usr/bin/docker stop ninjawebapp1
+
+[Install]
+WantedBy=multi-user.target
