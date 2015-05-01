@@ -60,16 +60,16 @@ html, button, input, select, textarea, .pure-g [class * "pure-u"] {
   color: rgb(16, 16, 16);
 }
 .button-primary {
-  background-color: #E6E6E6; /*fallback*/
-  background-color: rgba(0, 0, 0, 1.0);
-  border: 2px solid rgb(240, 30, 0);
-  color: rgb(255, 255, 255);
+  background-color: rgb(240, 30, 0);
+  border: 2px solid rgb(15,15,15);
+  border: 2px solid rgba(0,0,0,0);
+  color: rgb(0, 0, 0);
 }
 .button-secondary {
-  background-color: #E6E6E6; /*fallback*/
+  background-color: #000; /*fallback*/
   background-color: rgba(0, 0, 0, 0);
-  border: 2px solid rgb(0, 0, 0);
-  color: rgb(16, 16, 16);
+  border: 2px solid rgb(240, 30, 0);
+  color: rgb(240, 30, 0);
 }
 
 /********************************************

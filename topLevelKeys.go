@@ -24,7 +24,7 @@ type userModel struct {
 	Subscriber    bool      `gorethink:"subscriber,omitempty"`   //subscriber: true or false? (false could be free trial users)
 	SubStart      time.Time `gorethink:"subStart,omitempty"`     //Subscription start date
 	SubExpiration time.Time `gorethink:"subExpire,omitempty"`    //Subscription expiration date
-	SubPlan       int       `gorethink:"subPlan,omitempty"`      //Subscription plan for this user
+	SubPlan       int       `gorethink:"subPlan,omitempty"`      //Subscription plan for this user, max number of passes available for download
 	PassList      []string  `gorethink:"passList,omitempty"`     //A list of the pass Ids this users has made
 }
 

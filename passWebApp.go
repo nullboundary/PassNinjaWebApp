@@ -11,6 +11,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path"
@@ -45,13 +46,16 @@ var (
 
 func init() {
 
-	flag.StringVar(&bindUrl, "bindurl", "http://localhost:10443", "The public ip address and port number for this server to bind to")
-	flag.Parse()
+	//bindUrl = &flag.String("bindurl", "https://localhost:10443", "The public ip address and port number for this server to bind to")
+	flag.StringVar(&bindUrl, "bindurl", "https://localhost:10443", "The public ip address and port number for this server to bind to")
 
 	goth.UseProviders(
 		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "https://local.pass.ninja/auth/success"),
 		linkedin.New("75mfhvxm75cuur", "nXPmZkFmu5zVvaeh", "https://local.pass.ninja/auth/success"),
 	)
+
+	//svg mime issue fix: https://github.com/golang/go/issues/6378
+	mime.AddExtensionType(".svg", "image/svg+xml")
 
 	//add custom validator functions
 	addValidators()
@@ -93,6 +97,8 @@ func init() {
 //////////////////////////////////////////////////////////////////////////
 func main() {
 
+	flag.Parse() //parse flags
+
 	root := web.New()
 	root.Use(middleware.Logger)
 	root.Use(middleware.Recoverer)
@@ -126,6 +132,7 @@ func main() {
 	api.Get("/api/v1/passes/:id", cji.Use(passIDVerify).On(handleGetPass))                      //get a specific pass data object
 	api.Get("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleGetPassLink))             //get a public link to a pass - or update pass variables.
 	api.Post("/api/v1/passes", cji.Use(passReadVerify).On(handleCreatePass))                    //creates a new pass
+	api.Delete("/api/v1/passes/:id", cji.Use(passIDVerify).On(handleDeletePass))                //remove a pass from the DB
 	api.Patch("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleMutatePass))            //update pass variables.
 	api.Patch("/api/v1/passes/:id", cji.Use(passIDVerify, passReadVerify).On(handleUpdatePass)) //partial update of pass data
 
@@ -176,6 +183,7 @@ func addRootCA(filepath string) *tls.Config {
 //////////////////////////////////////////////////////////////////////////
 func announceEtcd() {
 
+	log.Printf("[DEBUG] %s", bindUrl)
 	sz := len(bindUrl)
 	servernum := "01"
 	if sz > 2 {
@@ -550,6 +558,22 @@ func noDirListing(prefix string, h http.Handler) http.Handler {
 			return
 		}
 
+		h.ServeHTTP(w, r)
+	})
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func maxAgeHandler(maxAge int, h http.Handler) http.Handler {
+
+	serverMaxAge := maxAge * 3 //cdn shared cache 3 times longer then user agent
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Cache-Control", fmt.Sprintf("no-transform,public,max-age=%d,s-maxage=%d", maxAge, serverMaxAge))
 		h.ServeHTTP(w, r)
 	})
 }

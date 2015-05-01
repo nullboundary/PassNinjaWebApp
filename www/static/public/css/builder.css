@@ -506,23 +506,8 @@ tbody tr.select {
   opacity: 0.5;
   cursor: pointer;
 }
-.pure-button:hover:enabled {
-  /* override pure button style */
 
-  background-color: rgb(240, 30, 0);
-  border: 2px solid rgb(0, 0, 0);
-  border: 2px solid rgba(240, 30, 0, 0.0);
-  color: rgb(0, 0, 0);
-}
-/*
-.pure-button {
-  background-color: rgba(0,0,0,1.0);
-  border: 2px solid rgb(240,30,0);
-  color: rgb(255,255,255);
-}
-*/
 /* override file input using shadow-dom */
-
 input[type="file"] /deep/ input[type="button"] {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
@@ -556,12 +541,12 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   top: 0;
 }
 
-.loc-tabs input[type=radio] {
+.tab-control input[type=radio] {
   position: absolute;
   top: -9999px;
   left: -9999px;
 }
-.loc-tabs {
+.tab-control {
   width: 100%;
   float: none;
   list-style: none;
@@ -570,17 +555,14 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   padding: 0;
   /* margin: 75px auto; */
 }
-.loc-tabs li {
+.tab-control li {
   float: left;
 }
-.loc-tabs label.tab-label {
+.tab-control label.tab-label {
   display: block;
   padding: 10px 20px;
   border-radius: 2px 2px 0 0;
   color: #fff;
-  /*  color: #08C; */
-  /*  font-size: 24px; */
-
   font-weight: 300;
   background: rgb(55, 55, 55);
   background: rgba(255, 255, 255, 0.2);
@@ -592,7 +574,13 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
-.loc-tabs label.tab-label:hover {
+[id^=sharetab]:disabled + label.tab-label {
+  color: #353232;
+  cursor: not-allowed;
+  background: rgb(55, 55, 55);
+  background: rgba(255, 255, 255, 0.2);
+}
+.tab-control label.tab-label:hover {
   background: rgb(128, 128, 128);
   background: rgba(255, 255, 255, 0.5);
   top: -20px;
@@ -603,7 +591,17 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   color: rgb(255, 0, 0);
   z-index: 3;
 }
+[id^=sharetab]:checked + label.tab-label {
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.70);
+  color: rgb(255, 0, 0);
+  z-index: 3;
+}
+
 [id^=tab]:checked ~ [id^=tab-content] {
+  display: block;
+}
+[id^=sharetab]:checked ~ [id^=share-tab-content] {
   display: block;
 }
 .tab-content {
@@ -624,15 +622,102 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 }
 
 #pass-qr {
-  margin: 0 auto;
+  /*margin: 0 auto;*/
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.share-badge {
+  vertical-align: middle;
+}
+
+.embed-badge {
+  vertical-align: middle;
+}
+
+#print-badge {
+  width: 155px;
+}
+
+.print-label {
+  position: fixed;
+  width: 11em;
 }
 
 .qr-format{
-width: 256px;
-height: 256px;
-background: white;
-padding: 15px 15px 15px 15px;
-border-radius: 5px;
+  width: 135px;
+  height: 135px;
+  background: white;
+  padding: 10px 10px 10px 10px;
+}
+
+.qrcode-img{
+  width: 135px;
+}
+
+ #pass-badge{
+  width:100%;
+  height: 5.5em;
+}
+
+#pass-api {
+  width:100%;
+  height: 7em;
+  margin-top: 0.5em;
+}
+
+.social {
+  display: inline-block;
+  width: 1em;
+  color: #fff;
+  border: 1px solid #fff;
+  font-size: 15px;
+  padding: 8px 8px 8px 8px;
+  background-color: transparent;
+}
+
+.social.google:hover{
+  background-color: #DD5540;
+  border: 1px solid #000;
+}
+.social.facebook:hover{
+  background-color: #4A70A6;
+  border: 1px solid #000;
+}
+.social.linkedin:hover{
+  background-color: #008BC1;
+  border: 1px solid #000;
+}
+.social.twitter:hover{
+  background-color: #4AD6F6;
+  border: 1px solid #000;
+}
+.social.reddit:hover{
+  background-color:#B9D9F3;
+  border: 1px solid #000;
+}
+
+.download-print {
+  vertical-align: middle;
+}
+
+.download-share {
+
+}
+
+.download-print .btn,.download-share .btn {
+  width: 50px;
+  height: 50px;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 25px;
+  font-size: 25px;
+  padding: 6px 2px 8px 2px;
+  background-color: transparent;
+}
+
+.download-print .btn:hover,.download-share .btn:hover {
+  color: rgb(240, 30, 0);
 }
 
 /********************************************
@@ -1222,9 +1307,14 @@ div#expand-qr {
     -o-transform: translate(0, 0);
     transform: translate(0, 0);
   }
-  .loc-tabs {
+  .tab-control {
     bottom: 0;
   }
+
+  #loc-control {
+    top: 198px;
+  }
+
   #loc-map {
     height: 180px;
   }

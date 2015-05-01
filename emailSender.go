@@ -30,7 +30,7 @@ type smtpTemplate struct {
 	Subject     string
 	UserName    string
 	UserEmail   string
-	UserSubPlan string
+	UserSubPlan int
 	UserReq     string
 	SendTime    time.Time
 	Message     string
@@ -91,7 +91,7 @@ func (mail *emailer) Init() {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func (mail *emailer) Send(feedBackType string, userName string, userEmail string, userSubPlan string, userReq string, message string) {
+func (mail *emailer) Send(feedBackType string, userName string, userEmail string, userSubPlan int, userReq string, message string) {
 
 	mail.connect()
 	mail.create(feedBackType, userName, userEmail, userSubPlan, userReq, message)
@@ -117,7 +117,7 @@ func (mail *emailer) connect() {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-func (mail *emailer) create(feedBackType string, userName string, userEmail string, userSubPlan string, userReq string, message string) {
+func (mail *emailer) create(feedBackType string, userName string, userEmail string, userSubPlan int, userReq string, message string) {
 
 	context := &smtpTemplate{
 		"User Feedback",

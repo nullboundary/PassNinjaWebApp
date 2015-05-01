@@ -67,7 +67,6 @@
         }
       }
 
-
     });
   }
 
@@ -220,7 +219,6 @@
           app.grid.init(); //build pass grid
       }
 
-
     });
 
     initBackButtonEvent();
@@ -321,7 +319,17 @@
     //
     //======================================================
   app.delPassModel = function() {
-      app.getPassModelList().splice(app.getPassActive().index, 1);
+
+    var passModel = app.getPassModel();
+    app.getPassModelList().splice(app.getPassActive().index, 1);
+
+    d3.xhr('/api/v1/passes/' + passModel.id)
+        .header("Authorization", "Bearer " + app.toolkit.getToken())
+        .send('DELETE',function(error, data){
+          if (app.toolkit.checkLoadError(error)) return;
+          app.savePassModelList(); //save the state of the list to storage
+          app.toolkit.alertDisplay('saved', 'Pass successfully deleted.');
+        });
     }
     //======================================================
     //

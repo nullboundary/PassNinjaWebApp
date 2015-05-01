@@ -203,7 +203,7 @@
       //expander.select('.expand-status').style('color', 'green');
       expander.select('.expand-status').text(passNinja.getPassModel().status);
 
-      var url = window.location.protocol + '//local.pass.ninja:8001/pass/1/passes/' + passNinja.getPassModel().filename;
+      var url = window.location.protocol +'//'+ window.location.host + '/pass/1/passes/' + passNinja.getPassModel().filename;
 
       var link = '<a href="'+ url + '">' + passNinja.getPassModel().filename + '</a>';
       expander.select('.expand-link').html(link);
@@ -260,6 +260,16 @@
     d3.select('.expand-edit-btn')
     .on('click', function() {
       app.setEditorPage(false); //false = not new pass, editing old pass.
+    });
+
+    //add event handler for delete button
+    d3.select('.expand-del-btn')
+    .on('click', function() {
+      app.delPassModel();
+      expander //TODO: transistion this
+      .remove(); //remove expander
+      buildPassGrid();
+
     });
 
 
@@ -360,6 +370,10 @@
 
     var gridList = d3.select('ul#og-grid');
 
+
+    //gridList.selectAll('li.grid-pass')
+    //.remove();
+
     //bind dataset
     var passListItems = gridList.selectAll('li.grid-pass').data(app.getPassModelList());
 
@@ -373,6 +387,11 @@
       app.setPassActive('#pass-' + i + ' a', i); //grid passes are in an <a> so add extra ' a'
       expandInfo(); //expand info panel about pass if clicked.
     });
+
+    passListItems.exit().remove();
+
+    //clear old passes a if they exist
+    passListItems.select('a').remove();
 
     //add <a>
     var passAnchor = passListItems.append('a')

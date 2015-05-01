@@ -305,8 +305,6 @@ var login = (function(ninjaSignIn, $, undefined) {
     createCookie(name, "", -1);
   }
 
-
-
   ninjaSignIn.init = function() {
     init();
   };

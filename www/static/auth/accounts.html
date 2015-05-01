@@ -189,10 +189,10 @@
                   <legend>No image selected</legend>
                   <div class="pure-control-group">
                     <input id="image-input" type="file" accept="image/png" disabled>
-                    <button class="pure-button" id="image-upload-btn" disabled>Add Image</button>
+                    <button class="pure-button button-primary" id="image-upload-btn" disabled>Add Image</button>
                   </div>
                   <div class="pure-control-group">
-                    <button class="pure-button" id="btn-del-image" disabled><i class="fa fa-minus-circle"></i> Delete Image</button>
+                    <button class="pure-button button-secondary" id="btn-del-image" disabled><i class="fa fa-minus-circle"></i> Delete Image</button>
                   </div>
                 </fieldset>
               </form>
@@ -306,8 +306,8 @@
                     <input id="var-field" type="checkbox">
                   </div>
                   <div class="pure-control-group control-btn-group">
-                    <button class="pure-button" id="btn-del-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
-                    <button class="pure-button" id="btn-add-field" disabled><i class="fa fa-plus-circle"></i> New Field</button>
+                    <button class="pure-button button-secondary" id="btn-del-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
+                    <button class="pure-button button-primary" id="btn-add-field" disabled><i class="fa fa-plus-circle"></i> New Field</button>
                   </div>
                 </fieldset>
               </form>
@@ -341,11 +341,11 @@
                   <textarea class="pure-input-1" id="back-text" name="back-text" placeholder="Field Value" required></textarea>
                 </fieldset>
                 <fieldset>
-                <div class="pure-control-group control-btn-group">
-                  <button class="pure-button" id="btn-del-back-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
-                  <button class="pure-button" id="btn-add-back-field"><i class="fa fa-plus-circle"></i> New Field</button>
-                </div>
-              </fieldset>
+                  <div class="pure-control-group control-btn-group">
+                    <button class="pure-button button-secondary" id="btn-del-back-field" disabled><i class="fa fa-minus-circle"></i> Delete Field</button>
+                    <button class="pure-button button-primary" id="btn-add-back-field"><i class="fa fa-plus-circle"></i> New Field</button>
+                  </div>
+                </fieldset>
 
               </form>
             </div>
@@ -405,7 +405,7 @@
           <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
 
             <div class="control" id="loc-control">
-              <ul class="loc-tabs">
+              <ul class="tab-control">
                 <li>
                   <input type="radio" checked name="loc-tabs" id="tab1">
                   <label class="tab-label" for="tab1">Location</label>
@@ -423,8 +423,8 @@
                           <input class="pure-input-1" id="loc-relevant" type="text" placeholder="Location relevant lock screen text" disabled>
                         </div>
                         <div class="pure-control-group control-btn-group">
-                          <button class="pure-button" id="btn-del-loc" disabled><i class="fa fa-minus-circle"></i> Delete</button>
-                          <button class="pure-button" id="btn-add-loc"><i class="fa fa-plus-circle"></i> New</button>
+                          <button class="pure-button button-secondary" id="btn-del-loc" disabled><i class="fa fa-minus-circle"></i> Delete</button>
+                          <button class="pure-button button-primary" id="btn-add-loc"><i class="fa fa-plus-circle"></i> New</button>
                         </div>
                       </fieldset>
                     </form>
@@ -447,8 +447,8 @@
                           <input class="pure-input-1" id="beacon-relevant" type="text" placeholder="Beacon relevant lock screen text" disabled>
                         </div>
                         <div class="pure-control-group control-btn-group">
-                          <button class="pure-button" id="btn-del-beacon" disabled><i class="fa fa-minus-circle"></i> Delete</button>
-                          <button class="pure-button" id="btn-add-beacon"><i class="fa fa-plus-circle"></i> New</button>
+                          <button class="pure-button button-secondary" id="btn-del-beacon" disabled><i class="fa fa-minus-circle"></i> Delete</button>
+                          <button class="pure-button button-primary" id="btn-add-beacon"><i class="fa fa-plus-circle"></i> New</button>
                         </div>
                       </fieldset>
                     </form>
@@ -470,8 +470,8 @@
                           <input id="time-zone" type="text">
                         </div>
                         <div class="pure-control-group control-btn-group">
-                          <button class="pure-button" id="btn-del-time"><i class="fa fa-minus-circle"></i> Clear</button>
-                          <button class="pure-button" id="btn-add-time"><i class="fa fa-plus-circle"></i> Set</button>
+                          <button class="pure-button button-secondary" id="btn-del-time"><i class="fa fa-minus-circle"></i> Clear</button>
+                          <button class="pure-button button-primary" id="btn-add-time"><i class="fa fa-plus-circle"></i> Set</button>
                         </div>
                       </fieldset>
                     </form>
@@ -508,7 +508,7 @@
                   <div class="pure-control-group">
                     <label for="cert-input">Upload a Pass Type ID certificate</label>
                     <input id="cert-input" type="file" accept="application/x-pkcs12,application/x-x509-ca-cert">
-                    <button class="pure-button" id="cert-btn" disabled>Upload</button>
+                    <button class="pure-button button-primary" id="cert-btn" disabled>Upload</button>
                   </div>
                 </fieldset>
               </form>
@@ -533,15 +533,106 @@
               <div id="back-content"></div>
               <div id="front-content"></div>
             </div>
-            <div class="control ninja-theme">
-              <div class="qr-format" id="pass-qr"></div>
-              <form class="pure-form">
-                <pre>
-                  <code id="pass-api"></code>
-                </pre>
-                <input class="pure-input-1" id="pass-copy" type="text" value="" placeholder="Pass URL" readonly>
-              </form>
-              <a id="pass-link" href="#"></a>
+            <div class="control" id="share-control">
+              <ul class="tab-control">
+                <li>
+                  <input type="radio" checked name="share-tabs" id="sharetab1">
+                  <label class="tab-label" for="sharetab1">Share</label>
+                  <div id="share-tab-content1" class="tab-content ninja-theme">
+
+
+                    <form class="pure-form pure-form-aligned">
+                      <div class="pure-control-group">
+                        <div class="socialshares">
+                          <label>Share Pass</label>
+                          <a class="social facebook" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u="><i class="fa fa-facebook"></i></a>
+                          <a class="social twitter" target="_blank" href="https://twitter.com/intent/tweet?"><i class="fa fa-twitter"></i></a>
+                          <a class="social google" target="_blank" href="https://plus.google.com/share?url="><i class="fa fa-google-plus"></i></a>
+                          <a class="social linkedin" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=&title=&summary=&source="><i class="fa fa-linkedin"></i></a>
+                          <a class="social reddit" target="_blank" href="http://www.reddit.com/submit?url="><i class="fa fa-reddit"></i></a>
+
+                        </div>
+                      </div>
+                      <div class="pure-control-group">
+                        <label for="pass-copy">Pass URL</label>
+                        <input class="pure-input-2-3" id="pass-copy" type="text" value="" placeholder="Pass URL" readonly>
+                      </div>
+                      <div class="pure-control-group">
+                        <label for="pass-link">Download Pass</label>
+                        <a id="pass-link" class="download-share">
+                          <button type="button" class="btn">
+                            <i class="fa fa-download"></i>
+                          </button>
+                        </a>
+                      </div>
+                    </form>
+
+
+                  </div>
+                </li>
+                <li>
+                  <input type="radio" name="share-tabs" id="sharetab2">
+                  <label class="tab-label" for="sharetab2">Embed</label>
+                  <div id="share-tab-content2" class="tab-content ninja-theme">
+
+                    <form class="pure-form pure-form-aligned">
+                      <div class="pure-control-group">
+                        <label for="share-embed">Copy Code To Embed Badge</label>
+                        <a id="share-embed" href="">
+                          <img class="embed-badge" src="/assets/img/Add_to_Passbook_Badge_US_1014.svg">
+                        </a>
+                      </div>
+
+                      <div class="pure-control-group">
+
+                        <textarea id="pass-badge" readonly></textarea>
+                      </div>
+
+                    </form>
+
+                  </div>
+                </li>
+                <li>
+                  <input type="radio" name="share-tabs" id="sharetab3">
+                  <label class="tab-label" for="sharetab3">Print</label>
+                  <div id="share-tab-content3" class="tab-content ninja-theme">
+
+                    <form class="pure-form pure-form-aligned">
+                      <div class="pure-control-group">
+                        <label for="print-badge">Download Apple Passbook badge.</label>
+                        <img id="print-badge" class="share-badge" src="/assets/img/Add_to_Passbook_Badge_US_1014.svg">
+                        <a class="download-print" href="/assets/data/PassBook_Print_EPS.zip">
+                          <button type="button" class="btn" id="download-badge">
+                            <i class="fa fa-download"></i>
+                          </button>
+                        </a>
+                      </div>
+                      <div class="pure-control-group">
+                        <label for="pass-qr">Download QR code Image.</label>
+                        <div class="qr-format" id="pass-qr"></div>
+                        <a id="download-qr" class="download-print">
+                          <button type="button" class="btn">
+                            <i class="fa fa-download"></i>
+                          </button>
+                        </a>
+                      </div>
+                    </form>
+                  </div>
+                </li>
+                <li>
+                  <input type="radio" name="share-tabs" id="sharetab4">
+                  <label class="tab-label" for="sharetab4">API</label>
+                  <div id="share-tab-content4" class="tab-content ninja-theme">
+
+                    <form class="pure-form">
+                      <label for="pass-api">Test parameters for API call using Curl</label>
+                      <textarea id="pass-api" placeholder="API access not configured for this pass." readonly></textarea>
+                    </form>
+
+                  </div>
+                </li>
+              </ul>
+
             </div>
 
           </div>
@@ -629,12 +720,12 @@
           </dl>
         </div>
         <div class="pure-u-1 pure-u-md-2-5 pure-u-lg-1-3">
-          <button type="button" class="pure-button button-secondary expand-edit-btn">Edit</button>
-          <button type="button" class="pure-button button-secondary expand-del-btn">Delete</button>
+          <button type="button" class="pure-button button-light expand-edit-btn">Edit</button>
+          <button type="button" class="pure-button button-light expand-del-btn">Delete</button>
           <div class="qr-format" id="expand-qr"></div>
         </div>
         <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
-          <button type="button" class="pure-button button-secondary expand-close-btn">X</button>
+          <button type="button" class="pure-button button-light expand-close-btn">X</button>
         </div>
       </div>
 
@@ -698,10 +789,6 @@
   </dialog>
   <!-- JavaScript
   ================================================== -->
-  <!--  <script src="/assets/js/plugin/NodeBind.js"></script>
-              <script src="/assets/js/plugin/observe.js"></script>
-              <script type="text/javascript" src="/assets/js/plugin/TemplateBinding.js"></script>
-              <script src="/assets/js/plugin/polymer-expressions.js"></script> -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/dialog-polyfill.js"></script>
@@ -734,7 +821,22 @@
   <script type="text/javascript" src="/assets/js/app/fields.js"></script>
   <script type="text/javascript" src="/assets/js/app/colors.js"></script>
   <script type="text/javascript" src="/assets/js/app/barcode.js"></script>
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
+    ga('create', 'UA-2856856-5', 'auto');
+    ga('send', 'pageview');
+  </script>
 </body>
 
 </html>

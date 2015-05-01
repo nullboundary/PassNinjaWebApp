@@ -1,0 +1,57 @@
+<svg version="1.1" id="passBack" class="pass-template back" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="315px" height="442px" viewBox="0 0 315 442" style="enable-background:new 0 0 315 442;" xml:space="preserve">
+<style type="text/css">
+<![CDATA[
+	svg.back .outline-path{fill:#E6E7E8;}
+	svg.back .timeloc-text{fill:#58595B;font-family:'Helvetica-Light';font-size:12;}
+	svg.back .switch-circle{fill:#FFFFFF;stroke:#39B54A;stroke-miterlimit:10;}
+	svg.back .bg-rect{fill:#FFFFFF;}
+	svg.back .back-ground{fill:rgb(230,230,230);}
+	svg.back .setting-text{font-family:'Helvetica-Light';font-size:16;}
+	svg.back line.delimiter{stroke:rgb(109,110,113);stroke-width:1;}
+	svg.back .switch-path{fill:#39B54A;stroke:#39B54A;stroke-miterlimit:10;}
+	svg.back .back-text{font-family:'Helvetica';fill:#808285;font-size:13.846;}
+	svg.back .back-label{font-family:'Helvetica';fill:#808285;font-size:12;}
+]]>
+</style>
+<!-- pass outline-->
+<path class="outline-path" d="M315,430.01c0,6.62-5.37,11.99-12,11.99H12c-6.63,0-12-5.37-12-11.99V12.48C0,5.87,5.37,0.5,12,0.5h291
+	c6.63,0,12,5.37,12,11.98V430.01z"/>
+<!-- edge clip -->
+<g>
+	<defs>
+	<clipPath id="pass-outline">
+		<path d="M315,430.01c0,6.62-5.37,11.99-12,11.99H12c-6.63,0-12-5.37-12-11.99V12.48C0,5.87,5.37,0.5,12,0.5h291
+			c6.63,0,12,5.37,12,11.98V430.01z"/>
+	</clipPath>
+</defs>
+</g>
+<!--clip group -->
+<g style="clip-path:url(#pass-outline);">
+<!-- back-fields translation group-->
+<g id="back-fields" transform="translate(0,0)">
+<rect x="-0.25" y="30.87" class="bg-rect" width="315" height="72"/>
+<line class="delimiter" x1="16" y1="66" x2="315" y2="66"/>
+<text transform="matrix(1 0 0 1 15 56)" class="setting-text">Automatic Updates</text>
+<text transform="matrix(1 0 0 1 14 90)" class="setting-text">Show On Lock Screen</text>
+<rect x="0" y="102.87" class="back-ground" width="315" height="36"/>
+<text transform="matrix(1 0 0 1 15 120)" class="timeloc-text">Show based on time or location.</text>
+<rect id="back-fields-bg" x="0.33" y="136.21" class="bg-rect" width="315" height="0"/>
+<!-- settings switches-->
+<g>
+	<path class="switch-path" d="M278.1,97.33l-19.65-0.22c-12.66-3.65-12.88-20.2-0.44-23.85l22.27-0.43"/>
+	<circle class="switch-circle" cx="278.23" cy="85.04" r="12.29"/>
+</g>
+<g>
+	<path class="switch-path" d="M277.6,61.08l-19.65-0.22c-12.66-3.65-12.88-20.2-0.44-23.85l22.27-0.43"/>
+	<circle class="switch-circle" cx="277.73" cy="48.79" r="12.29"/>
+</g>
+
+</g>
+<line id="scroll-bar"></line>
+</g>
+
+
+
+
+</svg>

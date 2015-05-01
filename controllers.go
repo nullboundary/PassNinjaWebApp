@@ -1,18 +1,17 @@
 package main
 
 import (
-	"bitbucket.org/cicadaDev/utils"
 	"fmt"
+	"log"
+	"net/http"
+	"time"
+
+	"bitbucket.org/cicadaDev/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/gplus"
 	"github.com/markbates/goth/providers/linkedin"
-	"github.com/nullboundary/govalidator"
 	"github.com/zenazn/goji/web"
-	"log"
-	"net/http"
-	"strings"
-	"time"
 )
 
 //////////////////////////////////////////////////////////////////////////
@@ -26,7 +25,7 @@ func handleStatic(c web.C, res http.ResponseWriter, req *http.Request) {
 	log.Printf("[DEBUG] handleStatic %s", req.URL.Path[1:])
 
 	dir := "/usr/share/ninja/www/static/public"
-	fs := http.FileServer(http.Dir(dir))
+	fs := maxAgeHandler(600, http.FileServer(http.Dir(dir)))
 	cleanFiles := noDirListing(dir, fs)
 	files := http.StripPrefix("/assets/", cleanFiles)
 
@@ -50,7 +49,7 @@ func handleIndex(c web.C, res http.ResponseWriter, req *http.Request) {
 		utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusInternalServerError)), http.StatusInternalServerError)
 		return
 	}
-
+	log.Println("[DEBUG] /usr/share/ninja/www/static/public/index.html")
 	http.SetCookie(res, sidcookie)
 	http.ServeFile(res, req, "/usr/share/ninja/www/static/public/index.html")
 
@@ -208,7 +207,7 @@ func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	if passData.Status != "ready" {
 		log.Printf("[WARN] Requested Pass: %s is not ready for distribution!", passData.Name)
-		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete"), http.StatusForbidden)
+		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete"), http.StatusBadRequest)
 		return
 	}
 
@@ -238,7 +237,7 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	//pass ready to be mutated? Or of the wrong type
 	if passData.Status != "api" {
 		log.Printf("[WARN] requested Pass: %s is not ready or configurable", passData.Name)
-		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete or not mutatable"), http.StatusForbidden)
+		utils.JsonErrorResponse(res, fmt.Errorf("requested pass is incomplete or not mutatable"), http.StatusBadRequest)
 		return
 	}
 
@@ -310,7 +309,7 @@ func handleGetAllPass(c web.C, res http.ResponseWriter, req *http.Request) {
 	userID := c.Env["jwt-userid"].(string)
 	passList := []pass{}
 
-	log.Printf("userID=%s", userID)
+	log.Printf("[DEBUG] userID=%s", userID)
 	filter := map[string]string{"field": "userid", "value": userID}
 
 	//found false continues with empty struct. Error returns error message.
@@ -364,6 +363,32 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	handleDeletePass deletes a pass with the matching id from the db.
+//
+//////////////////////////////////////////////////////////////////////////
+func handleDeletePass(c web.C, res http.ResponseWriter, req *http.Request) {
+	log.Printf("[DEBUG] handleDeletePass")
+
+	db, err := GetDbType(c)
+	utils.Check(err)
+	//get pass from passIDVerify middleware. Will only return passes that are owned by the req user
+	passData := c.Env["passData"].(pass)
+
+	err = db.DelById("pass", passData.Id)
+	if err != nil {
+		log.Printf("[ERROR] %s - deleting pass: %s ", err, passData.Name)
+		utils.JsonErrorResponse(res, fmt.Errorf("a problem has occurred deleting the pass"), http.StatusBadRequest)
+		return
+	}
+
+	receipt := map[string]string{"id": passData.Id, "time": time.Now().String()}
+	err = utils.WriteJson(res, receipt, true)
+	utils.Check(err)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	handleUpdatePass recieves partial pass info and merges it into the pass data
 //  with a matching id.
 //
@@ -375,7 +400,7 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	utils.Check(err)
 
 	passInputFrag := c.Env["passInput"].(pass) //get the input fragment data from passReadVerify middleware
-	userID := c.Env["jwt-userid"].(userModel)
+	userID := c.Env["jwt-userid"].(string)
 	passUser := &userModel{}
 
 	//read the frag check for a mutateList, if there append it from the previous mutate list.
@@ -397,7 +422,8 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 			utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
 			return
 		}
-		passInputFrag.DownloadCount = passUser.SubPlan //count down from limit
+		//BUG: Could this be reset by re-updating the pass?
+		passInputFrag.PassRemain = passUser.SubPlan //count down from limit
 
 	}
 
