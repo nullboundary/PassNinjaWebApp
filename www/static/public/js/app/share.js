@@ -114,7 +114,7 @@
   function printEmbedCode(passUrl) {
 
       d3.select('#share-embed').property('href', passUrl);
-      var imgText = '<a href="' + passUrl + '"<img src=https://pass.ninja/assets/img/Add_to_Passbook_Badge_US_1014.svg></a>';
+      var imgText = '<a href="' + passUrl + '"<img src=https://cdn.rawgit.com/nullboundary/passninja-badge/v0.1/Passbook_Badge.svg></a>';
 
       d3.select('#pass-badge')
         .text(imgText)
@@ -131,61 +131,29 @@
     ***********************************************************/
   function generateQR(passUrl, passName) {
 
-    //draw qr code
-    var qrcode = new QRCode(d3.select('#pass-qr').node(), {
-      text: passUrl,
-      width: 1024,
-      height: 1024,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.Q
-    });
+    if (d3.select('.qrcode-img').empty()) { //only generate QR 1 time
 
-    var QRImg = d3.select('.qrcode-img').node();
+      //draw qr code
+      var qrcode = new QRCode(d3.select('#pass-qr').node(), {
+        text: passUrl,
+        width: 1024,
+        height: 1024,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.Q
+      });
 
-    //when image src loaded, set <a href to data uri
-    QRImg.onload = function() {
-      var qrURI = d3.select('.qrcode-img').attr('src');
-      console.log(qrURI);
-      d3.select('#download-qr')
-        .property('download', passName + '-qrcode.png')
-        .property('href', qrURI);
-    };
-  }
+      var QRImg = d3.select('.qrcode-img').node();
 
-  /***********************************************************
-
-
-  ***********************************************************/
-  function testMutatePass() {
-
-    var apiData = {
-      'primary1': "Crazy Bat",
-      'aux1': "2",
-      'aux4': "Fireside Bowl",
-      'second3': "666"
-    };
-
-    var url = "/api/v1/passes/" + pb.template().id + "/link",
-      uri = encodeURI(url);
-    console.log(uri);
-
-    var jqxhr = $.ajax({
-      url: url,
-      data: JSON.stringify(apiData),
-      type: 'PATCH',
-      contentType: 'application/json',
-      processData: false,
-      dataType: 'json'
-    });
-
-    jqxhr.done(function(data) {
-      d3.select('#pass-link')
-        .property('href', data.url)
-        .text(data.name);
-
-      d3.select('#pass-copy').node().value = data.url;
-    });
+      //when image src loaded, set <a href to data uri
+      QRImg.onload = function() {
+        var qrURI = d3.select('.qrcode-img').attr('src');
+        console.log(qrURI);
+        d3.select('#download-qr')
+          .property('download', passName + '-qrcode.png')
+          .property('href', qrURI);
+      };
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////

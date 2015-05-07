@@ -12,6 +12,7 @@
 	svg.storeCard .primaryFields.label-text{font-size:18px; font-family:'Helvetica-Light';}
 	svg.storeCard .primaryFields.value-text{font-size:62px; font-family:'Helvetica-Light';}
 	svg.storeCard .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.storeCard .bar-btn-rect {fill: #ffffff;}
 ]]>
 </style>
 <linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.5005" y1="4.882812e-04" x2="157.5005" y2="442">

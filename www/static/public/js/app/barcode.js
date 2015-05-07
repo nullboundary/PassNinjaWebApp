@@ -1,4 +1,4 @@
-(function (app,tk, pb, $, undefined) {
+(function(app, tk, pb, $, undefined) {
 
   'use strict';
 
@@ -8,14 +8,14 @@
  	***********************************************************/
   function init() {
 
-      //handle selection of barcode format
-      d3.select('select#bar-format')
-        .on('input', onBarcodeSelect);
+    //handle selection of barcode format
+    d3.select('select#bar-format')
+      .on('input', onBarcodeSelect);
 
-      //handle input of alt Text message
-      d3.select('input#bar-alt')
-        .on('input', onAltText);
-    }
+    //handle input of alt Text message
+    d3.select('input#bar-alt')
+      .on('input', onAltText);
+  }
 
   /***********************************************************
 
@@ -98,7 +98,7 @@
   function updateInputs() {
 
     var barcode = pb.template().keyDoc.barcode;
-    if(barcode){
+    if (barcode) {
 
       tk.enable(d3.select('input#bar-alt'), d3.select('input#bar-message'), d3.select('input#bar-encode'));
       tk.setValue('input#bar-alt', barcode.altText);
@@ -161,24 +161,24 @@
 
   pb.barcode = {
     /* setup and configure barcode handlers */
-    init: function () {
+    init: function() {
       init();
     },
 
-    update: function () {
+    update: function() {
       updateInputs();
     },
-    save: function (index) {
+    save: function(index) {
       onBarcodeSubmit();
       onBarcodeSave(index);
     },
-    name: function () {
+    name: function() {
       return 'barcode';
     },
 
-    index: function () {
+    index: function() {
       return 7;
     }
   };
 
-}(window.passNinja,passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(window.passNinja, passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));

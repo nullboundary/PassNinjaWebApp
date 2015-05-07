@@ -12,6 +12,7 @@
 	svg.coupon .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
 	svg.coupon .barcode{font-size:40px;}
 	svg.coupon .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.coupon .bar-btn-rect {fill: #ffffff;}
 ]]>
 </style>
 <g>

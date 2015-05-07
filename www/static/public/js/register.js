@@ -1,4 +1,4 @@
-var login = (function(ninjaSignIn, $, undefined) {
+var login = (function(ninjaSignIn, undefined) {
 
   'use strict';
 
@@ -29,10 +29,10 @@ var login = (function(ninjaSignIn, $, undefined) {
         state: 'state'
       },
       popupOptions: {
-        width: 452,
-        height: 633
+        width: 527,
+        height: 582
       }
-    }
+    },
   };
   /***********************************************************
 
@@ -42,8 +42,10 @@ var login = (function(ninjaSignIn, $, undefined) {
 
       console.log("init page");
 
-      //oauth signin buttons
-      $(document).on('click', '.signin', signIn);
+      //on click oauth signin buttons
+      [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+        el.addEventListener('click', signIn, false);
+      });
 
       //setup login modal handlers
       var dialog = document.querySelector('dialog#login-modal');
@@ -55,9 +57,8 @@ var login = (function(ninjaSignIn, $, undefined) {
         //set to correct login status
         setMenuItems();
 
-        //setup nav button listeners
-        $(document).on('click', '#logout-btn', logOut);
-        $(document).on('click', '#pass-btn', function(e) {
+        //on click pass list button
+        document.getElementById('pass-btn').addEventListener('click', function(e) {
           e.preventDefault();
           if (isAuthenticated()) {
             loadAccount();
@@ -65,22 +66,43 @@ var login = (function(ninjaSignIn, $, undefined) {
         });
 
         //on click login nav button
-        $(document).on('click', '.login-btn', function(e) {
-          e.preventDefault();
-          console.log(dialog);
-          dialog.showModal();
+        [].forEach.call(document.querySelectorAll('.login-btn'), function(el) {
+          el.addEventListener('click', function(e) {
+            e.preventDefault();
+            dialog.showModal();
+          }, false);
+        });
+        //on click log out button
+        document.getElementById('logout-btn').addEventListener('click', logOut);
 
+        //on click term checkbox
+        document.getElementById('terms').addEventListener('click', function(e) {
+          if (this.checked == false) {
+            [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+              el.disabled = true;
+            });
+          } else {
+            [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+              el.disabled = false;
+            });
+          }
+        });
+
+        //on click terms and conditions
+        document.getElementById('show-terms').addEventListener('click', function(e) {
+          e.preventDefault();
+          loadTerms();
+          document.getElementById('read-terms').style.display = 'inline';
         });
 
         //on click dialog close button
-        $(document).on('click', '#login-close', function() {
+        document.getElementById('login-close').addEventListener('click', function(e) {
           dialog.close();
-          $('#login-spin').hide(); //show spinner
-          $('.signin').prop('disabled', false); //disable sigin buttons
+          resetDialog();
         });
 
         //click outside modal box
-        $(document).on('click', 'dialog#login-modal', function(e) {
+        document.querySelector('dialog#login-modal').addEventListener('click', function(e) {
           if (!dialog.open) { //don't close if not open...
             return;
           }
@@ -88,15 +110,9 @@ var login = (function(ninjaSignIn, $, undefined) {
             return;
           }
           dialog.close();
-          $('#login-spin').hide(); //show spinner
-          $('.signin').prop('disabled', false); //disable sigin buttons
+          resetDialog();
         });
-
       }
-
-
-
-
     }
     /***********************************************************
 
@@ -105,15 +121,27 @@ var login = (function(ninjaSignIn, $, undefined) {
   function setMenuItems() {
 
     if (isAuthenticated()) { //show logout
-      $('#login-btn').hide();
-      $('#logout-btn').show();
-      $('#pass-btn').show();
+      //hide login buttons
+      [].forEach.call(document.querySelectorAll('.login-btn'), function(el) {
+        el.style.display = 'none';
+      });
+      //show logout button
+      document.getElementById('logout-btn').style.display = 'inline';
+      //show pass list button
+      document.getElementById('pass-btn').style.display = 'inline';
+
 
     } else { //show login
 
-      $('#login-btn').show();
-      $('#logout-btn').hide();
-      $('#pass-btn').hide();
+      //show login buttons
+      [].forEach.call(document.querySelectorAll('.login-btn'), function(el) {
+        el.style.display = 'inline';
+      });
+      //hide logout btn
+      document.getElementById('logout-btn').style.display = 'none';
+      //hide pass list button
+      document.getElementById('pass-btn').style.display = 'none';
+
     }
 
   }
@@ -134,10 +162,15 @@ var login = (function(ninjaSignIn, $, undefined) {
   function signIn(e) {
       e.preventDefault();
 
-      $('#login-spin').show(); //show spinner
-      $('.signin').prop('disabled', true); //disable sigin buttons
+      //show spinner
+      document.getElementById('login-spin').style.display = 'inline';
+      //disable sigin buttons
+      [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+        el.disabled = true;
+      });
 
-      var authProvider = $(this).attr('id');
+      var authProvider = this.getAttribute('id');
+
       if (isAuthenticated()) { //already logged in
         loadAccount();
       } else { //initiate oauth sign in
@@ -156,7 +189,6 @@ var login = (function(ninjaSignIn, $, undefined) {
   function isAuthenticated() {
 
       var token = readCookie('token');
-
       if (token) { //a simple check if the token expired.
         if (token.split('.').length === 3) {
           var base64Url = token.split('.')[1];
@@ -174,12 +206,9 @@ var login = (function(ninjaSignIn, $, undefined) {
 
     ***********************************************************/
   function logOut() {
-
     window.sessionStorage.clear(); //clear it all
     eraseCookie('token'); //remove token.
     window.location = "/";
-
-
   }
 
   /***********************************************************
@@ -219,9 +248,9 @@ var login = (function(ninjaSignIn, $, undefined) {
      ***********************************************************/
   function getAuthUrl(authProvider) {
 
-      var str = $.param(authProvider.queryParams);
-      console.log(authProvider.authURL + "?" + str);
-      return authProvider.authURL + "?" + str;
+      var param = serialize(authProvider.queryParams);
+      //console.log(authProvider.authURL + "?" + param);
+      return authProvider.authURL + "?" + param;
     }
     /***********************************************************
 
@@ -242,20 +271,61 @@ var login = (function(ninjaSignIn, $, undefined) {
   ***********************************************************/
   function post(provider, query) {
 
-    var jqxhr = $.post(provider + query)
-      .done(function(data) {
-        createCookie("token", data.token);
-        loadAccount();
-      })
-      .fail(function(response) {
-        if (response.status === 401 || response.status === 403) {
-          logOut();
+      console.log(provider);
+      console.log(query);
+
+      var req = new XMLHttpRequest();
+      req.open('POST', provider + query, true);
+      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+      req.onload = function() {
+        if (req.status >= 200 && req.status < 400) {
+          var data = JSON.parse(req.responseText);
+          createCookie("token", data.token);
+          loadAccount();
+        } else {
+          console.warn(req.responseText);
+          if (req.status === 401 || req.status === 403) {
+            logOut();
+          }
         }
-      })
-      .always(function() {
+      };
+      req.send();
 
-      });
+    }
+    /***********************************************************
 
+
+    ***********************************************************/
+  function loadTerms() {
+      console.log("loadTerms");
+
+      var req = new XMLHttpRequest();
+      req.open('GET', '/assets/terms.txt', true);
+      req.onload = function() {
+        if (req.status >= 200 && req.status < 400) {
+          document.getElementById('terms-text').innerHTML = req.responseText;
+        } else {
+          console.warn(req.responseText);
+          var error = JSON.parse(req.responseText);
+          document.getElementById('terms-text').innerHTML = error.error();
+        }
+      };
+      req.send();
+
+    }
+    /***********************************************************
+
+
+    ***********************************************************/
+  function resetDialog() {
+    //hide spinner
+    document.getElementById('login-spin').style.display = 'none';
+    //recheck terms check
+    document.getElementById('terms').checked = true;
+    //enable sigin buttons
+    [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+      el.disabled = false;
+    });
   }
 
   /***********************************************************
@@ -302,14 +372,26 @@ var login = (function(ninjaSignIn, $, undefined) {
 
     ***********************************************************/
   function eraseCookie(name) {
-    createCookie(name, "", -1);
+      createCookie(name, "", -1);
+    }
+    /***********************************************************
+
+
+    ***********************************************************/
+  function serialize(obj) {
+    var str = [];
+    for (var p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    return str.join("&");
   }
 
   ninjaSignIn.init = function() {
     init();
   };
 
-}(ninjaSignIn = window.ninjaSignIn || {}, jQuery));
+}(ninjaSignIn = window.ninjaSignIn || {}));
 
 
 

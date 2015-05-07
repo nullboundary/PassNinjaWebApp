@@ -57,6 +57,21 @@
 
     addSwipeEvent();
 
+    //Click Pagination Button 1
+    d3.select('.h-page1')
+      .on('click', function() {
+        var swipeEl = d3.select('section.active div.pure-g').node();
+        moveRight(swipeEl);
+      });
+
+    //Click Pagination Button 2
+    d3.select('.h-page2')
+      .on('click', function() {
+        var swipeEl = d3.select('section.active div.pure-g').node();
+        moveLeft(swipeEl);
+      });
+
+
 
   }
 
@@ -355,30 +370,45 @@
     ***********************************************************/
   function moveLeft(swipeEl) {
 
-      //get the transform height for the pass content
-      var st = window.getComputedStyle(d3.select('div.fake-content').node(), null);
-      var tr = st.getPropertyValue("-webkit-transform") ||
-        st.getPropertyValue("-moz-transform") ||
-        st.getPropertyValue("-ms-transform") ||
-        st.getPropertyValue("-o-transform") ||
-        st.getPropertyValue("transform");
+      //don't allow swipe if on color page.
+      if (pageAfterIndex > 5) {
 
-      var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
-      var transY = matrix[matrix.length - 1];
-      console.log(matrix);
+        //switch pagination colors
+        d3.select('.h-page1').style('background-color', '#E6E6E6');
+        d3.select('.h-page2').style('background-color', 'rgb(240, 30, 0)');
 
-      d3.select(swipeEl).attr('style', 'transform: translate3d(-120%, 0, 0); ');
-      d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:translate3d(-120%,' + transY + 'px, 0) !important;')
+        //get the transform height for the pass content
+        var st = window.getComputedStyle(d3.select('div.fake-content').node(), null);
+        var tr = st.getPropertyValue("-webkit-transform") ||
+          st.getPropertyValue("-moz-transform") ||
+          st.getPropertyValue("-ms-transform") ||
+          st.getPropertyValue("-o-transform") ||
+          st.getPropertyValue("transform");
+        var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
+        var transY = matrix[matrix.length - 1];
+        console.log(matrix);
+
+        d3.select(swipeEl).attr('style', 'transform: translate3d(-120%, 0, 0); ');
+        d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:translate3d(-120%,' + transY + 'px, 0) !important;');
+      }
     }
     /***********************************************************
 
 
     ***********************************************************/
   function moveRight(swipeEl) {
-    d3.select('div.fake-content')
-      .attr('style', null)
-      .attr('style', 'transition: all 0.5s');
-    d3.select(swipeEl).attr('style', null);
+
+    if (pageAfterIndex > 5) {
+
+      //switch pagination colors
+      d3.select('.h-page2').style('background-color', '#E6E6E6');
+      d3.select('.h-page1').style('background-color', 'rgb(240, 30, 0)');
+
+      d3.select('div.fake-content')
+        .attr('style', null)
+        .attr('style', 'transition: all 0.5s');
+      d3.select(swipeEl).attr('style', null);
+    }
   }
 
   /***********************************************************
@@ -387,15 +417,15 @@
 	***********************************************************/
   function passStatus(currentPage) {
 
-    console.log("passStatus:"+app.passEditor.template().status);
-    console.log("currentPage:"+currentPage);
+    console.log("passStatus:" + app.passEditor.template().status);
+    console.log("currentPage:" + currentPage);
 
     if (app.passEditor.template().status === "ready" || app.passEditor.template().status === "api") {
       return app.passEditor.template().status;
     }
 
     var statusNum = parseInt(app.passEditor.template().status, 10);
-    console.log("statusNum:"+statusNum);
+    console.log("statusNum:" + statusNum);
     if (isNaN(statusNum)) {
       return "0";
     }
@@ -411,7 +441,7 @@
       }
       return "ready";
     }
-    console.log("return:"+(currentPage).toString());
+    console.log("return:" + (currentPage).toString());
 
     return (currentPage).toString();
 

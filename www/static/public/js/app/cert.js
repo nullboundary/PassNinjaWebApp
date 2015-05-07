@@ -1,4 +1,4 @@
-(function (pb, $, undefined) {
+(function(pb, $, undefined) {
 
   'use strict';
 
@@ -28,86 +28,40 @@
     ***********************************************************/
   function certSave() {
 
-    if (pb.template().cert == undefined) {
-      pb.template().cert = 'Pass Ninja certificate';
+      //saveSVG();
+
+      if (pb.template().cert == undefined) {
+        pb.template().cert = 'Pass Ninja certificate';
+      }
+
+      var passData = {
+        'name': pb.template().name,
+        'status': pb.status(pb.cert.index()),
+        'cert': pb.template().cert,
+      };
+
+      pb.update(pb.template().id, passData);
+
     }
-
-    var passData = {
-      'name': pb.template().name,
-      'status': pb.status(pb.cert.index()),
-      'cert': pb.template().cert,
-    };
-
-    pb.update(pb.template().id, passData);
-
-  }
-  /***********************************************************
+    /***********************************************************
 
 
-  ***********************************************************/
-  function b64EncodeUnicode(str) {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
-      return String.fromCharCode('0x' + p1);
-    }));
-  }
+    ***********************************************************/
+  function saveSVG() {
 
-  function thumbnailSave() {
+    var svg = pb.svg();
+    svg.selectAll('rect.text-btn-rect').remove(); //remove selection rects
+    svg.selectAll('rect.img-btn-rect').remove();
+    var svghtml = svg.node().innerHTML;
+    var base64doc = btoa(unescape(encodeURIComponent(svghtml))),
+      a = document.createElement('a'),
+      e = document.createEvent("HTMLEvents");
 
-    //maybe its better to just save the whole svg file?
-    console.log("thumbnail");
+    a.download = 'doc.svg';
+    a.href = 'data:image/svg+xml;base64,' + base64doc;
+    e.initEvent('click');
+    a.dispatchEvent(e);
 
-    d3.selectAll('rect.text-btn-rect').remove(); //remove selection rects
-
-    var html = d3.select("svg.pass-template.front").node().parentNode.innerHTML;
-
-    //var imgsrc = 'data:image/svg+xml;base64,'+ b64EncodeUnicode(html);
-    var imgsrc = 'data:image/svg+xml;utf8,' + html;
-    //var img = '<img src="'+imgsrc+'">';
-    //d3.select("#image-svg-out").html(img);
-
-
-    var canvas = d3.select('#image-out').node(),
-      context = canvas.getContext("2d");
-    //console.log(imgsrc);
-    var image = new Image;
-    image.src = imgsrc;
-    image.onload = function () {
-      context.drawImage(image, 0, 0);
-
-      var canvasdata = canvas.toBlob(callback, "image/png");
-      console.log(canvasdata);
-
-      var pngimg = '<img src="' + canvasdata + '">';
-      d3.select("#pngdataurl").html(pngimg);
-
-      var a = document.createElement("a");
-      a.download = "sample.png";
-      a.href = canvasdata;
-      a.click();
-    };
-
-  }
-
-  function callback(blob) {
-
-    console.log("callback");
-
-    var newImg = document.createElement("img"),
-      url = URL.createObjectURL(blob);
-
-    //var pngimg = '<img src="'+fileHandle+'">';
-    newImg.onload = function () {
-      // no longer need to read the blob so it's revoked
-      URL.revokeObjectURL(url);
-    };
-    newImg.src = url;
-    //document.body.appendChild(newImg);
-    d3.select("#pngdataurl").html(newImg);
-
-    var a = document.createElement("a");
-    a.download = "sample.png";
-    a.href = fileHandle;
-    a.click();
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -119,20 +73,20 @@
 
   pb.cert = {
     /* setup and configure barcode handlers */
-    init: function () {
+    init: function() {
       init();
     },
-    xray: function () {
+    xray: function() {
       pb.location.xray(false);
     },
-    save: function (index) {
+    save: function(index) {
       certSave(index);
     },
-    name: function () {
+    name: function() {
       return 'cert';
     },
 
-    index: function () {
+    index: function() {
       return 11;
     }
   };

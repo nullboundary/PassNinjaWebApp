@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="boardingPass pass-template front" width="315" height="442" viewBox="0 0 315 442">
+  <style>
+    <![CDATA[ svg.boardingPass .icon-line {
+      fill: none;
+      stroke: #FFFFFF;
+      stroke-miterlimit: 10;
+    }
+    
+    svg.boardingPass .icon-font {
+      font-family: 'TimesNewRomanPS-BoldMT';
+      fill: #FFFFFF;
+    }
+    
+    svg.boardingPass .bg-grad {
+      stroke: #00AEEF;
+      stroke-width: 0.25;
+      stroke-miterlimit: 10;
+    }
+    
+    svg.boardingPass .font-bold {
+      font-family: 'Helvetica-Bold';
+    }
+    
+    svg.boardingPass .fold-line {
+      fill: none;
+      stroke: #21519F;
+      stroke-width: 0.25;
+      stroke-miterlimit: 10;
+    }
+    
+    svg.boardingPass .font-lite {
+      font-family: 'Helvetica-Light';
+    }
+    
+    svg.boardingPass .label-text {
+      font-size: 11px;
+      font-family: 'Helvetica-Bold';
+    }
+    
+    svg.boardingPass .value-text {
+      font-size: 16px;
+      font-family: 'Helvetica-Light';
+    }
+    
+    svg.boardingPass .logo-text {
+      font-size: 18px;
+    }
+    
+    svg.boardingPass .headerFields.value-text {
+      font-size: 20px;
+    }
+    
+    svg.boardingPass .primaryFields.value-text,
+    .barcode {
+      font-size: 40px;
+    }
+    
+    svg.boardingPass .alt-text {
+      font-size: 18px;
+      fill: #000000;
+      font-family: 'Helvetica-Light';
+    }
+    
+    svg.boardingPass .bar-btn-rect {
+      fill: #ffffff;
+    }
+    
+    ]]>
+  </style>
+  <defs>
+    <linearGradient id="linear-grad" gradientUnits="userSpaceOnUse" x1="157.873" y1="-.089" x2="157.873" y2="442.089">
+      <stop class="pass-bg-lite" offset="0" stop-color="#00AEEE" />
+      <stop class="pass-bg" offset=".5" stop-color="#00AEEE" />
+      <stop class="pass-bg-dark" offset="1" stop-color="#00AEEE" />
+    </linearGradient>
+  </defs>
+  <path class="bg-grad" fill="url(#linear-grad)" d="M1.14 431.11c.06 5.96 4.45 10.76 9.81 10.72l293.04.26c5.96-.03 10.77-4.4 10.76-9.77v2.13V66.8c-4.26-1.57-4.3-5.02-.08-7.72h-.33V11.79c.09-6.47-4.18-11.79-9.53-11.88v.27H12.12C6.17-.02 1.19 4.17 1 9.53l.19 49.58c4.23 1.67 4.17 5.13-.11 7.72l.06 364.28z"
+  />
+  <g class="pass-group">
+    <text class="text-btn-group logo font-bold logo-text value-text" dominant-baseline="hanging" fill="#2E3192" transform="translate(86.666 27.668)" id="logo1">Pass Airlines</text>
+    <g class="img-btn-group" id="logo-group">
+      <image id="logo" width="49.92" height="49.92" x="15.965" y="6.465" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGgAAABoCAMAAAAqwkWTAAAAIVBMVEUAAAADM5kANpgDM5oCM5oCM5kDM5oDM5kDM5kDM5kDNqKL/YO5AAAACXRSTlMA+gZMddwnnb/5Bg+/AAAEFklEQVR4Ab2ajbLbKgyEz4IESO//wPd6G6VmSlw7trrTn6aZky8rZGwWfk6oFP7ZqvQ+FJSO0aW2Eu8/oEKIdIVvsk0w803QLoSVRyi1q5EAAEbFvzey9hqsO5jWdYOQsBCwwbS3QH2JqcM2ih2JhbRRb6BE3SfKActd65d26mlMoEb9wlQb7oBdEODe21U7YpOb064gl0w1vY4J1GjnSWIO+1Jw1LNl67Od66bkFKcM2rlF6scDRU7TWxwKPsoRiRzc5pCkJGVzgpTOCVLe+Eyk8blyz3FI6p9A40EOSbIeJnmSQ3n9k1R+qtvDgqEdD1BqQ/TgpA4TC5citPzCLYpXpo7L7LxGTLqlMJRviYbyLYWhfEtFzZIt5RuiWs6svbpfsHbNsqUlvXJTOwyC8mvXYNly1i4ql953PR8EPo2rWz6o5w8R5Rq31myh5fcC5TV6Ib8bxr8B9dymm0DZkLgnwf6FXJ8Agb+PpU+Uzk3N/4LC/fZmMFg7DlAE1dt+Bu/TrcMdEwv4zcYD9z3XX+lZm+M9MHbdgRru94L8ioqLDKJoxm1IFUR97z8zRKRFMRulGfS2e8JyfWYNBgfLV2KwVMorUHhfsA+RzDs5m5rUH2LeARa8P7eudG1zSsZUFhagINkD5ZOg8Ffr7oj35IHQMYS4pKgi+0vYI5UMm/csWX+D6pzKou1q+kX5sOhxqrljfjiZE/WrKDc37EaolMVKaJE/lW7XUKNyJOwVrZcP8QhcZs7V/N6FveUx3W2vZLnkaosdCU5Xp0kcd+uFmDrgslg4LNPIQJ1k1a2N+H05eb+KVH215FugOsg6AcNG2v2IS/TCcW4XajK4rXZMA8z7bs5+x1l9BmlgPrC6woOGBcQ89iE0OoggRlirypWfVSJJWJWh+1slgunujiGt9bF9sMF2oIb18r91opas2H9VjS1RQqGj18Lx97aBqABV/xA7DUj5vNcbvFb/l4jUWlt7NbPzo5vOoO5YtAK/gauEvxXtz8pGl3EEGmbQcHyIBoebo9cX9wBYYgeYlPigGRSVnA2FJcDctdcSFftUxEbKfvJQUZtA7XPWSbPsLh3Sys5BuAgIx+VFCbnNIHEsDdHS7towHVLftF3rKXw5OWEGVf1sKK7lgG00HV2kbpI+yDielQIkfhRHz9cYSNuL/2lnBD8I2NcZV8wC/Ou8cFC46If0TRCqaP62TnReRtQ0K4bp8aTpg8SRsleQuYnE7dFsUnDSSSc4JJmlb8pT4pZ/zICqcFj6wQmucIdb/lGQOEOD20nAKcVSKfu4TixBr2HgtHNVrRtR2UeqyoaCG3AB860isEo+9kaVOvCXg3x29yAfObQ1sFi9gC+eOZoYKD45qvmm4LwPW86Uu6x4hhy6OD56CvMfee0JWGi+dd4AAAAASUVORK5CYII="
+      overflow="visible" />
+    </g>
+    <g class="text-btn-group primary" id="primary1" text-anchor="inherit">
+      <text id="primary-label1" dominant-baseline="hanging" class="label-text primaryFields" fill="#FFF" transform="translate(15.998 81.668)">SAN FRANCISCO</text>
+      <text id="primary-value1" dominant-baseline="hanging" class="value-text primaryFields" y="16" fill="#2E3192" font-size="36" transform="translate(15.998 81.668)">SFO</text>
+    </g>
+    <g class="text-btn-group primary" id="primary2" text-anchor="inherit">
+      <text id="primary-label2" dominant-baseline="hanging" class="label-text primaryFields" fill="#FFF" transform="translate(243.969 81.669)">NEW YORK</text>
+      <text id="primary-value2" dominant-baseline="hanging" class="value-text primaryFields" y="16" fill="#2E3192" font-size="36" transform="translate(243.969 81.669)">JFK</text>
+    </g>
+    <g class="text-btn-group header" id="header1" text-anchor="inherit">
+      <text id="header-label1" dominant-baseline="hanging" class="label-text headerFields" fill="#FFF" transform="translate(275.438 13.335)">GATE</text>
+      <text id="header-value1" dominant-baseline="hanging" class="value-text headerFields" y="16" fill="#2E3192" font-size="18" transform="translate(275.438 13.335)">23</text>
+    </g>
+    <g class="text-btn-group second" id="second1" text-anchor="inherit">
+      <text id="second-label1" dominant-baseline="hanging" class="label-text secondaryFields" fill="#FFF" transform="translate(15.273 236.002)">SEAT</text>
+      <text id="second-value1" dominant-baseline="hanging" class="value-text secondaryFields" y="16" fill="#2E3192" font-size="14.4" transform="translate(15.273 236.002)">21A</text>
+    </g>
+    <g class="text-btn-group second" id="second2" text-anchor="inherit">
+      <text id="second-label2" dominant-baseline="hanging" class="label-text secondaryFields" fill="#FFF" transform="translate(59.616 236.002)">ZONE</text>
+      <text id="second-value2" dominant-baseline="hanging" class="value-text secondaryFields" y="16" fill="#2E3192" font-size="14.4" transform="translate(59.616 236.002)">4</text>
+    </g>
+    <g class="text-btn-group second" id="second3" text-anchor="inherit">
+      <text id="second-label3" dominant-baseline="hanging" class="label-text secondaryFields" fill="#FFF" transform="translate(105.179 236.002)">CLASS</text>
+      <text id="second-value3" dominant-baseline="hanging" class="value-text secondaryFields" y="16" fill="#2E3192" font-size="14.4" transform="translate(105.179 236.002)">ECO</text>
+    </g>
+    <g class="text-btn-group second" id="second4" text-anchor="inherit">
+      <text id="second-label4" dominant-baseline="hanging" class="label-text secondaryFields" fill="#FFF" transform="translate(157.46 236.002)">PASSENGER</text>
+      <text id="second-value4" dominant-baseline="hanging" class="value-text secondaryFields" y="16" fill="#2E3192" font-size="14.4" transform="translate(157.46 236.002)">John Appleseed</text>
+    </g>
+    <g class="text-btn-group aux" id="aux1" text-anchor="inherit">
+      <text id="aux-label1" dominant-baseline="hanging" class="label-text auxiliaryFields" fill="#FFF" transform="translate(15.334 165.335)">BOARDING</text>
+      <text id="aux-value1" dominant-baseline="hanging" class="value-text auxiliaryFields" y="16" fill="#2E3192" font-size="14.123" transform="translate(15.334 165.335)">3:45 AM</text>
+    </g>
+    <g class="text-btn-group aux" id="aux2" text-anchor="inherit">
+      <text id="aux-label2" dominant-baseline="hanging" class="label-text auxiliaryFields" fill="#FFF" transform="translate(90.225 165.335)">DEPARTURE</text>
+      <text id="aux-value2" dominant-baseline="hanging" class="value-text auxiliaryFields" y="16" fill="#2E3192" font-size="14.123" transform="translate(90.225 165.335)">4:15 AM</text>
+    </g>
+    <g class="text-btn-group aux" id="aux3" text-anchor="inherit">
+      <text id="aux-label3" dominant-baseline="hanging" class="label-text auxiliaryFields" fill="#FFF" transform="translate(173.678 165.335)">DATE</text>
+      <text id="aux-value3" dominant-baseline="hanging" class="value-text auxiliaryFields" y="16" fill="#2E3192" font-size="14.123" transform="translate(173.678 165.335)">7/23/14</text>
+    </g>
+    <g class="text-btn-group aux" id="aux4" text-anchor="inherit">
+      <text id="aux-label4" dominant-baseline="hanging" class="label-text auxiliaryFields" fill="#FFF" transform="translate(235.787 165.335)">FLIGHT</text>
+      <text id="aux-value4" dominant-baseline="hanging" class="value-text auxiliaryFields" y="16" fill="#2E3192" font-size="14.123" transform="translate(235.787 165.335)">PS213</text>
+    </g>
+  </g>
+  <g class="img-btn-group" id="transit-group">
+    <image id="transit" width="41.344" height="41.344" x="138.332" y="83.998" xlink:href="	data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAMAAABrrFhUAAAAD1BMVEUAAAACOKgDOKkCOKgDOKivFzEAAAAABHRSTlMAyj+DA8SNqgAAA/BJREFUeAHs1FFxwAAMw9DaFn/MI9Dt1m9FEHzJe67ruq7ruq7ruq7r+lj3Wj0D8N4eS/xSH0njvVT+A+SRFOQMDPkCBTmEQc5AsS8AcgaGnIFiXyDIGRjyBQpyCMNf1X4Cqf0EYmBQzkCxLxBwQziQM4B9gSFnoCBnIPYFhpyBgpyB2BcoyBmIfYGBG8KCnIHYFxjIGQA5A7EvUJAzEOQMDPkCBTkDsS8wkEPIf6v9BFIlgwIGgpyBIV+gIIcw4IawIIcwyBkYcgaKfYEgZ2AgZwD7AkHOQPlUaj+ByBgUMFDsCwTcEA7kDPDD3tnlJhADMXj9c/8z97FSX4rgQ8Jk5wSOxzbaaDJsMhD9rYASGIiBYLjcLsaAOVzaZECYOdPJGDBmTneTAWHSVLsYhMEa43YxBsw1Rm3buQ9DYY1JJ2PAGCy3kzHAwdImA8HSKe1iEJrzZjsZA8KUqU0GjCnT7WQMCOuLOhkDwfqSTjJgDJXbyRgQhkqdjAFjqNJNBoSZQJ2MgWDWTH9r6MPQmDDdTgahMGGqkzFgrC3pJgPCQLVdDMJgoNTJGDAGyt1kQJgz1ckYMObMdDMGROnS3WQgmC7VyRgw1pV0kwH9h8mJHqq+VnqyEvtdEsjlqAMlxe/ZF9yd4ud89koGPHAgBerhFLjfVQEkcJgI0m8rox44wAY6nQG3h7ug31c6PAbbm4DDU1Cnh2AOd4AO/xGQz3aAfHYE5rxPgftj8L4OuC+E7itBBb8UlqOx0/N/pfn5HEix3/pnqn6o8qp9n6yP+TvdbA4IiILkdnFIxhikTJ7/CjawoM0xMVGe9OaEkDFNZnpGDNDk6JQg1hNvzokG64k2HwxgmLw5K24MUybPfwkLJW2+F8FM6c0XQ8FEmck3Y5cwUWry1aAxUXr03SjWFE2e3xgob74dDwYqm/sTOFCaPL8xV3p0gwjmykzvkAFUublFKJgq08mFesK6oslNYsa64s1dcsJQZXObIIdKk0tVg8WSO7lYWJgtNblT1pwsJ89/CZNlNtfLc1MG6k97d2zjQBADQbBI5p/zJ/CAXEG9k0EbV7i12D6xsPF+Vz8yMvELGxvvN20AbBwAF+83bQBs/dbcpQFEHADXBoCJ928bQK4NIJMGkH2359v94gC4NgBMvH/jALjyHxBMGkC2DQAT7982gFwbACbev20AmDYA1PuvDQDTBsDG+10bAKb7BATbBpBpA2Dj/a4NINMGwMb7XRsA4gDYeL9pA2DjALh4v2kD8OEL8Pu7NICIA+Di/SYNIBsHwMX7TRsA2waAifdvHAAX7zdpANk2ANz8v/X29vb29vb29vb29vb29va1+wNxifcmNbM+mwAAAABJRU5ErkJggg=="
+    overflow="visible" />
+  </g>
+  <g class="barcode-btn-group" id="barcode-group" transform="translate(35 345)">
+    <rect data-target="barcode" rx="5" ry="5" class="bar-btn-rect" width="246" height="78" />
+    <image id="barcode" x="10" y="10" width="226" height="58" xlink:href="	data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM4AAAAwAQMAAABjSdfuAAAABlBMVEUAAAD///+l2Z/dAAAAeElEQVQ4y83JMQoAMQgEwAXbgF8J2B74dSGt4FcW0gq5bzjtAMiKlWA+bb/pyPBAJTGpxLhl80P3Qd43rzKEYWxRmBgxrs5W7MteT08ZqOMqUsnPI72ikCrzylBXIj50lGzxeVUCY6/v1TmLW+fVusqip9R1wxpVPw6zevldrvJVAAAAAElFTkSuQmCC"
+    overflow="visible" />
+  </g>
+  <path class="fold-line" d="M17.67 62.8l280 .04" />
+  <path class="icon-line" stroke="#2E3192" d="M11.5 418.67H26v14.5H11.5zm7.41-5.6v13.35m-2.5-9.75l2.5-3.6m0 0l2.25 3.6" />
+  <circle class="icon-line" cx="299.33" cy="426.38" r="9.08" stroke="#2E3192" />
+  <text transform="translate(296.756 430.952)" class="icon-font" fill="#2E3192">i</text>
+</svg>

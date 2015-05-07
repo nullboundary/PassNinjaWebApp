@@ -1,4 +1,4 @@
-(function(app, $, undefined) {
+(function(app, undefined) {
 
   'use strict';
 
@@ -51,4 +51,4 @@
   };
 
 
-}(passNinja = window.passNinja || {}, jQuery));
+}(passNinja = window.passNinja || {}));

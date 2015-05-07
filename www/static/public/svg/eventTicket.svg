@@ -10,6 +10,7 @@
 	svg.eventTicket .primaryFields.value-text{font-size:42.8386px;}
 	svg.eventTicket .barcode{font-size:36px;}
 	svg.eventTicket .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.eventTicket .bar-btn-rect {fill: #ffffff;}
 ]]>
 </style>
 <defs>

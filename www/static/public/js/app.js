@@ -93,18 +93,18 @@
     dialogPolyfill.registerDialog(dialog); //register with polyfill
 
     //feedback nav bar button
-    d3.select('#feedback-btn').on('click',function() {
+    d3.select('#feedback-btn').on('click', function() {
       d3.event.preventDefault();
       dialog.showModal();
     });
 
     //on click dialog close button
-    d3.select('#feedback-close').on('click',function() {
+    d3.select('#feedback-close').on('click', function() {
       closeFeedback(dialog);
     });
 
     //click outside modal box
-    d3.select('dialog#feedback-modal').on('click',function() {
+    d3.select('dialog#feedback-modal').on('click', function() {
       if (!dialog.open) { //don't close if not open...
         return;
       }
@@ -134,7 +134,7 @@
     var feedbackMessage = d3.select('#feedback-text').node().value;
 
     //don't send if empty textarea
-    if (feedbackMessage == ""){
+    if (feedbackMessage == "") {
       return;
     }
 
@@ -196,7 +196,7 @@
   //======================================================
   app.init = function() {
 
-    d3.select('#logout-btn').on('click',logOut); //logout nav bar button
+    d3.select('#logout-btn').on('click', logOut); //logout nav bar button
     feedBackModal();
 
     document.addEventListener("WebComponentsReady", function(event) {
@@ -320,12 +320,12 @@
     //======================================================
   app.delPassModel = function() {
 
-    var passModel = app.getPassModel();
-    app.getPassModelList().splice(app.getPassActive().index, 1);
+      var passModel = app.getPassModel();
+      app.getPassModelList().splice(app.getPassActive().index, 1);
 
-    d3.xhr('/api/v1/passes/' + passModel.id)
+      d3.xhr('/api/v1/passes/' + passModel.id)
         .header("Authorization", "Bearer " + app.toolkit.getToken())
-        .send('DELETE',function(error, data){
+        .send('DELETE', function(error, data) {
           if (app.toolkit.checkLoadError(error)) return;
           app.savePassModelList(); //save the state of the list to storage
           app.toolkit.alertDisplay('saved', 'Pass successfully deleted.');
@@ -378,65 +378,64 @@ console.log(window);
 console.log(passNinja);
 passNinja.init();
 
-(function (window, document) {
+(function(window, document) {
 
-/*  if ('registerElement' in document
-    && 'createShadowRoot' in HTMLElement.prototype
-    && 'import' in document.createElement('link')
-    && 'content' in document.createElement('template')) {
-      //native webcomponents support
-      console.log("native webcomponents support");
-      console.log(window);
-      console.log(passNinja);
-      passNinja.init();
-    } else {
-      document.write(
-        '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.6.0/webcomponents.js"><\/script>'
-        );
-      document.addEventListener("WebComponentsReady", function(event) {
+  /*  if ('registerElement' in document
+      && 'createShadowRoot' in HTMLElement.prototype
+      && 'import' in document.createElement('link')
+      && 'content' in document.createElement('template')) {
+        //native webcomponents support
+        console.log("native webcomponents support");
         console.log(window);
         console.log(passNinja);
         passNinja.init();
-      });
+      } else {
+        document.write(
+          '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.6.0/webcomponents.js"><\/script>'
+          );
+        document.addEventListener("WebComponentsReady", function(event) {
+          console.log(window);
+          console.log(passNinja);
+          passNinja.init();
+        });
 
-    }
-*/
+      }
+  */
 
-var menu = document.getElementById('menu'),
-    WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange':'resize';
+  var menu = document.getElementById('menu'),
+    WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange' : 'resize';
 
-function toggleHorizontal() {
+  function toggleHorizontal() {
     [].forEach.call(
-        document.getElementById('menu').querySelectorAll('.custom-can-transform'),
-        function(el){
-            el.classList.toggle('pure-menu-horizontal');
-        }
+      document.getElementById('menu').querySelectorAll('.custom-can-transform'),
+      function(el) {
+        el.classList.toggle('pure-menu-horizontal');
+      }
     );
-};
+  };
 
-function toggleMenu() {
+  function toggleMenu() {
     // set timeout so that the panel has a chance to roll up
     // before the menu switches states
     if (menu.classList.contains('open')) {
-        setTimeout(toggleHorizontal, 500);
-    }
-    else {
-        toggleHorizontal();
+      setTimeout(toggleHorizontal, 500);
+    } else {
+      toggleHorizontal();
     }
     menu.classList.toggle('open');
     document.getElementById('toggle').classList.toggle('x');
-};
+  };
 
-function closeMenu() {
+  function closeMenu() {
     if (menu.classList.contains('open')) {
-        toggleMenu();
+      toggleMenu();
     }
-}
+  }
 
-document.getElementById('toggle').addEventListener('click', function (e) {
+  document.getElementById('toggle').addEventListener('click', function(e) {
     e.preventDefault();
     toggleMenu();
-});
+  });
 
-window.addEventListener(WINDOW_CHANGE_EVENT, closeMenu);
+  window.addEventListener(WINDOW_CHANGE_EVENT, closeMenu);
 })(this, this.document);

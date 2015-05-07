@@ -1,4 +1,4 @@
-  (function(tk, pb, $, undefined) {
+  (function(tk, pb, undefined) {
 
     'use strict';
 
@@ -575,4 +575,4 @@
       }
     };
 
-  }(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}, jQuery));
+  }(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}));

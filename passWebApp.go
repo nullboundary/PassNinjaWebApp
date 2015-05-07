@@ -46,12 +46,12 @@ var (
 
 func init() {
 
-	//bindUrl = &flag.String("bindurl", "https://localhost:10443", "The public ip address and port number for this server to bind to")
 	flag.StringVar(&bindUrl, "bindurl", "https://localhost:10443", "The public ip address and port number for this server to bind to")
 
 	goth.UseProviders(
 		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "https://local.pass.ninja/auth/success"),
 		linkedin.New("75mfhvxm75cuur", "nXPmZkFmu5zVvaeh", "https://local.pass.ninja/auth/success"),
+		twitter.New("qwuxOAfixrkHszcgqqN8O4JKB", "kuV67jZwwYTwYRaedEYYlNp4jh9UvmsDuThvDLZg8q2aMZd5O7", "https://local.pass.ninja/auth/success"),
 	)
 
 	//svg mime issue fix: https://github.com/golang/go/issues/6378

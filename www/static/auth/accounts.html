@@ -19,16 +19,15 @@
   <!--[if gt IE 8]><!-->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
   <!--<![endif]-->
-  <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
   <link href="//fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet" type="text/css">
-  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/global.css" rel="stylesheet" type="text/css">
   <link href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/plugin/esri-leaflet-geocoder.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/plugin/onepage-scroll.css" rel="stylesheet" type="text/css">
+  <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/builder.css" rel="stylesheet" type="text/css" shim-shadowdom>
   <link href="/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.6.0/webcomponents.js"></script>
 
   <template id="pass-builder">
 
@@ -50,46 +49,46 @@
           </div>
           <!-- Thumbnail Grid of Pass Type Selection -->
           <div class="passtype-grid pure-g">
-            <div class="pure-u-1-3 pure-u-md-1-5">
+            <div class="pure-u-1-2 pure-u-md-1-4">
               <figure>
-                <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/assets/img/boarding_01_thumb.png" alt="Boarding Pass" width="226" height="290">
+                <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/assets/img/boarding_01_thumb.svg" alt="Boarding Pass" width="226" height="290">
                 <figcaption class="passtype-label">
                   Boarding Pass
                 </figcaption>
               </figure>
             </div>
-            <div class="pure-u-1-3 pure-u-md-1-5">
+            <div class="pure-u-1-2 pure-u-md-1-4">
               <figure>
-                <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/assets/img/coupon_03_thumb.png" alt="Coupon" width="226" height="290">
+                <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/assets/img/coupon_03_thumb.svg" alt="Coupon" width="226" height="290">
                 <figcaption class="passtype-label">
                   Coupon
                 </figcaption>
               </figure>
             </div>
-            <div class="pure-u-1-3 pure-u-md-1-5">
+            <div class="pure-u-1-2 pure-u-md-1-4">
               <figure>
-                <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_strip_thumb.png" alt="Event Ticket" width="226" height="290">
+                <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_strip_thumb.svg" alt="Event Ticket" width="226" height="290">
                 <figcaption class="passtype-label">
                   Event Ticket
                 </figcaption>
               </figure>
             </div>
-            <div class="pure-u-1-3 pure-u-md-1-5">
+            <div class="pure-u-1-2 pure-u-md-1-4">
               <figure>
-                <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/assets/img/store_01_thumb.png" alt="Store Card" width="226" height="290">
+                <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/assets/img/store_01_thumb.svg" alt="Store Card" width="226" height="290">
                 <figcaption class="passtype-label">
                   Store Card
                 </figcaption>
               </figure>
             </div>
-            <div class="pure-u-1-3 pure-u-md-1-5">
+            <!--<div class="pure-u-1-3 pure-u-md-1-5">
               <figure>
                 <img id="generic" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_fullbg_thumb.png" alt="Generic" width="226" height="290">
                 <figcaption class="passtype-label">
                   Generic
                 </figcaption>
               </figure>
-            </div>
+            </div>-->
           </div>
 
         </section>
@@ -579,7 +578,7 @@
                       <div class="pure-control-group">
                         <label for="share-embed">Copy Code To Embed Badge</label>
                         <a id="share-embed" href="">
-                          <img class="embed-badge" src="/assets/img/Add_to_Passbook_Badge_US_1014.svg">
+                          <img class="embed-badge" width="240" height="80" src="/assets/img/Passbook_Badge.svg">
                         </a>
                       </div>
 
@@ -600,7 +599,7 @@
                     <form class="pure-form pure-form-aligned">
                       <div class="pure-control-group">
                         <label for="print-badge">Download Apple Passbook badge.</label>
-                        <img id="print-badge" class="share-badge" src="/assets/img/Add_to_Passbook_Badge_US_1014.svg">
+                        <img id="print-badge" width="240" height="80" class="share-badge" src="/assets/img/Passbook_Badge.svg">
                         <a class="download-print" href="/assets/data/PassBook_Print_EPS.zip">
                           <button type="button" class="btn" id="download-badge">
                             <i class="fa fa-download"></i>
@@ -664,6 +663,15 @@
         <i class="fa fa-reply"></i>
       </button>
     </a>
+
+    <ul class="h-pagination">
+      <li>
+        <button class="pure-button h-page1"></button>
+      </li>
+      <li>
+        <button class="pure-button h-page2"></button>
+      </li>
+    </ul>
 
   </template>
 
@@ -789,8 +797,9 @@
   </dialog>
   <!-- JavaScript
   ================================================== -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.6.0/webcomponents.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/dialog-polyfill.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/onepagescroll.js"></script>
 

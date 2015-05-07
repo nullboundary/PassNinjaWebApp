@@ -11,6 +11,7 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/gplus"
 	"github.com/markbates/goth/providers/linkedin"
+	"github.com/markbates/goth/providers/twitter"
 	"github.com/zenazn/goji/web"
 )
 
@@ -466,6 +467,8 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 		sess = &gplus.Session{}
 	} else if provider.Name() == "linkedin" {
 		sess = &linkedin.Session{}
+	} else if provider.Name() == "twitter" {
+		sess = &twitter.Session{}
 	}
 
 	//verify oauth state is same as session id. protect against cross-site request forgery

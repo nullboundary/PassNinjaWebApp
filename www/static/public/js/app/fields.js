@@ -208,19 +208,19 @@
         pb.template().mutatelist.splice(index, 1); //remove it from the list
       }
 
-/*
-      for (var i = groupIndex; i < 5; i++) { //loop all fields deleted and higher
-        var groupID = groupType + i;
-        var index = pb.template().mutatelist.indexOf(keyValue); //find the value in the list
-        if (index > -1) { //found
-          console.log('remove:' + groupID);
-          pb.template().mutatelist.splice(index, 1); //remove it from the list
-          if (i > groupIndex) { //items above deleted item
-            pb.template().mutatelist.push(groupType + (i - 1)); //add it back with -1 index.
-          }
-        }
-      }
-*/
+      /*
+            for (var i = groupIndex; i < 5; i++) { //loop all fields deleted and higher
+              var groupID = groupType + i;
+              var index = pb.template().mutatelist.indexOf(keyValue); //find the value in the list
+              if (index > -1) { //found
+                console.log('remove:' + groupID);
+                pb.template().mutatelist.splice(index, 1); //remove it from the list
+                if (i > groupIndex) { //items above deleted item
+                  pb.template().mutatelist.push(groupType + (i - 1)); //add it back with -1 index.
+                }
+              }
+            }
+      */
 
     }
     /***********************************************************
@@ -742,7 +742,7 @@
   function onCurrencyStyle(value) {
 
     editGroup.data.currencyCode = value;
-    editGroup.data.value = Number($('input#popValue').val());
+    editGroup.data.value = Number(d3.select('input#popValue').node().value);
 
     onTextSubmit(true);
 
@@ -756,7 +756,7 @@
   function onNumberStyle(value) {
 
     editGroup.data.numberStyle = value;
-    editGroup.data.value = Number($('input#popValue').val());
+    editGroup.data.value = Number(d3.select('input#popValue').node().value);
 
     onTextSubmit(true);
   }
