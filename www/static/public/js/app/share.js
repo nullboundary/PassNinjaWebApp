@@ -3,9 +3,9 @@
   'use strict';
 
   /***********************************************************
-
-
-  ***********************************************************/
+   
+   
+   ***********************************************************/
   function handler() {
 
       if (pb.template().status == "api") {
@@ -41,9 +41,9 @@
       }
     }
     /***********************************************************
-
-
-    ***********************************************************/
+     
+     
+     ***********************************************************/
   function printMutateList() {
 
       var curlText = "API access not configured for this pass."
@@ -67,9 +67,9 @@
 
     }
     /***********************************************************
-
-
-    ***********************************************************/
+     
+     
+     ***********************************************************/
   function sharePass(passUrl, passName) {
 
       d3.select('#pass-copy')
@@ -108,9 +108,9 @@
 
     }
     /***********************************************************
-
-
-    ***********************************************************/
+     
+     
+     ***********************************************************/
   function printEmbedCode(passUrl) {
 
       d3.select('#share-embed').property('href', passUrl);
@@ -126,34 +126,36 @@
 
     }
     /***********************************************************
-
-
-    ***********************************************************/
+     
+     
+     ***********************************************************/
   function generateQR(passUrl, passName) {
 
-    if (d3.select('.qrcode-img').empty()) { //only generate QR 1 time
-
-      //draw qr code
-      var qrcode = new QRCode(d3.select('#pass-qr').node(), {
-        text: passUrl,
-        width: 1024,
-        height: 1024,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.Q
-      });
-
-      var QRImg = d3.select('.qrcode-img').node();
-
-      //when image src loaded, set <a href to data uri
-      QRImg.onload = function() {
-        var qrURI = d3.select('.qrcode-img').attr('src');
-        console.log(qrURI);
-        d3.select('#download-qr')
-          .property('download', passName + '-qrcode.png')
-          .property('href', qrURI);
-      };
+    if (!d3.select('.qrcode-img').empty()) { //remove old image if exists
+      d3.select('.qrcode-img').remove();
+      d3.select('#pass-qr canvas').remove(); //remove old canvas used to generate image
     }
+
+    //draw qr code
+    var qrcode = new QRCode(d3.select('#pass-qr').node(), {
+      text: passUrl,
+      width: 1024,
+      height: 1024,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.Q
+    });
+
+    var QRImg = d3.select('.qrcode-img').node();
+
+    //when image src loaded, set <a href to data uri
+    QRImg.onload = function() {
+      var qrURI = d3.select('.qrcode-img').attr('src');
+      console.log(qrURI);
+      d3.select('#download-qr')
+        .property('download', passName + '-qrcode.png')
+        .property('href', qrURI);
+    };
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -176,4 +178,4 @@
     }
   };
 
-}(passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(passNinja.toolkit, this.passEditor = passNinja.passEditor || {}, jQuery));

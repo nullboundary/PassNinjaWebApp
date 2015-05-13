@@ -3,15 +3,15 @@
 <style type="text/css">
 <![CDATA[
 	svg.back .outline-path{fill:#E6E7E8;}
-	svg.back .timeloc-text{fill:#58595B;font-family:'Helvetica-Light';font-size:12;}
+	svg.back .timeloc-text{fill:#58595B;font-weight: 300;font-family:'Helvetica-Light',Helvetica,Arial,'Lucida Grande',sans-serif;font-size:12;}
 	svg.back .switch-circle{fill:#FFFFFF;stroke:#39B54A;stroke-miterlimit:10;}
 	svg.back .bg-rect{fill:#FFFFFF;}
 	svg.back .back-ground{fill:rgb(230,230,230);}
-	svg.back .setting-text{font-family:'Helvetica-Light';font-size:16;}
+	svg.back .setting-text{font-weight: 300;font-family:'Helvetica-Light',Helvetica,Arial,'Lucida Grande',sans-serif;font-size:16;}
 	svg.back line.delimiter{stroke:rgb(109,110,113);stroke-width:1;}
 	svg.back .switch-path{fill:#39B54A;stroke:#39B54A;stroke-miterlimit:10;}
-	svg.back .back-text{font-family:'Helvetica';fill:#808285;font-size:13.846;}
-	svg.back .back-label{font-family:'Helvetica';fill:#808285;font-size:12;}
+	svg.back .back-text{font-weight: 300;font-family:'Helvetica-Light',Helvetica,Arial,'Lucida Grande',sans-serif;fill:#808285;font-size:13.846;}
+	svg.back .back-label{font-weight: 300;font-family:'Helvetica-Light',Helvetica,Arial,'Lucida Grande',sans-serif;fill:#808285;font-size:12;}
 ]]>
 </style>
 <!-- pass outline-->

@@ -4,14 +4,14 @@
 <![CDATA[
 	svg.coupon .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
 	svg.coupon .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
-	svg.coupon .label-text{font-size:11px; font-family:'Helvetica-Bold';}
-	svg.coupon .value-text{font-size:16px; font-family:'Helvetica-Light';}
-	svg.coupon .primaryFields.label-text{font-size:16px; font-family:'Helvetica-Light';}
-	svg.coupon .primaryFields.value-text{font-size:48px; font-family:'Helvetica-Light';}
+	svg.coupon .label-text{font-size:11px; font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.coupon .value-text{font-size:16px; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.coupon .primaryFields.label-text{font-size:16px; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.coupon .primaryFields.value-text{font-size:48px; font-weight: 100; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
 	svg.coupon .headerFields.value-text{font-size:20px;}
-	svg.coupon .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
+	svg.coupon .logo-text{font-size:18px; font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
 	svg.coupon .barcode{font-size:40px;}
-	svg.coupon .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.coupon .alt-text{font-size:18px; fill: #000000; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif; }
 	svg.coupon .bar-btn-rect {fill: #ffffff;}
 ]]>
 </style>

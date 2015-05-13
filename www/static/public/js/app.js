@@ -20,17 +20,23 @@
     if (!isNewPass) { //editing old pass.
 
       app.setPassActive('#front-content', app.getPassActive().index); //the rootID of the current active pass
-      app.toolkit.loadSVG(app.getPassActive().type, function(error, xml) { //svg load callback
 
-        if (error) {
-          console.warn(error);
+      app.toolkit.loadSVG(app.getPassActive().type, function() { //svg load callback
+        if (this.status >= 200 && this.status < 400) {
+
+          var xmlDoc = this.responseXML;
+          var wrapSVG = wrap(xmlDoc.documentElement); //wrap the svg in webcomponents.js polyfill for use with shadowdom
+          var shadowRootElm = document.querySelector('#front-content').createShadowRoot();
+          shadowRootElm.appendChild(wrapSVG); //append svg
+          app.passEditor.editor();
+
+        } else {
+
+          console.warn(this.responseText);
+          var error = JSON.parse(this.responseText);
           app.toolkit.alertDisplay('error', error.statusText);
-          return;
+
         }
-
-        d3.select('div#front-content').node().createShadowRoot().appendChild(xml.documentElement);
-        app.passEditor.editor();
-
       });
     }
 
@@ -196,10 +202,14 @@
   //======================================================
   app.init = function() {
 
-    d3.select('#logout-btn').on('click', logOut); //logout nav bar button
-    feedBackModal();
 
     document.addEventListener("WebComponentsReady", function(event) {
+
+      console.log("webcomponents ready");
+
+
+      d3.select('#logout-btn').on('click', logOut); //logout nav bar button
+      feedBackModal();
 
       console.log(window.location.pathname);
 
@@ -237,6 +247,7 @@
     docBody.select('div.main').remove();
     docBody.select('a.next').remove();
     docBody.select('a.return').remove();
+    docBody.select('.h-pagination').remove();
 
     onePageScroll.disable();
 
@@ -372,13 +383,16 @@
   return app; //return the app object
 
 
-})(passNinja = window.passNinja || {});
+})(this.passNinja = window.passNinja || {});
 
-console.log(window);
-console.log(passNinja);
-passNinja.init();
+
 
 (function(window, document) {
+
+  window.passNinja;
+  console.log(window);
+  console.log(passNinja);
+  passNinja.init();
 
   /*  if ('registerElement' in document
       && 'createShadowRoot' in HTMLElement.prototype

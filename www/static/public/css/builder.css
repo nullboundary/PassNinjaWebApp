@@ -40,7 +40,7 @@ div.title h1, div.title h2 {
 }
 div.title h1 {
   /*font-family: 'Helvetica Neue', sans-serif;*/
-  
+
   margin-top: 50px;
   color: rgb(240, 30, 0);
   margin-bottom: 5px;
@@ -135,7 +135,7 @@ body {
   margin: 0;
   padding: 10px;
   /*background: rgba(0,0,0,0.5);*/
-  
+
   text-align: center;
 }
 /* Responsive Image Control in Passtype_grid */
@@ -313,16 +313,17 @@ body /deep/ .text-btn-group text {
 *********************************************/
 
 .h-pagination {
-  display: flex;
   position: absolute;
   bottom: 8%;
   left: 50%;
+  -webkit-transform: translateX(-70%);
   transform: translateX(-70%);
   list-style: none;
 }
 .h-pagination li {
-  margin-left: 5px;
-  margin-right: 5px;
+  display: inline;
+  /*margin-left: 5px;
+  margin-right: 5px;*/
 }
 .h-page1, .h-page2 {
   border-radius: 15px;
@@ -343,6 +344,7 @@ body /deep/ .text-btn-group text {
 *********************************************/
 
 .alert {
+  display: none;
   position: fixed;
   left: 50%;
   -webkit-transform: translate(-50%, 0);
@@ -594,7 +596,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
-[id^=sharetab]:disabled + label.tab-label {
+input[name=share-tabs]:disabled + label.tab-label {
   color: #353232;
   cursor: not-allowed;
   background: rgb(55, 55, 55);
@@ -605,22 +607,23 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   background: rgba(255, 255, 255, 0.5);
   top: -20px;
 }
-[id^=tab]:checked + label.tab-label {
+input[name=loc-tabs]:checked + label.tab-label {
   background: rgb(0, 0, 0);
   background: rgba(0, 0, 0, 0.70);
   color: rgb(255, 0, 0);
   z-index: 3;
 }
-[id^=sharetab]:checked + label.tab-label {
+input[name=share-tabs]:checked + label.tab-label {
   background: rgb(0, 0, 0);
   background: rgba(0, 0, 0, 0.70);
   color: rgb(255, 0, 0);
   z-index: 3;
 }
-[id^=tab]:checked ~ [id^=tab-content] {
+/*input[id^=tab]:checked ~ div[id^=tab-content] {*/
+input[name=loc-tabs]:checked ~ div.tab-content {
   display: block;
 }
-[id^=sharetab]:checked ~ [id^=share-tab-content] {
+input[name=share-tabs]:checked ~ div.tab-content {
   display: block;
 }
 .tab-content {
@@ -637,12 +640,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
 }
-#pass-qr {
-  /*margin: 0 auto;*/
-  
-  display: inline-block;
-  vertical-align: middle;
-}
+
 .share-badge {
   vertical-align: middle;
 }
@@ -655,6 +653,15 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 .print-label {
   position: fixed;
   width: 11em;
+}
+#pass-qr {
+  /*margin: 0 auto;*/
+
+  display: inline-block;
+  vertical-align: middle;
+}
+#pass-qr canvas{
+  display: none;
 }
 .qr-format {
   width: 135px;
@@ -730,11 +737,11 @@ input[type="file"] /deep/ input[type="button"]:disabled {
   position: absolute;
   top: 0;
   /*left: 10%;      left margin for small screens */
-  
+
   width: 100%;
   height: 100%;
   /*  border-bottom: 1px #707070 solid; */
-  
+
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-perspective: 1000;
@@ -760,7 +767,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 .fake-content /deep/ .pass-template.back {
   cursor: move;
   /* fallback if grab cursor is unsupported */
-  
+
   cursor: grab;
   cursor: -webkit-grab;
 }
@@ -972,7 +979,7 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 .og-grid li.expanded > a:after {
   top: 204px;
   /* top:204px is also reset for larger screens below */
-  
+
   border: solid transparent;
   content: " ";
   height: 0;
@@ -994,8 +1001,8 @@ input[type="file"] /deep/ input[type="button"]:disabled {
 
 .dl-inline {
   overflow: hidden;
-  *zoom: 1;
-  /*for IE 7 and below*/
+  /* *zoom: 1;
+  for IE 7 and below*/
 }
 .dl-inline dt, .dl-inline dd {
   float: left;
@@ -1159,7 +1166,7 @@ div#expand-qr {
 
 @media (min-width: 48em) {
   /* section title */
-  
+
   div.title {
     top: 30px;
   }
@@ -1167,36 +1174,36 @@ div#expand-qr {
     font-size: 40px;
   }
   /* hide horizontal pagination */
-  
+
   .h-pagination {
     display: none;
   }
   /* div style for svg pass */
-  
+
   .section-content, .fake-content {
     display: block;
     position: absolute;
     top: 0;
     left: 20%;
     /* left margin for medium screens */
-    
+
     width: 100%;
     height: 100%;
     /*border-bottom: 1px #707070 solid;*/
-    
+
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-perspective: 1000;
     perspective: 1000;
   }
   /* on medium screens getting started page centers the pass */
-  
+
   .viewing-page-2 .fake-content {
     left: 38%;
     /*  z-index: -100;*/
   }
   /* Dont scale down the pass for medium+ screens */
-  
+
   .fake-content /deep/ .pass-template.front {
     -webkit-transition: all 1s ease;
     transition: all 1s ease;
@@ -1212,7 +1219,7 @@ div#expand-qr {
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(180deg) !important;
   }
   /* front and back of pass, scale to 50% Page 2 */
-  
+
   .viewing-page-2 .fake-content /deep/ .pass-template.front {
     -webkit-transition: all 1s ease;
     transition: all 1s ease;
@@ -1228,7 +1235,7 @@ div#expand-qr {
     transform: translate3d(0, 50%, 0) scale(0.5) rotateY(180deg) !important;
   }
   /* Special page 9 back */
-  
+
   .viewing-page-9 .fake-content /deep/ .pass-template.back {
     -webkit-transition: all 1s ease;
     transition: all 1s ease;
@@ -1237,7 +1244,7 @@ div#expand-qr {
     transform: translate3d(0, 50%, 0) scale(1.0) rotateY(0deg) !important;
   }
   /* The controls need to move up and align next to the pass on medium+ screens */
-  
+
   div.control {
     top: 198px;
     right: 40%;
@@ -1265,7 +1272,7 @@ div#expand-qr {
     width: 40em;
   }
   /* set alert message to be in left corner */
-  
+
   .alert {
     left: 0;
     -webkit-transform: translate(0, 0);
@@ -1288,7 +1295,7 @@ div#expand-qr {
     right: 20%;
   }
   /* make header text larger on a medium + screen */
-  
+
   .wrapper h1 {
     font-size: 70px;
   }
@@ -1296,20 +1303,21 @@ div#expand-qr {
     font-size: 1.5em;
   }
   /* page 1 set the arrow in the center */
-  
+
   .viewing-page-1 .next {
     left: 42%;
   }
   /* page 12 set the return arrow in the center */
-  
+
   .viewing-page-12 .return {
     left: 50%;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     width: 100px;
     top: 84%;
   }
   /* make the return arrow bigger for page 12 */
-  
+
   .viewing-page-12 .return .btn {
     width: 100px;
     height: 100px;
@@ -1317,7 +1325,7 @@ div#expand-qr {
     font-size: 50px;
   }
   /* svg grid passes can be bigger on bigger screens */
-  
+
   .og-grid li > a /deep/ svg, button#new-pass {
     width: 210px;
     height: 267px;
@@ -1328,7 +1336,7 @@ div#expand-qr {
   /*
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="250%" width="100%"><text x="-0" y="95%" fill="rgb(26, 24, 24)" textLength="105%" font-size="1200">1/12</text></svg>
   */
-  
+
   .page-1 {
     background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIyNTAlIiB3aWR0aD0iMTAwJSI+PHRleHQgeD0iLTAiIHk9Ijk1JSIgZmlsbD0icmdiKDI2LCAyNCwgMjQpIiB0ZXh0TGVuZ3RoPSIxMDUlIiBmb250LXNpemU9IjEyMDAiPjEvMTI8L3RleHQ+PC9zdmc+');
   }
@@ -1359,7 +1367,7 @@ div#expand-qr {
   /*
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="250%" width="100%"><text x="-10%" y="95%" fill="rgb(26, 24, 24)" textLength="110%" font-size="1200">12/12</text></svg>
   */
-  
+
   .page-10 {
     background: url('data:image/svg+xml;base64,ICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiBoZWlnaHQ9IjI1MCUiIHdpZHRoPSIxMDAlIj48dGV4dCB4PSItMTAlIiB5PSI5NSUiIGZpbGw9InJnYigyNiwgMjQsIDI0KSIgdGV4dExlbmd0aD0iMTEwJSIgZm9udC1zaXplPSIxMjAwIj4xMC8xMjwvdGV4dD48L3N2Zz4NCg==');
   }

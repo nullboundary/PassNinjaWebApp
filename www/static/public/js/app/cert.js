@@ -1,4 +1,4 @@
-(function(pb, $, undefined) {
+(function(pb, undefined) {
 
   'use strict';
 
@@ -91,4 +91,4 @@
     }
   };
 
-}(passEditor = window.passEditor || {}, jQuery));
+}(this.passEditor = window.passEditor || {}));

@@ -232,6 +232,7 @@
 dialog#login-modal {
   min-height: 205px;
   width: 300px;
+  padding: 1em;
 }
 dialog#login-modal h1 {
   float: left;

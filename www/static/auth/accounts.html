@@ -28,6 +28,7 @@
   <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/builder.css" rel="stylesheet" type="text/css" shim-shadowdom>
   <link href="/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.6.1/webcomponents.js"></script>
 
   <template id="pass-builder">
 
@@ -739,7 +740,22 @@
 
     </div>
   </template>
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
+    ga('create', 'UA-2856856-5', 'auto');
+    ga('send', 'pageview');
+  </script>
 </head>
 
 <body>
@@ -761,11 +777,11 @@
     <div class="pure-u-1 pure-u-md-1-2">
       <div class="pure-menu pure-menu-horizontal custom-menu-right custom-can-transform">
         <ul class="pure-menu-list">
-          <li class="pure-menu-item"><a href="home" class="pure-menu-link">Account</a>
+          <li class="pure-menu-item"><a href="home" class="pure-menu-link">Pass List</a>
           </li>
           <li class="pure-menu-item"><a href="feedback" class="pure-menu-link" id="feedback-btn">Feedback</a>
           </li>
-          <li class="pure-menu-item"><a href="logout" class="pure-menu-link" id="logout-btn">Logout</a>
+          <li class="pure-menu-item"><a href="logout" class="pure-menu-link" id="logout-btn">Signout</a>
           </li>
         </ul>
       </div>
@@ -777,8 +793,8 @@
 
 
   <!-- Message alert -->
-  <div class="alert alert-dismissable" style="display: none">
-    <button type="button" class="close" data-dismiss="alert">×</button>
+  <div class="alert">
+    <button type="button" class="close">×</button>
   </div>
   <!-- Feedback Modal -->
   <dialog id="feedback-modal" class="modal">
@@ -797,7 +813,6 @@
   </dialog>
   <!-- JavaScript
   ================================================== -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.6.0/webcomponents.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/dialog-polyfill.js"></script>
@@ -805,6 +820,7 @@
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.0.0/tinycolor.min.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/jquery.colorpickersliders.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/jquery.datetimepicker.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/l.control.geosearch.js"></script>
@@ -830,22 +846,6 @@
   <script type="text/javascript" src="/assets/js/app/fields.js"></script>
   <script type="text/javascript" src="/assets/js/app/colors.js"></script>
   <script type="text/javascript" src="/assets/js/app/barcode.js"></script>
-  <script>
-    (function(i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r;
-      i[r] = i[r] || function() {
-        (i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-      a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-2856856-5', 'auto');
-    ga('send', 'pageview');
-  </script>
 </body>
 
 </html>

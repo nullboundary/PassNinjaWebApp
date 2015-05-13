@@ -4,12 +4,12 @@
 <![CDATA[
 	svg.eventTicket .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
 	svg.eventTicket .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
-	svg.eventTicket .label-text{font-size:11px; font-family:'Helvetica-Bold';}
-	svg.eventTicket .value-text{font-size:16px; font-family:'Helvetica-Light';}
-	svg.eventTicket .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
-	svg.eventTicket .primaryFields.value-text{font-size:42.8386px;}
+	svg.eventTicket .label-text{font-size:11px; font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.eventTicket .value-text{font-size:16px; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.eventTicket .logo-text{font-size:18px; font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.eventTicket .primaryFields.value-text{font-size:42.8386px; font-weight: 100;}
 	svg.eventTicket .barcode{font-size:36px;}
-	svg.eventTicket .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.eventTicket .alt-text{font-size:18px; fill: #000000; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif; }
 	svg.eventTicket .bar-btn-rect {fill: #ffffff;}
 ]]>
 </style>

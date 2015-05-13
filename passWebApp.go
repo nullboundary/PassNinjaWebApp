@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"html/template"
@@ -27,18 +28,21 @@ import (
 	"github.com/markbates/goth/providers/linkedin"
 	"github.com/nullboundary/govalidator"
 	"github.com/pressly/cji"
+	"github.com/unrolled/secure"
 	"github.com/zenazn/goji/graceful"
 	"github.com/zenazn/goji/web"
 	"github.com/zenazn/goji/web/middleware"
 )
 
 var (
-	passTokenKey     = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`)      //TODO: lets make a new key and put this somewhere safer!
-	csrfKey          = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`)      //TODO: lets make a new key and put this somewhere safer!
-	jWTokenKey       = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`)      //TODO: lets make a new key and put this somewhere safer!
-	downloadServer   = "https://local.pass.ninja:8001/pass/1/passes/" //(https://vendor.pass.ninja/pass/1/passes)
+	passTokenKey     = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
+	csrfKey          = []byte(`@1nw_5_sg@WRQtjRYry{IJ1O[]t,#)w`) //TODO: lets make a new key and put this somewhere safer!
+	jWTokenKey       = []byte(`yY8\,VQ\'MZM(n:0;]-XzUMcYU9rQz,`) //TODO: lets make a new key and put this somewhere safer!
+	downloadServer   = "https://pass.ninja/pass/1/passes/"       //(https://pass.ninja/pass/1/passes) https://local.pass.ninja:8001/pass/1/passes/
 	loginTemplate    *template.Template
 	notFoundTemplate *template.Template
+	indexTemplate    *template.Template
+	accountTemplate  *template.Template
 	emailFeedBack    = NewEmailer()
 	secretKeyRing    = "/etc/ninja/tls/.secring.gpg" //crypt set -keyring .pubring.gpg -endpoint http://10.1.42.1:4001 /email/feedback emailvar.json
 	bindUrl          string                          //flag var for binding to a specific port
@@ -48,11 +52,7 @@ func init() {
 
 	flag.StringVar(&bindUrl, "bindurl", "https://localhost:10443", "The public ip address and port number for this server to bind to")
 
-	goth.UseProviders(
-		gplus.New("969868015384-o3odmnhi4f6r4tq2jismc3d3nro2mgvb.apps.googleusercontent.com", "jtPCSimeA1krMOfl6E0fMtDb", "https://local.pass.ninja/auth/success"),
-		linkedin.New("75mfhvxm75cuur", "nXPmZkFmu5zVvaeh", "https://local.pass.ninja/auth/success"),
-		twitter.New("qwuxOAfixrkHszcgqqN8O4JKB", "kuV67jZwwYTwYRaedEYYlNp4jh9UvmsDuThvDLZg8q2aMZd5O7", "https://local.pass.ninja/auth/success"),
-	)
+	setAuthProviders()
 
 	//svg mime issue fix: https://github.com/golang/go/issues/6378
 	mime.AddExtensionType(".svg", "image/svg+xml")
@@ -74,18 +74,8 @@ func init() {
 
 	emailFeedBack.Init()
 
-	//load login page as template.
-	var err error
-	loginTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/login.html")
-	if err != nil {
-		log.Fatalf("[ERROR] %s", err)
-	}
-
-	//load notfound.html as template
-	notFoundTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/notfound.html")
-	if err != nil {
-		log.Fatalf("[ERROR] %s", err)
-	}
+	//load html files as templates into memory for speed increase
+	preLoadTemplates()
 
 }
 
@@ -97,11 +87,26 @@ func init() {
 //////////////////////////////////////////////////////////////////////////
 func main() {
 
+	cspSrc := buildCSPolicy()
+
+	secureMiddleware := secure.New(secure.Options{
+		AllowedHosts:          []string{"pass.ninja"},
+		SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
+		STSSeconds:            315360000,
+		STSIncludeSubdomains:  true,
+		FrameDeny:             true,
+		ContentTypeNosniff:    true,
+		BrowserXssFilter:      true,
+		ContentSecurityPolicy: cspSrc,
+		IsDevelopment:         true,
+	})
+
 	flag.Parse() //parse flags
 
 	root := web.New()
 	root.Use(middleware.Logger)
 	root.Use(middleware.Recoverer)
+	root.Use(secureMiddleware.Handler)
 	root.Use(gzip.GzipHandler) //gzip everything
 
 	//Login
@@ -144,7 +149,7 @@ func main() {
 	announceEtcd()
 
 	//customCA Server is only used for testing
-	customCAServer := &graceful.Server{Addr: ":10443", Handler: root}
+	customCAServer := &graceful.Server{Addr: ":443", Handler: root}
 	customCAServer.TLSConfig = addRootCA("/etc/ninja/tls/myCA.cer")
 	customCAServer.ListenAndServeTLS("/etc/ninja/tls/mycert1.cer", "/etc/ninja/tls/mycert1.key")
 
@@ -201,6 +206,8 @@ func announceEtcd() {
 //////////////////////////////////////////////////////////////////////////
 func generateFileName(passName string) string {
 
+	//todo: get all crypto hashing here...
+	//idHash := utils.HashSha1Bytes([]byte(passName + time.Now().String()))
 	idHash := utils.GenerateFnvHashID(passName, time.Now().String()) //generate a hash using pass orgname + color + time
 	passFileName := strings.Replace(passName, " ", "-", -1)          //remove spaces from organization name
 	fileName := fmt.Sprintf("%s-%d", passFileName, idHash)
@@ -253,6 +260,39 @@ func addValidators() {
 		}
 		return govalidator.IsAlpha(str)
 
+	})
+
+	//general text plus a few special characters
+	govalidator.TagMap["encode"] = govalidator.Validator(func(str string) bool {
+
+		//actually using as whitelist. Strip these chars example: ISO_8859-10:1992!
+		str = govalidator.BlackList(str, `-_.+:`)
+
+		//then test UTFLetterNum becomes: ISO8859101992! which returns false
+		if !govalidator.IsAlphanumeric(str) {
+			return false
+		}
+
+		//return true if all passed above.
+		return true
+	})
+
+	//general text plus a few special characters
+	govalidator.TagMap["msg"] = govalidator.Validator(func(str string) bool {
+
+		log.Printf("[DEBUG] %s", str)
+		//use as whitelist. Strip these chars example: 달기&Co.;
+		pattern := "[" + `&. ~()':/?"!--+_%@#,\s` + "]+"
+		str = govalidator.ReplacePattern(str, pattern, "")
+
+		log.Printf("[DEBUG] %s", str)
+		//then test UTFLetterNum becomes: 달기Co;, which returns false
+		if !govalidator.IsUTFLetterNumeric(str) {
+			return false
+		}
+
+		//return true if all passed above.
+		return true
 	})
 
 	//check to make sure its a valid png image datauri
@@ -324,12 +364,10 @@ func createSessionID() (*http.Cookie, error) {
 
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Try to find the token in an http.Request.
+// parseFromRequest Tries to find the token in an http.Request.
 // This method will call ParseMultipartForm if there's no token in the header.
 // Currently, it looks in the Authorization header as well as
 // looking for an 'access_token' request parameter in req.Form.
-//////////////////////////////////////////////////////////////////////////
 func parseFromRequest(req *http.Request, keyFunc jwt.Keyfunc) (token *jwt.Token, err error) {
 
 	// Look for an Authorization header
@@ -576,4 +614,104 @@ func maxAgeHandler(maxAge int, h http.Handler) http.Handler {
 		w.Header().Add("Cache-Control", fmt.Sprintf("no-transform,public,max-age=%d,s-maxage=%d", maxAge, serverMaxAge))
 		h.ServeHTTP(w, r)
 	})
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func setAuthProviders() {
+
+	type provider struct {
+		AuthURI          string `json:"auth_uri"`
+		ClientSecret     string `json:"client_secret"`
+		TokenURI         string `json:"token_uri"`
+		RedirectURI      string `json:"redirect_uri"`
+		ClientID         string `json:"client_id"`
+		JavascriptOrigin string `json:"javascript_origin"`
+	}
+	type providers struct {
+		Google   *provider `json:"google"`
+		Linkedin *provider `json:"linkedin"`
+	}
+	authP := &providers{}
+
+	providerVar, err := utils.GetCryptKey(secretKeyRing, "/oauth/providers")
+	utils.Check(err)
+	err = json.Unmarshal(providerVar, &authP)
+	utils.Check(err)
+
+	goth.UseProviders(
+		gplus.New(authP.Google.ClientID, authP.Google.ClientSecret, authP.Google.RedirectURI),
+		linkedin.New(authP.Linkedin.ClientID, authP.Linkedin.ClientSecret, authP.Linkedin.RedirectURI),
+	)
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func buildCSPolicy() string {
+
+	//TODO: 'unsafe-eval' should be removed when a new datetime picker is selected
+
+	styleHash1 := "'sha256-OhN3Otr1Zz7s_rehKYkBeODCQWNYqNJvWI-Yp0YJJhI='" //eventticket.svg
+	styleHash2 := "'sha256-rJJyMDPmHMZS0mPmL877gjjApxGMVa4522UDb4ctw7I='" //webcomponents.js 7059
+	styleHash3 := "'sha256-3m4uh7Ti2CB_4MwwXKXBqcyUVLLr7fYp_-3JMbEr7Xc='" //back.svg
+	styleHash4 := "'sha256-M--wiR7hOXXX_WqIoRuQQFFzOfS922jlrxq62uZEkLA='" //boardingpass.svg
+	styleHash5 := "'sha256-hREc081rgBIohKe7SykdwzKlLSyEG5uX0H_HitOG6Rw='" //coupon.svg
+	styleHash6 := "'sha256-SIbroM9WWbSNLD633pSS4_Y_i6tCwP5_MQIEF-mBN_w='" //storeCard.svg
+
+	//TODO: sha256 hashs problematic when minified?
+
+	scriptHash1 := "'sha256-jyt8dE8Ni1-ffuFSRkU0oJb7KniYkUefxOF3XKxjg4g='" //google anaylytics inline script
+
+	defaultSrc := "default-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;"
+	styleSrc := "style-src 'self' 'unsafe-inline' " + styleHash1 + " " + styleHash3 + " " + styleHash4 + " " + styleHash5 + " " + styleHash6 + " " + styleHash2 + " https://cdnjs.cloudflare.com https://fonts.googleapis.com ;"
+	scriptSrc := "script-src 'self' 'unsafe-eval' " + scriptHash1 + " https://cdnjs.cloudflare.com https://ajax.googleapis.com https://maps.googleapis.com https://maps.gstatic.com https://www.google-analytics.com;"
+	childSrc := "child-src 'none';"
+	objectSrc := "object-src 'none';"
+	imageSrc := "img-src 'self' *.global.ssl.fastly.net https://cdnjs.cloudflare.com data:;"
+
+	return defaultSrc + scriptSrc + styleSrc + imageSrc + childSrc + objectSrc
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+//////////////////////////////////////////////////////////////////////////
+func preLoadTemplates() {
+
+	//load login page as template.
+	var err error
+	loginTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/login.html")
+	if err != nil {
+		log.Fatalf("[ERROR] %s", err)
+	}
+
+	//load notfound.html as template
+	notFoundTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/notfound.html")
+	if err != nil {
+		log.Fatalf("[ERROR] %s", err)
+	}
+
+	//load index.html as template
+	indexTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/index.html")
+	if err != nil {
+		log.Fatalf("[ERROR] %s", err)
+	}
+
+	//load account.html as template
+	accountTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/auth/accounts.html")
+	if err != nil {
+		log.Fatalf("[ERROR] %s", err)
+	}
+
 }

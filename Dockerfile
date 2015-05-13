@@ -30,7 +30,7 @@ EXPOSE 80 443
 #docker build -t passninja/build-web .
 
 #access and run bash in build container
-#docker run -it -v "$PWD":/go/src/bitbucket.org/passNinja passninja/build-web /bin/bash -i
+#docker run --rm -it -v "$PWD":/go/src/bitbucket.org/passNinja passninja/build-web /bin/bash -i
 
 #to compile app in container
 #docker run --rm -v "$PWD":/go/src/bitbucket.org/passNinja passninja/build-web go build -v

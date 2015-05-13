@@ -205,7 +205,8 @@ var login = (function(ninjaSignIn, undefined) {
 
 
     ***********************************************************/
-  function logOut() {
+  function logOut(e) {
+    e.preventDefault();
     window.sessionStorage.clear(); //clear it all
     eraseCookie('token'); //remove token.
     window.location = "/";

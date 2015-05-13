@@ -100,4 +100,4 @@
       }
     };
 
-  }(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}));
+  }(passNinja.toolkit, this.passBuilder = passNinja.passBuilder || {}));

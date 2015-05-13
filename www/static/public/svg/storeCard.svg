@@ -4,14 +4,14 @@
 <![CDATA[
 	svg.storeCard .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
 	svg.storeCard .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
-	svg.storeCard .label-text{font-size:11px; font-family:'Helvetica-Bold';}
-	svg.storeCard .value-text{font-size:18px; font-family:'Helvetica-Light';}
-	svg.storeCard .logo-text{font-size:18px; font-family:'Helvetica-Bold';}
+	svg.storeCard .label-text{font-size:11px; font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.storeCard .value-text{font-size:18px; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.storeCard .logo-text{font-size:18px; font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
 	svg.storeCard .headerFields.value-text{font-size:20px;}
 	svg.storeCard .barcode{font-size:40px;}
-	svg.storeCard .primaryFields.label-text{font-size:18px; font-family:'Helvetica-Light';}
-	svg.storeCard .primaryFields.value-text{font-size:62px; font-family:'Helvetica-Light';}
-	svg.storeCard .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.storeCard .primaryFields.label-text{font-size:18px; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.storeCard .primaryFields.value-text{font-size:62px; font-weight: 100; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.storeCard .alt-text{font-size:18px; fill: #000000; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif; }
 	svg.storeCard .bar-btn-rect {fill: #ffffff;}
 ]]>
 </style>

@@ -413,22 +413,31 @@
     //add <svg> for each pass listed in the data array.
     passAnchor.each(function(d, i) {
       var shadowRootElm = this.createShadowRoot();
-      app.toolkit.loadSVG(d.passtype, function(error, xml) { //svg load callback
+      app.toolkit.loadSVG(d.passtype, function() { //svg load callback
 
-        if (app.toolkit.checkLoadError(error)) return;
+        if (this.status >= 200 && this.status < 400) {
 
-        var wrapSVG = wrap(xml.documentElement); //wrap the svg in webcomponents.js polyfill for use with shadowdom
-        shadowRootElm.appendChild(wrapSVG); //append svg
+          var xmlDoc = this.responseXML;
+          var wrapSVG = wrap(xmlDoc.documentElement); //wrap the svg in webcomponents.js polyfill for use with shadowdom
+          shadowRootElm.appendChild(wrapSVG); //append svg
 
-        app.setPassActive('#pass-' + i + ' a', i); //set this pass as active
-        console.log(passNinja.getSvgRoot());
+          app.setPassActive('#pass-' + i + ' a', i); //set this pass as active
+          console.log(passNinja.getSvgRoot());
 
-        //set all <svg> to have unique ids and unique <lineargradiant> ids
-        passNinja.getSvgRoot().select('svg').attr('id', d.passtype + i);
-        passNinja.getSvgRoot().select('#linear-grad').attr('id', 'linear-' + d.passtype + i);
-        passNinja.getSvgRoot().select('.bg-grad').attr('fill', 'url(#linear-' + d.passtype + i + ")");
+          //set all <svg> to have unique ids and unique <lineargradiant> ids
+          passNinja.getSvgRoot().select('svg').attr('id', d.passtype + i);
+          passNinja.getSvgRoot().select('#linear-grad').attr('id', 'linear-' + d.passtype + i);
+          passNinja.getSvgRoot().select('.bg-grad').attr('fill', 'url(#linear-' + d.passtype + i + ")");
 
-        app.passBuilder.build(); //build it
+          app.passBuilder.build(); //build it
+
+        } else {
+
+          console.warn(this.responseText);
+          var error = JSON.parse(this.responseText);
+          app.toolkit.alertDisplay('error', error.statusText);
+
+        }
 
       });
     });

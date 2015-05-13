@@ -5,15 +5,15 @@
 	svg.boardingPass .icon-line{fill:none;stroke:#FFFFFF;stroke-miterlimit:10;}
 	svg.boardingPass .icon-font{font-family:'TimesNewRomanPS-BoldMT'; fill:#FFFFFF;}
 	svg.boardingPass .bg-grad{stroke:#00AEEF;stroke-width:0.25;stroke-miterlimit:10;}
-	svg.boardingPass .font-bold{font-family:'Helvetica-Bold';}
+	svg.boardingPass .font-bold{font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
 	svg.boardingPass .fold-line{fill:none;stroke:#21519F;stroke-width:0.25;stroke-miterlimit:10;}
-	svg.boardingPass .font-lite{font-family:'Helvetica-Light';}
-	svg.boardingPass .label-text{font-size:11px; font-family:'Helvetica-Bold';}
-	svg.boardingPass .value-text{font-size:16px; font-family:'Helvetica-Light';}
+	svg.boardingPass .font-lite{font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.boardingPass .label-text{font-size:11px; font-weight: 700; font-family:'Helvetica-Bold', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+	svg.boardingPass .value-text{font-size:16px; font-weight: 300; font-family:'Helvetica-Light', Helvetica ,Arial, 'Lucida Grande', sans-serif;}
 	svg.boardingPass .logo-text{font-size:18px;}
 	svg.boardingPass .headerFields.value-text{font-size:20px;}
 	svg.boardingPass .primaryFields.value-text,.barcode{font-size:40px;}
-	svg.boardingPass .alt-text{font-size:18px; fill: #000000; font-family:'Helvetica-Light'; }
+	svg.boardingPass .alt-text{font-size:18px; fill: #000000; font-weight: 300; font-family:'Helvetica-Light', Helvetica, Arial, 'Lucida Grande', sans-serif; }
 	svg.boardingPass .bar-btn-rect {fill: #ffffff;}
 ]]>
 </style>

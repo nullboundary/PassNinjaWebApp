@@ -50,7 +50,7 @@
       return 2;
     },
     init: function() {
-			init();
+      init();
     },
     save: function(index) {
       submitStart();
@@ -71,35 +71,35 @@
 
       onePageScroll.moveBlock(false);
 
-			if (pb.template().id == "") {
+      if (pb.template().id == "") {
 
-      var passData = {
-        'name': pb.template().name,
-        'status': pb.status(pb.startPage.index()),
-        'passtype': pb.template().passtype,
-        'keyDoc': {
-          'description': pb.template().keyDoc.description,
-          'organizationName': pb.template().keyDoc.organizationName
-        }
-      };
+        var passData = {
+          'name': pb.template().name,
+          'status': pb.status(pb.startPage.index()),
+          'passtype': pb.template().passtype,
+          'keyDoc': {
+            'description': pb.template().keyDoc.description,
+            'organizationName': pb.template().keyDoc.organizationName
+          }
+        };
 
-      pb.create(passData);
+        pb.create(passData);
 
-		} else { //Updating an old pass
+      } else { //Updating an old pass
 
-			var passData = {
-				'name': pb.template().name,
-				'keyDoc': {
-					'description': pb.template().keyDoc.description,
-					'organizationName': pb.template().keyDoc.organizationName
-				}
-			};
-			pb.update(pb.template().id, passData);
-		}
+        var passData = {
+          'name': pb.template().name,
+          'keyDoc': {
+            'description': pb.template().keyDoc.description,
+            'organizationName': pb.template().keyDoc.organizationName
+          }
+        };
+        pb.update(pb.template().id, passData);
+      }
 
 
 
     }
   };
 
-}(passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(passNinja.toolkit, this.passEditor = passNinja.passEditor || {}, jQuery));

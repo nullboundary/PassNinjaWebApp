@@ -16,7 +16,7 @@
       .on('click', onDelImage);
 
     pb.svg().selectAll('rect.img-btn-rect')
-    .on('click', onImageRectClick); //add event to rect
+      .on('click', onImageRectClick); //add event to rect
 
   }
 
@@ -213,10 +213,10 @@
 
           reader.onload = function(e) {
 
-            setImageData(currentEditTarget,e.target.result); //set uploaded image as selected image type
+            setImageData(currentEditTarget, e.target.result); //set uploaded image as selected image type
 
-            if (currentEditTarget == "logo"){ //FIXME: This is temporary should change
-              setImageData("icon",e.target.result); //set uploaded logo image as icon
+            if (currentEditTarget == "logo") { //FIXME: This is temporary should change
+              setImageData("icon", e.target.result); //set uploaded logo image as icon
             }
 
             app.passBuilder.image.set(); //update the pass svg
@@ -236,13 +236,13 @@
 
 
   ***********************************************************/
-  function setImageData(imageName,imageData) {
+  function setImageData(imageName, imageData) {
 
     if (!replaceImage(imageName, imageData)) {
 
       var imageObj = {
         image: imageData,
-        name:imageName
+        name: imageName
       };
 
       pb.template().images.push(imageObj); //add image to image array
@@ -317,4 +317,4 @@
 
   };
 
-}(window.passNinja, passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(window.passNinja, passNinja.toolkit, this.passEditor = passNinja.passEditor || {}, jQuery));

@@ -25,7 +25,7 @@
     d3.select('button#btn-del-back-field')
       .on('click', onDelField);
 
-    if(pb.template().keyDoc[pb.passType()].backFields){
+    if (pb.template().keyDoc[pb.passType()].backFields) {
       d3.select('button#btn-del-back-field').call(tk.enable);
     }
 
@@ -362,7 +362,7 @@
     var backFields = pb.template().keyDoc[pb.passType()].backFields;
     backFields.splice(editGroup.index, 1); //remove this field data from the keyDoc
 
-    if(backFields.length <= 0){ //disable delete button if no fields to delete.
+    if (backFields.length <= 0) { //disable delete button if no fields to delete.
       delete pb.template().keyDoc[pb.passType()].backFields;
       d3.select(this).call(tk.disable);
     }
@@ -431,7 +431,7 @@
 
     setBackFields2();
 
-    if(backFields.length > 0){
+    if (backFields.length > 0) {
       d3.select('#btn-del-back-field').call(tk.enable);
     }
 
@@ -524,7 +524,7 @@
       console.log('rectHeight:' + rectHeight + ' bbOx:' + textHeight);
       backFieldRect.attr('height', rectHeight + 25);
 
-      if (rectHeight <= 0){ //no fields, make the background rectangle 0 height
+      if (rectHeight <= 0) { //no fields, make the background rectangle 0 height
         backFieldRect.attr('height', 0);
       }
 
@@ -601,4 +601,4 @@
 
   };
 
-}(passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(passNinja.toolkit, this.passEditor = passNinja.passEditor || {}, jQuery));

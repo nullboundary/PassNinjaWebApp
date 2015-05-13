@@ -68,9 +68,9 @@
   }
 
   /***********************************************************
-
-
-  ***********************************************************/
+   
+   
+   ***********************************************************/
   function setHighLight(selectID) {
     //set and clear select highlight style with 'select class'
     var pass = pb.svg();
@@ -82,9 +82,9 @@
   }
 
   /***********************************************************
-
-
-	***********************************************************/
+   
+   
+   ***********************************************************/
   function configTextInputs() {
 
     var groupType = pb.template().keyDoc[pb.passType()][editGroup.dataType]; //example: aux
@@ -195,9 +195,9 @@
 
     }
     /***********************************************************
-
-
-    ***********************************************************/
+     
+     
+     ***********************************************************/
   function delMutateItem(keyValue, groupType, groupIndex) {
 
       if (pb.template().mutatelist == undefined) return; //no mutatelist items, don't bother
@@ -242,9 +242,9 @@
       }
     }
     /***********************************************************
-
-
-    ***********************************************************/
+     
+     
+     ***********************************************************/
   function loadCurrency() {
 
     if (d3.select('#currency').empty()) {
@@ -355,7 +355,9 @@
       //setup date picker
       $('#popValue').datetimepicker({
         timepicker: false,
-        format: 'Y/m/d',
+        format: '', //'DD-MM-YYYY',
+        formatDate: 'DD-MM-YYYY',
+        theme: 'dark',
         onChangeDateTime: onDateSubmit,
       });
 
@@ -372,9 +374,10 @@
       //setup time picker
       $('#popValue').datetimepicker({
         datepicker: false,
-        format: 'g:i A',
-        formatTimeScroller: 'g:i A' /*uppercase AM/PM now*/ ,
+        format: '', //hh:mm a', //'g:i A',
+        formatTimeScroller: 'hh:mm a', //'g:i A' /*uppercase AM/PM now*/ ,
         step: 15,
+        theme: 'dark',
         onChangeDateTime: onTimeSubmit,
       });
 
@@ -489,7 +492,7 @@
     }
 
     var groupId = editGroup.svgType + newSvgGroupIndex; //example: aux4
-    var keyValue = groupId + "-" + tk.gUID();
+    var keyValue = groupId + tk.gUID();
 
     //1 add empty data to keydoc (with filler text?)
     var fieldObject = {
@@ -559,9 +562,10 @@
         //setup time picker
         $('#popValue').datetimepicker({
           datepicker: false,
-          format: 'g:i A',
-          formatTimeScroller: 'g:i A' /*uppercase AM/PM now*/ ,
+          format: '', //'hh:mm A', //'g:i A',
+          formatTimeScroller: 'hh:mm A', //'g:i A' /*uppercase AM/PM now*/ ,
           step: 15,
+          theme: 'dark',
           onChangeDateTime: onTimeSubmit,
         });
         break;
@@ -571,7 +575,8 @@
         //setup date picker
         $('#popValue').datetimepicker({
           timepicker: false,
-          format: 'Y/m/d',
+          format: '', //'DD-MM-YYYY', //'Y/m/d',
+          theme: 'dark',
           onChangeDateTime: onDateSubmit,
         });
 
@@ -596,9 +601,9 @@
   }
 
   /***********************************************************
-
-
-  ***********************************************************/
+   
+   
+   ***********************************************************/
   function clearStyle() {
 
     for (var key in editGroup.data) {
@@ -628,10 +633,13 @@
 
       editGroup.data.label = d3.select('input#popLabel').node().value.toUpperCase(); //get input box label
 
+      //if the argument valueIsSet doesn't exist
       if (!valueIsSet) {
         if (editGroup.data.numberStyle || editGroup.data.currencyCode) {
+          //set value from input as number
           editGroup.data.value = Number(d3.select('input#popValue').node().value);
         } else {
+          //set value from input as regular text
           editGroup.data.value = d3.select('input#popValue').node().value;
         }
 
@@ -661,10 +669,14 @@
 
     Handler
 
+    onDateSubmit is an event handler called by dateTimePicker.
+
     ***********************************************************/
   function onDateSubmit(e) {
 
-    editGroup.data.value = e;
+    var jsDate = new Date(e._i);
+    console.log(jsDate.toISOString());
+    editGroup.data.value = jsDate.toISOString(); //set time value. eg: 2006-01-02T15:04:05.000Z
 
     var dateStyle = d3.select('#timeDate-format').node().value;
     if (dateStyle != 'None') {
@@ -679,10 +691,15 @@
 
   Handler
 
+  onTimeSubmit is an event handler called by dateTimePicker.
+
   ***********************************************************/
   function onTimeSubmit(e) {
 
-    editGroup.data.value = e;
+    //make js date object to make sure format is always the same. 
+    var time = new Date(e._i);
+    console.log(time.toISOString());
+    editGroup.data.value = time.toISOString(); //set time value. eg: 2006-01-02T15:04:05.000Z
 
     var timeStyle = d3.select('#timeDate-format').node().value;
     if (timeStyle != 'None') {
@@ -820,9 +837,9 @@
   }
 
   /***********************************************************
-
-
-  ***********************************************************/
+   
+   
+   ***********************************************************/
   function onFieldsSave() {
 
     console.log(pb.template().keyDoc[pb.passType()]);
@@ -849,6 +866,12 @@
       'primaryFields': passKey.primaryFields,
       'secondaryFields': passKey.secondaryFields
     };
+
+    //TODO: need a way to select this!
+    if (pb.passType() == "boardingPass") {
+      passData.keyDoc.boardingPass.transitType = "PKTransitTypeGeneric";
+    }
+
 
     console.log(passData);
 
@@ -901,4 +924,4 @@
 
   };
 
-}(window.passNinja, passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(window.passNinja, passNinja.toolkit, this.passEditor = passNinja.passEditor || {}, jQuery));

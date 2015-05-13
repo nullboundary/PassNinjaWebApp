@@ -81,7 +81,7 @@ type passImage struct {
 // Information that is required for all passes.
 //////////////////////////////////////////////////////////////////////////
 type passKeys struct {
-	Description        string `json:"description,omitempty" gorethink:"description,omitempty"`               //Brief description of the pass, used by the iOS accessibility technologies.
+	Description        string `json:"description,omitempty" gorethink:"description,omitempty" valid:"msg"`   //Brief description of the pass, used by the iOS accessibility technologies.
 	FormatVersion      int    `json:"formatVersion,omitempty" gorethink:"formatVersion,omitempty"`           //Version of the file format. The value must be 1.
 	OrganizationName   string `json:"organizationName,omitempty" gorethink:"organizationName,omitempty"`     //Display name of the organization that originated and signed the pass.
 	PassTypeIdentifier string `json:"passTypeIdentifier,omitempty" gorethink:"passTypeIdentifier,omitempty"` //Pass type identifier, as issued by Apple. The value must correspond with your signing certificate.
@@ -150,7 +150,7 @@ type passKeys struct {
 	ForegroundColor    string   `json:"foregroundColor,omitempty" gorethink:"foregroundColor,omitempty" valid:"rgbcolor"` //Optional. Foreground color of the pass, specified as a CSS-style RGB triple.
 	GroupingIdentifier string   `json:"groupingIdentifier,omitempty" gorethink:"groupingIdentifier,omitempty"`            //Optional. Use this to group passes that are tightly related, such as the boarding passes for different connections of the same trip.
 	LabelColor         string   `json:"labelColor,omitempty" gorethink:"labelColor,omitempty" valid:"rgbcolor"`           //Optional. Color of the label text, specified as a CSS-style RGB triple.
-	LogoText           string   `json:"logoText,omitempty" gorethink:"logoText,omitempty"`                                //Optional. Text displayed next to the logo on the pass.
+	LogoText           string   `json:"logoText,omitempty" gorethink:"logoText,omitempty" valid:"msg"`                    //Optional. Text displayed next to the logo on the pass.
 	SuppressStripShine bool     `json:"suppressStripShine,omitempty" gorethink:"suppressStripShine,omitempty"`            //Optional. If true, the strip image is displayed without a shine effect.
 
 	//////////////////////////////////////////////////////////////////////////

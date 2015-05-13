@@ -254,8 +254,15 @@
       var uri = encodeURI(url);
       console.log(uri);
 
+      var req = new XMLHttpRequest();
+      req.open('GET', uri, true);
+      req.overrideMimeType('image/svg+xml');
+      req.setRequestHeader('Accept','image/svg+xml');
+      req.onload = callback;
+      req.send();
+
       //load svg xml + place into document
-      d3.xml(uri, 'image/svg+xml', callback);
+      //d3.xml(uri, 'image/svg+xml', callback);
 
     },
     /***********************************************************

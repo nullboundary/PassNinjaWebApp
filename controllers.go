@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	//"path"
 	"time"
 
 	"bitbucket.org/cicadaDev/utils"
@@ -11,7 +12,6 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/gplus"
 	"github.com/markbates/goth/providers/linkedin"
-	"github.com/markbates/goth/providers/twitter"
 	"github.com/zenazn/goji/web"
 )
 
@@ -52,7 +52,9 @@ func handleIndex(c web.C, res http.ResponseWriter, req *http.Request) {
 	}
 	log.Println("[DEBUG] /usr/share/ninja/www/static/public/index.html")
 	http.SetCookie(res, sidcookie)
-	http.ServeFile(res, req, "/usr/share/ninja/www/static/public/index.html")
+	indexTemplate.Execute(res, nil)
+
+	//http.ServeFile(res, req, "/usr/share/ninja/www/static/public/index.html")
 
 }
 
@@ -78,7 +80,8 @@ func handleLoginSuccess(c web.C, res http.ResponseWriter, req *http.Request) {
 func handleAccountPage(c web.C, res http.ResponseWriter, req *http.Request) {
 
 	log.Printf("[DEBUG] handlePassListPage %s", req.URL.Path[1:])
-	http.ServeFile(res, req, "/usr/share/ninja/www/static/auth/accounts.html")
+	accountTemplate.Execute(res, nil)
+	//http.ServeFile(res, req, "/usr/share/ninja/www/static/auth/accounts.html")
 
 }
 
@@ -212,8 +215,8 @@ func handleGetPassLink(c web.C, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	passURL := downloadServer + passData.FileName
-	log.Println(passURL)
+	passURL := downloadServer + passData.FileName //path.Join(downloadServer, passData.FileName)
+	log.Printf("[DEBUG] %s", passURL)
 
 	receipt := map[string]string{"name": passData.Name, "url": passURL}
 	err := utils.WriteJson(res, receipt, true)
@@ -268,8 +271,8 @@ func handleMutatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	passURL := downloadServer + passData.FileName
-	log.Println(passURL)
+	passURL := downloadServer + passData.FileName //path.Join(downloadServer, passData.FileName)
+	log.Printf("[DEBUG] %s", passURL)
 
 	receipt := map[string]string{"name": passData.Name, "url": passURL} //should return a unique serial so it can be accessed again?
 	err = utils.WriteJson(res, receipt, true)
@@ -416,7 +419,7 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	if passInputFrag.Status == "ready" || passInputFrag.Status == "api" {
 
 		//generateFileName makes a unique Id for the pass file name
-		passInputFrag.FileName = generateFileName(passInputFrag.Name)
+		passInputFrag.FileName = generateFileName(passInputFrag.Name) //FIXME: only generate 1 time if pass changes. use a hash to see change.
 
 		if ok, _ := db.FindById("users", userID, &passUser); !ok {
 			log.Printf("[ERROR] user not found %s", userID)
@@ -467,8 +470,6 @@ func handleLogin(c web.C, res http.ResponseWriter, req *http.Request) {
 		sess = &gplus.Session{}
 	} else if provider.Name() == "linkedin" {
 		sess = &linkedin.Session{}
-	} else if provider.Name() == "twitter" {
-		sess = &twitter.Session{}
 	}
 
 	//verify oauth state is same as session id. protect against cross-site request forgery

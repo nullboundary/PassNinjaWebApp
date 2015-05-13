@@ -151,9 +151,9 @@
 
         //set horizontal alignment values for text element
         textGroups.selectAll('text')
-        .each(function(d, i) {
-          setAlignment(d3.select(this));
-        });
+          .each(function(d, i) {
+            setAlignment(d3.select(this));
+          });
 
 
       }
@@ -167,30 +167,30 @@
     ***********************************************************/
     function addTextElem(textGroups, fieldType, elemList) {
 
-      var fieldPKType = pkFieldType[fieldType]; //example: auxiliaryFields
+        var fieldPKType = pkFieldType[fieldType]; //example: auxiliaryFields
 
-      //loop through array of label and value
-      var len = elemList.length;
-      for (var index = 0; index < len; ++index) {
+        //loop through array of label and value
+        var len = elemList.length;
+        for (var index = 0; index < len; ++index) {
 
-        var textElem = textGroups
-          .insert('text', d3.select(this) + 'rect.text-btn-rect') //insert the text before the rect
-          .attr('id', function(d, i) {
-            var idIndex = i + 1; //field id start counting at 1
-            return fieldType + '-' + elemList[index] + idIndex; //example: aux-value3
-          })
-          .attr('dominant-baseline', 'hanging') //set text top-baseline 0,0 for most browsers
-          .attr('class', function(d) {
-            return elemList[index] + '-text ' + fieldPKType; //example: "value-text auxiliaryFields"
-          });
+          var textElem = textGroups
+            .insert('text', d3.select(this) + 'rect.text-btn-rect') //insert the text before the rect
+            .attr('id', function(d, i) {
+              var idIndex = i + 1; //field id start counting at 1
+              return fieldType + '-' + elemList[index] + idIndex; //example: aux-value3
+            })
+            .attr('dominant-baseline', 'hanging') //set text top-baseline 0,0 for most browsers
+            .attr('class', function(d) {
+              return elemList[index] + '-text ' + fieldPKType; //example: "value-text auxiliaryFields"
+            });
+        }
+
       }
-
-    }
-    /***********************************************************
+      /***********************************************************
 
 
-    ***********************************************************/
-    function setTextElemPos(textGroups,fieldType) {
+      ***********************************************************/
+    function setTextElemPos(textGroups, fieldType) {
 
       var firstLineSize = 0; //font size of the first line (label or value)
       var textY = 0;
@@ -202,7 +202,7 @@
         console.log(textList);
         //select first text child
         var firstElem = textList[0][0];
-        var first = d3.select(firstElem).attr('y', 0);   //set Y = 0 for first
+        var first = d3.select(firstElem).attr('y', 0); //set Y = 0 for first
         firstLineSize = parseFloat(first.style('font-size'));
 
         //select 2nd text child
@@ -210,7 +210,7 @@
         textY = firstLineSize + 5; //second element, usually value. Set the Y to be under first line.
         if (firstLineSize > 30) textY = firstLineSize - 5
         console.log("textY:" + textY);
-        d3.select(second).attr('y', textY);  //set Y = first + 5 for second
+        d3.select(second).attr('y', textY); //set Y = first + 5 for second
 
         updateRectSize(groupElem, fieldType)
 
@@ -521,15 +521,15 @@
         .attr('dominant-baseline', 'hanging') //set text top-baseline 0,0 for most browsers
         .text(pb.template().keyDoc.logoText);
 
-        var logoWidth = logoGroup.node().getBBox().width;// + fieldMargin; //field group width + space between
-        console.log(logoWidth);
+      var logoWidth = logoGroup.node().getBBox().width; // + fieldMargin; //field group width + space between
+      console.log(logoWidth);
 
-        while (logoWidth >= 180) {
-          //truncateText(logoGroup.select('text.logo-text'));
-          var valText = logoGroup.select('text.logo-text').text();
-          logoGroup.select('text.logo-text').text(valText.slice(0, -1)); //slice off the last 2 characters add '...'
-          logoWidth = logoGroup.node().getBBox().width;// + fieldMargin; //field group width + space between
-        }
+      while (logoWidth >= 180) {
+        //truncateText(logoGroup.select('text.logo-text'));
+        var valText = logoGroup.select('text.logo-text').text();
+        logoGroup.select('text.logo-text').text(valText.slice(0, -1)); //slice off the last 2 characters add '...'
+        logoWidth = logoGroup.node().getBBox().width; // + fieldMargin; //field group width + space between
+      }
 
       if (pb.template().keyDoc.logoText) { //if logoText exists
         //update rectangle size
@@ -575,4 +575,4 @@
       }
     };
 
-  }(passNinja.toolkit, passBuilder = passNinja.passBuilder || {}));
+  }(passNinja.toolkit, this.passBuilder = passNinja.passBuilder || {}));

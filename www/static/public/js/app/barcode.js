@@ -181,4 +181,4 @@
     }
   };
 
-}(window.passNinja, passNinja.toolkit, passEditor = passNinja.passEditor || {}, jQuery));
+}(window.passNinja, passNinja.toolkit, this.passEditor = passNinja.passEditor || {}, jQuery));
