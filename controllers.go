@@ -345,11 +345,22 @@ func handleCreatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	//The Jwt lists the user Id. Use it as one of the seeds for the pass token id
 	userID := c.Env["jwt-userid"].(string)
 	newPass := c.Env["passInput"].(pass) //get the input fragment data from passReadVerify middleware
+	passUser := &userModel{}
 
 	//pass is new, generate a token id
 	newPass.Id = utils.GenerateToken(passTokenKey, newPass.Name, userID) //get id as token from base64 hmac
 	newPass.Updated = time.Now()
 	newPass.UserId = userID
+	newPass.FileName = generateFileName(newPass.Name)
+
+	//set pass limit remain
+	if ok, _ := db.FindById("users", userID, &passUser); !ok {
+		log.Printf("[ERROR] user not found %s", userID)
+		utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
+		return
+	}
+	newPass.PassRemain = passUser.SubPlan //count down from limit
+
 	log.Println(userID)
 
 	err = db.Add("pass", newPass)
@@ -404,8 +415,8 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 	utils.Check(err)
 
 	passInputFrag := c.Env["passInput"].(pass) //get the input fragment data from passReadVerify middleware
-	userID := c.Env["jwt-userid"].(string)
-	passUser := &userModel{}
+
+	//userID := c.Env["jwt-userid"].(string)
 
 	//read the frag check for a mutateList, if there append it from the previous mutate list.
 	if len(passInputFrag.MutateList) > 0 {
@@ -413,32 +424,40 @@ func handleUpdatePass(c web.C, res http.ResponseWriter, req *http.Request) {
 		passInputFrag.MutateList = append(passData.MutateList, passInputFrag.MutateList...) //appending arrays on update in rethinkdb is troublesome. Append here instead.
 	}
 
-	passInputFrag.Updated = time.Now() //update the timestamp
-
 	//TODO: set status to "ready" here rather than in frontend. Also finalize all required data
-	if passInputFrag.Status == "ready" || passInputFrag.Status == "api" {
+	//if passInputFrag.Status == "ready" || passInputFrag.Status == "api" {
 
-		//generateFileName makes a unique Id for the pass file name
-		passInputFrag.FileName = generateFileName(passInputFrag.Name) //FIXME: only generate 1 time if pass changes. use a hash to see change.
+	//generateFileName makes a unique Id for the pass file name
+	//passInputFrag.FileName = generateFileName(passInputFrag.Name) //!!FIXME: only generate 1 time if pass changes. use a hash to see change.
 
-		if ok, _ := db.FindById("users", userID, &passUser); !ok {
-			log.Printf("[ERROR] user not found %s", userID)
-			utils.JsonErrorResponse(res, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
+	//}
+
+	if ok, err := db.Merge("pass", passInputFrag.Id, true, passInputFrag); !ok {
+		if err != nil {
+			log.Printf("[ERROR] %s - merging pass: %s to db", err, passInputFrag.Name)
+			utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occurred updating the pass"), http.StatusConflict)
 			return
 		}
-		//BUG: Could this be reset by re-updating the pass?
-		passInputFrag.PassRemain = passUser.SubPlan //count down from limit
-
-	}
-
-	_, err = db.Merge("pass", "id", passInputFrag.Id, passInputFrag)
-	if err != nil {
-		log.Printf("[ERROR] %s - merging pass: %s to db", err, passInputFrag.Name)
-		utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occurred updating the pass"), http.StatusConflict)
+		//unchanged
+		log.Println("[DEBUG] unchanged")
+		res.WriteHeader(http.StatusNotModified)
 		return
 	}
 
-	receipt := map[string]string{"id": passInputFrag.Id, "time": passInputFrag.Updated.String()}
+	//TODO: this sucks, is there another way? Not to update twice?
+	//if modified, update the modified time
+	//var modPassTime pass
+	//modPassTime.Id = passInputFrag.Id
+	//modPassTime.Name = passInputFrag.Name
+	//modPassTime.Updated = time.Now()
+	//_, err = db.Merge("pass", "id", modPassTime.Id, modPassTime)
+	//if err != nil {
+	//	log.Printf("[ERROR] %s - merging pass: %s to db", err, passInputFrag.Name)
+	//	utils.JsonErrorResponse(res, fmt.Errorf("a conflict has occurred updating the pass"), http.StatusConflict)
+	//	return
+	//}
+
+	receipt := map[string]string{"id": passInputFrag.Id, "time": time.Now().Format(time.RFC3339)} //update the timestamp
 	err = utils.WriteJson(res, receipt, true)
 	utils.Check(err)
 
@@ -601,7 +620,7 @@ func handleUnlink(c web.C, res http.ResponseWriter, req *http.Request) {
 	newUser.OAuthProvider = ""
 	newUser.User = goth.User{}
 
-	_, err = db.Merge("users", "id", newUser.ID, newUser)
+	_, err = db.Merge("users", newUser.ID, false, newUser)
 	if err != nil {
 		log.Println("[ERROR] db Merge Error")
 		utils.JsonErrorResponse(res, fmt.Errorf("oauth provider unlink failed"), http.StatusInternalServerError)

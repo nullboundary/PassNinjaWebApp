@@ -5,7 +5,7 @@
   /***********************************************************
 
 
-  	***********************************************************/
+   ***********************************************************/
   function init() {
 
     //setup all color sliders
@@ -17,7 +17,7 @@
   /***********************************************************
 
 
-  	***********************************************************/
+   ***********************************************************/
   function configColorSlider(sliderClass, changeClass) {
 
     var colorValue = $(changeClass).css('fill');
@@ -78,7 +78,7 @@
   /***********************************************************
 
 
-  	***********************************************************/
+   ***********************************************************/
   function updateRectStroke(selection) {
 
     //set rect stroke color
@@ -107,28 +107,29 @@
   /***********************************************************
 
 
-  	***********************************************************/
+   ***********************************************************/
   function onColorSave() {
 
     console.log('colorSave');
 
-    var bgColor = pb.svg().selectAll('.pass-bg').style('stop-color');
-    var labelColor = pb.svg().selectAll('.label-text').style('fill');
-    var valueColor = pb.svg().selectAll('.value-text').style('fill');
+    //convert to d3.rgb() to guarentee color is rgb() since safari converts to hex
+    var bgColor = d3.rgb(pb.svg().selectAll('.pass-bg').style('stop-color'));
+    var labelColor = d3.rgb(pb.svg().selectAll('.label-text').style('fill'));
+    var valueColor = d3.rgb(pb.svg().selectAll('.value-text').style('fill'));
 
     //set colors in keyDoc
-    pb.template().keyDoc.foregroundColor = valueColor;
-    pb.template().keyDoc.labelColor = labelColor;
-    pb.template().keyDoc.backgroundColor = bgColor;
+    pb.template().keyDoc.foregroundColor = 'rgb('+valueColor.r+', '+valueColor.g+', '+valueColor.b+')';
+    pb.template().keyDoc.labelColor = 'rgb('+labelColor.r+', '+labelColor.g+', '+labelColor.b+')';
+    pb.template().keyDoc.backgroundColor = 'rgb('+bgColor.r+', '+bgColor.g+', '+bgColor.b+')';
 
 
     var passData = {
       'name': pb.template().name,
       'status': pb.status(pb.colors.index()),
       'keyDoc': {
-        'labelColor': labelColor,
-        'foregroundColor': valueColor,
-        'backgroundColor': bgColor
+        'labelColor': pb.template().keyDoc.labelColor,
+        'foregroundColor': pb.template().keyDoc.foregroundColor,
+        'backgroundColor': pb.template().keyDoc.backgroundColor
       }
     };
 

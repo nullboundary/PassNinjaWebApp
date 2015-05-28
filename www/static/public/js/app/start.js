@@ -71,7 +71,7 @@
 
       onePageScroll.moveBlock(false);
 
-      if (pb.template().id == "") {
+      if (pb.template().id == '') {
 
         var passData = {
           'name': pb.template().name,
@@ -89,6 +89,7 @@
 
         var passData = {
           'name': pb.template().name,
+          'status': pb.status(pb.startPage.index()),
           'keyDoc': {
             'description': pb.template().keyDoc.description,
             'organizationName': pb.template().keyDoc.organizationName

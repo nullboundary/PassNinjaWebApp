@@ -29,15 +29,16 @@ type userModel struct {
 }
 
 type registerPass struct {
-	PassTypeId   string    `json:"id" gorethink:"id" valid:"required"`    //Pass type ID
-	SerialNumber string    `json:"serialNumber" gorethink:"serialNumber"` //Serial number that uniquely identifies the pass.
-	Updated      time.Time `json:"updated" gorethink:"updated"`           //when the pass was last updated or created
+	PassTypeId   string    `json:"id" gorethink:"id" valid:"required"`              //Pass type ID
+	SerialNumber string    `json:"serialNumber" gorethink:"serialNumber"`           //Serial number that uniquely identifies the pass.
+	Updated      time.Time `json:"updated,omitempty" gorethink:"updated,omitempty"` //when the pass was last updated or created
 }
 
 type device struct {
-	DeviceLibId string         `json:"deviceLibId" gorethink:"deviceLibId"` //The device library identifier is a Passbook-specific shared secret between the user’s device and your web server.
-	PushToken   string         `json:"pushToken" gorethink:"pushToken"`     //An APN Push token
-	PassList    []registerPass `json:"passList" gorethink:"passList"`       //a list of passes that this device has
+	DeviceLibId string         `json:"deviceLibId" gorethink:"deviceLibId"`             //The device library identifier is a Passbook-specific shared secret between the user’s device and your web server.
+	PushToken   string         `json:"pushToken" gorethink:"pushToken"`                 //An APN Push token
+	PassList    []registerPass `json:"passList" gorethink:"passList"`                   //a list of passes that this device has
+	Updated     time.Time      `json:"updated,omitempty" gorethink:"updated,omitempty"` //when the deviceLibID was last updated or created
 }
 
 type pass struct {
@@ -49,7 +50,7 @@ type pass struct {
 	KeyDoc      *passKeys         `json:"keyDoc,omitempty" gorethink:"keyDoc,omitempty"`                         //The pass.json file, all the structs used to create it
 	Images      []passImage       `json:"images,omitempty" gorethink:"images,omitempty"`                         //All the images needed for a pass
 	ManifestDoc map[string]string `json:"manifest,omitempty" gorethink:"manifest,omitempty"`                     //The manifest.json file, used to verify the content of a pass
-	Updated     time.Time         `json:"updated" gorethink:"updated" valid:"required"`                          //when the pass was last updated or created
+	Updated     time.Time         `json:"updated,omitempty" gorethink:"updated,omitempty"`                       //when the pass was last updated or created
 	Status      string            `json:"status" gorethink:"status" valid:"required"`                            //Is the pass ready for distribution, in process, or expired
 	CertId      string            `json:"cert,omitempty" gorethink:"cert,omitempty"`                             //Id to the certificate used to sign the pass
 	MutateList  []string          `json:"mutatelist,omitempty" gorethink:"mutatelist,omitempty"`                 //List of value keys used to change the pass via the api upon issuing

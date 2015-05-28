@@ -9,7 +9,7 @@
   function init() {
 
     d3.select('select#cert-select')
-      .on('input', onCertSelect);
+      .on('change', onCertSelect);
   }
 
   /***********************************************************

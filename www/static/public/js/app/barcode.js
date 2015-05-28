@@ -9,8 +9,8 @@
   function init() {
 
     //handle selection of barcode format
-    d3.select('select#bar-format')
-      .on('input', onBarcodeSelect);
+    d3.select('#bar-format')
+      .on('change', onBarcodeSelect);
 
     //handle input of alt Text message
     d3.select('input#bar-alt')

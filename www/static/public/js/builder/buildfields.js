@@ -1,4 +1,4 @@
-  (function(tk, pb, undefined) {
+  (function (tk, pb, undefined) {
 
     'use strict';
 
@@ -24,57 +24,57 @@
 
     var pKNumberToJs = { //convert apple PK constant to js number format
 
-      'None': function() {
+      'None': function () {
         return d3.format('');
       },
-      'PKNumberStyleDecimal': function() {
+      'PKNumberStyleDecimal': function () {
         return d3.format('.4r'); //13.00
       },
-      'PKNumberStylePercent': function() {
+      'PKNumberStylePercent': function () {
         return d3.format('%'); //multiply by 100 and suffix with '%'
       },
-      'PKNumberStyleScientific': function() {
+      'PKNumberStyleScientific': function () {
         return d3.format('.3n'); //1.33e+5
       },
-      'PKNumberStyleSpellOut': function() {
+      'PKNumberStyleSpellOut': function () {
         return; //TODO: implement spell out function
       }
     };
 
     var pKDateTojsDate = { //convert apple PK constant to js date
 
-      'PKDateStyleNone': function() {
+      'PKDateStyleNone': function () {
         return d3.time.format('');
       },
-      'PKDateStyleShort': function() {
+      'PKDateStyleShort': function () {
         return d3.time.format('%_m/%e/%y');
       },
-      'PKDateStyleMedium': function() {
+      'PKDateStyleMedium': function () {
         return d3.time.format('%b %e, %Y');
       },
-      'PKDateStyleLong': function() {
+      'PKDateStyleLong': function () {
         return d3.time.format('%B %e, %Y');
       },
-      'PKDateStyleFull': function() {
+      'PKDateStyleFull': function () {
         return d3.time.format('%A, %B %e, %Y AD');
       }
     };
 
     var pKTimeTojsTime = { //convert apple PK constant to js time
 
-      'PKDateStyleNone': function() {
+      'PKDateStyleNone': function () {
         return d3.time.format.iso;
       },
-      'PKDateStyleShort': function() {
+      'PKDateStyleShort': function () {
         return d3.time.format('%_I:%M %p');
       },
-      'PKDateStyleMedium': function() {
+      'PKDateStyleMedium': function () {
         return d3.time.format('%_I:%M:%S %p');
       },
-      'PKDateStyleLong': function() {
+      'PKDateStyleLong': function () {
         return d3.time.format('%_I:%M:%S %p %Z'); //TODO - Implement time zones as text
       },
-      'PKDateStyleFull': function() {
+      'PKDateStyleFull': function () {
         return d3.time.format('%_I:%M:%S %p %Z');
       }
     };
@@ -116,7 +116,7 @@
           .append('g')
           .attr('transform', groupLoc) //the x gets adjusted in setFieldSizes()
           .attr('class', 'text-btn-group ' + fieldType)
-          .attr('id', function(d, i) {
+          .attr('id', function (d, i) {
             var idIndex = i + 1;
             return fieldType + idIndex;
           });
@@ -133,14 +133,14 @@
 
         //set label text
         textGroups.select('.label-text')
-          .text(function(d) {
+          .text(function (d) {
             return tk.valueOrDefault(d.label);
           });
 
 
         //set value text
         textGroups.select('.value-text')
-          .each(function(d, i) {
+          .each(function (d, i) {
             setFormatValueField(d3.select(this), d); //set value text
           });
 
@@ -151,7 +151,7 @@
 
         //set horizontal alignment values for text element
         textGroups.selectAll('text')
-          .each(function(d, i) {
+          .each(function (d, i) {
             setAlignment(d3.select(this));
           });
 
@@ -175,12 +175,12 @@
 
           var textElem = textGroups
             .insert('text', d3.select(this) + 'rect.text-btn-rect') //insert the text before the rect
-            .attr('id', function(d, i) {
+            .attr('id', function (d, i) {
               var idIndex = i + 1; //field id start counting at 1
               return fieldType + '-' + elemList[index] + idIndex; //example: aux-value3
             })
             .attr('dominant-baseline', 'hanging') //set text top-baseline 0,0 for most browsers
-            .attr('class', function(d) {
+            .attr('class', function (d) {
               return elemList[index] + '-text ' + fieldPKType; //example: "value-text auxiliaryFields"
             });
         }
@@ -195,7 +195,7 @@
       var firstLineSize = 0; //font size of the first line (label or value)
       var textY = 0;
 
-      textGroups.each(function(d, i) {
+      textGroups.each(function (d, i) {
 
         var groupElem = d3.select(this);
         var textList = groupElem.selectAll('text');
@@ -208,11 +208,11 @@
         //select 2nd text child
         var second = textList[0][1];
         textY = firstLineSize + 5; //second element, usually value. Set the Y to be under first line.
-        if (firstLineSize > 30) textY = firstLineSize - 5
+        if (firstLineSize > 30) textY = firstLineSize - 5;
         console.log("textY:" + textY);
         d3.select(second).attr('y', textY); //set Y = first + 5 for second
 
-        updateRectSize(groupElem, fieldType)
+        updateRectSize(groupElem, fieldType);
 
       });
 
@@ -230,19 +230,19 @@
 
 
       totalWidth = getTotalWidth(textGroups, fieldType);
-      console.log("totalWidth1:" + totalWidth);
+      //console.log("totalWidth1:" + totalWidth);
       var remainWidth = passWidth - totalWidth; //find the remaining free width on the pass
 
       //scale down value text font
       textGroups
         .select('text.value-text')
-        .style('font-size', function(d, i) {
+        .style('font-size', function (d, i) {
 
           var fontSize = parseFloat(d3.select(this).style('font-size')),
             multiplier = Math.min((passWidth - 17) / totalWidth, 1.0),
             newFontSize = parseFloat((fontSize * (multiplier - 0.1)));
 
-          console.log("newFont " + newFontSize);
+          //console.log("newFont " + newFontSize);
           if (newFontSize <= minFontSize) {
             newFontSize = minFontSize;
           }
@@ -252,26 +252,26 @@
 
 
       totalWidth = getTotalWidth(textGroups, fieldType);
-      console.log("totalWidth2:" + totalWidth);
+      //console.log("totalWidth2:" + totalWidth);
       var remainWidth = passWidth - totalWidth;
 
       //truncate text
       while (remainWidth < 0) {
         textGroups
-          .each(function(d, i) {
-            console.log("height:" + this.getBBox().height);
+          .each(function (d, i) {
+            //console.log("height:" + this.getBBox().height);
             longestElem = findLongElem(d3.select(this), longestElem);
           });
 
-        longestElem.call(function(d, i) {
+        longestElem.call(function (d, i) {
           var fontSize = parseFloat(this.style('font-size'));
           truncateText(this);
           var parent = this.node().parentNode;
-          console.log(parent.getBBox().height);
+          //console.log(parent.getBBox().height);
         });
 
         totalWidth = getTotalWidth(textGroups, fieldType);
-        console.log("totalWidth3:" + totalWidth);
+        //console.log("totalWidth3:" + totalWidth);
         var remainWidth = passWidth - totalWidth;
       }
 
@@ -336,8 +336,7 @@
 
         var totalWidth = 0;
 
-        textGroups.each(function(d, i) {
-
+        textGroups.each(function (d, i) {
           updateRectSize(d3.select(this), fieldType); //readjust the rect in case text size changed
           totalWidth = totalWidth + (this.getBBox().width + fieldMargin); //field group width + space between
           alignFieldLeft(d3.select(this), fieldType, i);
@@ -357,8 +356,9 @@
         groupElem.select('rect').remove();
 
         //add/update the rectangle around the field to match the text size
-        setFieldRect(groupElem)
-          .attr('data-target', fieldPKType);
+        setFieldRect(groupElem).node().setAttribute('data-target', fieldPKType);
+        //setFieldRect(groupElem)
+        //  .attr('data-target', fieldPKType);
 
       }
       /***********************************************************
@@ -373,7 +373,8 @@
       if (fieldType == 'header') { //align right for header field
         var groupWidth = groupElem.node().getBBox().width;
         var xLoc = passWidth - (groupWidth - passEdgeMargin); //10 is pass edge margin
-        groupElem.attr('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
+        //groupElem.attr('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
+        groupElem.node().setAttribute('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
 
       } else if (index == 0) { //do nothing its all the way to the left already
 
@@ -381,7 +382,8 @@
 
         var groupWidth = groupElem.node().getBBox().width;
         var xLoc = passWidth - (groupWidth - passEdgeMargin); //10 is pass edge margin
-        groupElem.attr('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
+        //groupElem.attr('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
+        groupElem.node().setAttribute('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
 
       } else { //all other fields align to previous left side field
 
@@ -389,8 +391,8 @@
         var prevLoc = d3.transform(prevElem.attr('transform')).translate;
         var prevWidth = prevElem.node().getBBox().width;
         var xLoc = prevLoc[0] + prevWidth + fieldMargin;
-        groupElem.attr('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
-
+        //groupElem.attr('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
+        groupElem.node().setAttribute('transform', 'translate(' + xLoc + ',' + groupLoc[1] + ')');
       }
     }
 
@@ -471,14 +473,26 @@
       var groupBBox = passGroup.node().getBBox();
       var rectWidth = groupBBox.width + padding;
       var rectHeight = groupBBox.height + padding;
+      var xy = -(padding / 2);
 
       //make rect for hovering - size of group element
-      var rect = passGroup.append('rect')
+      //optimized for speed
+      var rectElm = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rectElm.setAttribute('class','text-btn-rect');
+      rectElm.setAttribute('width',rectWidth);
+      rectElm.setAttribute('height',rectHeight);
+      rectElm.setAttribute('x',xy);
+      rectElm.setAttribute('y',xy);
+      passGroup.node().appendChild(rectElm);
+      var rect = passGroup.select('rect'); //return d3 rect
+
+      /*var rect = passGroup.append('rect')
         .attr('class', 'text-btn-rect')
         .attr('width', rectWidth)
         .attr('height', rectHeight)
         .attr('x', -(padding / 2))
         .attr('y', -(padding / 2));
+      */
       //.attr('shape-rendering', 'crispEdges')
 
       return rect;
@@ -495,7 +509,7 @@
       var padding = 6;
       var textPos = rectWidth - padding;
 
-      textElm.attr('x', function(d) {
+      textElm.attr('x', function (d) {
           if (d.textAlignment == 'PKTextAlignmentRight') {
             return textPos + 'px';
           } else if (d.textAlignment == 'PKTextAlignmentCenter') {
@@ -503,7 +517,7 @@
           }
           return 0;
         })
-        .attr('text-anchor', function(d) { //horizontal align
+        .attr('text-anchor', function (d) { //horizontal align
           return pKValueToSVG[tk.valueOrDefault(d.textAlignment, 'default')]; //pass alignment to svg alignment.
         });
 
@@ -563,14 +577,14 @@
     pb.fields = {
 
       /* set svg text fields to match pass json data */
-      set: function(fieldArray, fieldType) {
+      set: function (fieldArray, fieldType) {
         setPassFields(fieldArray, fieldType);
       },
       /* set svg logo to match pass json data */
-      setLogo: function() {
+      setLogo: function () {
         setLogo();
       },
-      name: function() {
+      name: function () {
         return 'infoField';
       }
     };

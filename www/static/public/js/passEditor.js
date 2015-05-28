@@ -1,4 +1,4 @@
-(function(app, $, undefined) {
+(function (app, $, undefined) {
 
   'use strict';
 
@@ -9,8 +9,8 @@
   var passTemplate; //a json object containing all the pass data for this pass
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function init() {
 
@@ -42,13 +42,24 @@
 
     //Click Return Home Page Button
     d3.select('#return-button')
-      .on('click', function() {
+      .on('click', function () {
+
+        onePageScroll.moveBlock(false); //reset onePageScroll
+
+        //clear pass if its incomplete before returning
+        var passModel = app.getPassModel();
+        console.log(passModel.name);
+        if (passModel.name === '' || passModel.name == undefined) {
+          app.getPassModelList().splice(app.getPassActive().index, 1);
+        }
+
+        app.savePassModelList();
         app.setHomePage();
       });
 
     //prevent enter submit for all forms!
     d3.selectAll('form.pure-form')
-      .on('keypress', function() {
+      .on('keypress', function () {
         var code = d3.event.keyCode || d3.event.which;
         if (code == 13) {
           d3.event.preventDefault();
@@ -59,14 +70,14 @@
 
     //Click Pagination Button 1
     d3.select('.h-page1')
-      .on('click', function() {
+      .on('click', function () {
         var swipeEl = d3.select('section.active div.pure-g').node();
         moveRight(swipeEl);
       });
 
     //Click Pagination Button 2
     d3.select('.h-page2')
-      .on('click', function() {
+      .on('click', function () {
         var swipeEl = d3.select('section.active div.pure-g').node();
         moveLeft(swipeEl);
       });
@@ -76,8 +87,8 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function onBeforeScroll(index, nextEl) {
       console.log(d3.select(nextEl));
@@ -109,8 +120,8 @@
       }
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function onAfterScroll(index) {
 
@@ -151,7 +162,7 @@
     //only load back if you haven't already
     if (d3.select('svg.back').empty()) {
 
-      app.toolkit.loadSVG('back', function() { //svg load callback
+      app.toolkit.loadSVG('back', function () { //svg load callback
         if (this.status >= 200 && this.status < 400) {
           var xmlDoc = this.responseXML;
           var wrapSVG = wrap(xmlDoc.documentElement); //wrap the svg in webcomponents.js polyfill for use with shadowdom
@@ -174,8 +185,8 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function configEditor() {
     //set back fields
@@ -198,12 +209,12 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function create(jsonData) {
 
-    d3.json('/api/v1/passes')
+    d3.xhr('/api/v1/passes')
       .header("Content-Type", "application/json")
       .header("Authorization", "Bearer " + app.toolkit.getToken())
       .post(JSON.stringify(jsonData), requestHandler);
@@ -212,15 +223,15 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function update(passId, jsonData) {
 
     //update template status of pass
     app.passEditor.template().status = jsonData.status;
 
-    d3.json('/api/v1/passes/' + passId)
+    d3.xhr('/api/v1/passes/' + passId)
       .header("Content-Type", "application/json")
       .header("Authorization", "Bearer " + app.toolkit.getToken())
       .send('PATCH', JSON.stringify(jsonData), requestHandler);
@@ -234,18 +245,20 @@
   function requestHandler(error, data) {
 
     if (app.toolkit.checkLoadError(error)) return;
+    if (data.status === 304) return; //Not Modified
 
+    data = JSON.parse(data.responseText);
     console.log(data);
     app.passEditor.template().id = data.id;
-    app.passEditor.template().updated = data.time;
+    app.passEditor.template().updated = new Date(data.time).toISOString();
     app.savePassModelList(); //save the state of the list to storage
     app.toolkit.alertDisplay('saved', 'All changes have been successfully saved.');
 
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function onNextPage() {
     //$('.main').moveDown();
@@ -253,8 +266,8 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function onSelectType() {
 
@@ -279,7 +292,7 @@
 
     d3.json(uri)
       .header("Authorization", "Bearer " + app.toolkit.getToken())
-      .get(function(error, data) {
+      .get(function (error, data) {
 
         if (error) {
           console.warn(error.statusText);
@@ -304,7 +317,7 @@
 
 	 //callback for load of an svg element check for errors
 	 ***********************************************************/
-  var onSVGLoad = function(resp) {
+  var onSVGLoad = function (resp) {
 
     if (resp.status >= 200 && resp.status < 400) {
 
@@ -332,7 +345,7 @@
 
 	 callback for load of the Front SVG element and init the pass
 	 ***********************************************************/
-  var onFrontSVGLoad = function() {
+  var onFrontSVGLoad = function () {
 
       if (onSVGLoad(this)) {
         initEditor();
@@ -340,8 +353,8 @@
 
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function addSwipeEvent() {
 
@@ -352,7 +365,7 @@
         console.log(swipeEl);
         app.toolkit.swipeEvents(swipeEl);
 
-        var sLeft = function(event) {
+        var sLeft = function (event) {
           console.log("LEFT");
           event.preventDefault();
           moveLeft(swipeEl);
@@ -361,7 +374,7 @@
         document.removeEventListener('swipeLeft', sLeft);
         document.addEventListener('swipeLeft', sLeft);
 
-        var sRight = function(event) {
+        var sRight = function (event) {
           event.preventDefault();
           moveRight(swipeEl);
         }
@@ -372,8 +385,8 @@
 
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function moveLeft(swipeEl) {
 
@@ -391,24 +404,28 @@
         st.getPropertyValue("-ms-transform") ||
         st.getPropertyValue("-o-transform") ||
         st.getPropertyValue("transform");
+
       var matrix = tr.match(/[0-9., -]+/)[0].split(", ");
       var transY = matrix[matrix.length - 1];
       console.log(matrix);
 
-      d3.select(swipeEl).style({
-        'transform': 'translate3d(-120%, 0, 0)',
-        '-webkit-transform': 'translate3d(-120%, 0, 0)'
-      });
-      var transform = 'translate3d(-120%,' + transY + 'px, 0) !important';
       //transform with vendor prefix
-      d3.select('div.fake-content').attr('style', 'transition: all 0.5s; transform:' + transform + ';-webkit-transform:' + transform + ';');
+      var prefix = "-webkit-transform" in document.body.style ? "-webkit-" : "-moz-transform" in document.body.style ? "-moz-" : "";
+
+      d3.select(swipeEl).style(prefix+'transform', 'translate3d(-120%, 0, 0)');
+
+      var transform = 'translate3d(-120%,' + transY + 'px, 0)';
+
+      d3.select('div.fake-content')
+        .style('transition', 'all 0.5s')
+        .style(prefix+'transform',transform,'important');
 
     }
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function moveRight(swipeEl) {
 
@@ -420,14 +437,15 @@
 
       d3.select('div.fake-content')
         .attr('style', null)
-        .attr('style', 'transition: all 0.5s');
+        .style('transition', 'all 0.5s');
+
       d3.select(swipeEl).attr('style', null);
     }
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function passStatus(currentPage) {
 
@@ -471,37 +489,37 @@
 
   app.passEditor = {
 
-    init: function() {
+    init: function () {
       init();
     },
 
-    build: function() {
+    build: function () {
       buildPass();
     },
-    editor: function() {
+    editor: function () {
       initEditor();
     },
-    create: function(jsonData) {
+    create: function (jsonData) {
       create(jsonData);
     },
 
-    update: function(passId, jsonData) {
+    update: function (passId, jsonData) {
       update(passId, jsonData)
     },
 
-    svg: function() {
+    svg: function () {
       return app.getSvgRoot();
     },
 
-    template: function() {
+    template: function () {
       return app.getPassModel();
     },
 
-    passType: function() {
+    passType: function () {
       return app.getPassModel().passtype;
     },
 
-    status: function(page) {
+    status: function (page) {
       return passStatus(page)
     }
   };

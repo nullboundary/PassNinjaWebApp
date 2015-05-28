@@ -669,14 +669,15 @@ func buildCSPolicy() string {
 
 	//TODO: sha256 hashs problematic when minified?
 
-	scriptHash1 := "'sha256-jyt8dE8Ni1-ffuFSRkU0oJb7KniYkUefxOF3XKxjg4g='" //google anaylytics inline script
+	//scriptHash1 := "'sha256-jyt8dE8Ni1-ffuFSRkU0oJb7KniYkUefxOF3XKxjg4g='" //google anaylytics inline script
 
 	defaultSrc := "default-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;"
 	styleSrc := "style-src 'self' 'unsafe-inline' " + styleHash1 + " " + styleHash3 + " " + styleHash4 + " " + styleHash5 + " " + styleHash6 + " " + styleHash2 + " https://cdnjs.cloudflare.com https://fonts.googleapis.com ;"
-	scriptSrc := "script-src 'self' 'unsafe-eval' " + scriptHash1 + " https://cdnjs.cloudflare.com https://ajax.googleapis.com https://maps.googleapis.com https://maps.gstatic.com https://www.google-analytics.com;"
-	childSrc := "child-src 'none';"
+	//scriptSrc := "script-src 'self' 'unsafe-eval' " + scriptHash1 + " https://cdnjs.cloudflare.com https://ajax.googleapis.com https://maps.googleapis.com https://maps.gstatic.com https://www.google-analytics.com;"
+	scriptSrc := "script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com https://ajax.googleapis.com https://maps.googleapis.com https://maps.gstatic.com https://www.google-analytics.com;"
+	childSrc := "child-src 'none';frame-src 'none';" //frame-src is depreacted. Remove by 2017
 	objectSrc := "object-src 'none';"
-	imageSrc := "img-src 'self' *.global.ssl.fastly.net https://cdnjs.cloudflare.com data:;"
+	imageSrc := "img-src 'self' *.global.ssl.fastly.net https://cdnjs.cloudflare.com data: blob:;"
 
 	return defaultSrc + scriptSrc + styleSrc + imageSrc + childSrc + objectSrc
 }

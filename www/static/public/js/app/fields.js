@@ -28,7 +28,7 @@
 
     //add events for selecting value format selector options
     d3.select('select#value-format')
-      .on('input', onValueFormat);
+      .on('change', onValueFormat);
 
     //add handler for delete field button
     d3.select('button#btn-del-field')
@@ -40,18 +40,18 @@
 
     //add handler for number format selector
     d3.select('#number-format')
-      .on('input', function() {
+      .on('change', function() {
         onNumberStyle(this.value);
       });
 
     d3.select('#align-format')
-      .on('input', function() {
+      .on('change', function() {
         onAlignStyle(this.value);
       });
 
     //add handler for date-time selector
     d3.select('#timeDate-format')
-      .on('input', function() {
+      .on('change', function() {
         onDateTimeStyle(this.value);
       });
 
@@ -68,8 +68,8 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function setHighLight(selectID) {
     //set and clear select highlight style with 'select class'
@@ -82,8 +82,8 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function configTextInputs() {
 
@@ -103,15 +103,17 @@
       .text(legend);
 
     //set the input box attributes for the label
-    var inputLabel = d3.select('#popLabel')
-      .property('value', targetLabel)
-      .on('input', onTextSubmit) //could be removed by logo. add again
+    var inputLabel = d3.select('#popLabel');
+    inputLabel.node().value = targetLabel; //faster then d3.property
+      //.property('value', targetLabel)
+      inputLabel.on('input', onTextSubmit) //could be removed by logo. add again
       .call(tk.enable);
 
     //set the input box attributes for the value
-    var inputValue = d3.select('#popValue')
-      .property('value', targetValue)
-      .call(tk.enable);
+    var inputValue = d3.select('#popValue');
+    inputValue.node().value = targetValue; //faster then d3.property
+      //.property('value', targetValue)
+      inputValue.call(tk.enable);
 
     //set the check box based on if the item is already in the list or not
     if (pb.template().mutatelist) {
@@ -181,6 +183,9 @@
       pass.selectAll('rect.text-btn-rect')
         .on('click', onTextRectClick); //add event to new rect
 
+      pass.select('g.logo rect')
+          .on('click', onLogoRectClick);  //add back event to logo as well!
+
       //set select group to the next or previous rectangle
       setEditGroup(pass.select('g#' + groupID + ' rect')[0][0]);
 
@@ -190,13 +195,13 @@
       setHighLight(editGroup.svgId);
 
       //enable all buttons
-      tk.enable('button#btn-del-field', 'button#btn-add-field');
+      tk.enable('button#btn-del-field', 'button#btn-add-field','#value-format');
 
 
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function delMutateItem(keyValue, groupType, groupIndex) {
 
@@ -242,8 +247,8 @@
       }
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function loadCurrency() {
 
@@ -260,7 +265,7 @@
         //add handler for currency selector
         d3.select('#currency')
           .call(tk.hide)
-          .on('input', function() {
+          .on('change', function() {
             onCurrencyStyle(this.value);
           });
 
@@ -326,16 +331,23 @@
     tk.enable('#value-format', '#align-format', '#btn-del-field', '#btn-add-field');
 
     //disable add or delete button
-    if (editGroup.svgType == "header") { //disable the add button for header. (only 1 field allowed)
+    if (editGroup.svgType == "header" && fieldGroup.length >= 1) { //disable the add button for header. (only 1 field allowed)
       d3.select('button#btn-add-field').call(tk.disable);
     } else if (editGroup.svgType == "primary" && fieldGroup.length >= 2) { //2 max for primary
       d3.select('button#btn-add-field').call(tk.disable);
+      d3.select('select#align-format').call(tk.disable);
     } else if (editGroup.svgType == "primary") { //primary has no alignment value
       d3.select('select#align-format').call(tk.disable);
     } else if (fieldGroup.length >= 4) { //disable the add button if there are 4 fields
       d3.select('button#btn-add-field').call(tk.disable);
-    } else if (fieldGroup.length <= 0) { //disable the delete button if there are 0 fields
+    }
+
+    if (fieldGroup.length <= 0) { //disable the delete button if there are 0 fields
       d3.select('button#btn-del-field').call(tk.disable);
+      d3.select('#popLabel').call(tk.disable).property('value', '');
+      d3.select('#popValue').call(tk.disable).property('value', '');
+      d3.select('select#value-format').call(tk.disable);
+      d3.select('select#align-format').call(tk.disable);
     }
 
     var valueSelect = d3.select('select#value-format');
@@ -391,6 +403,7 @@
 
       numberSelect.node().value = dataSet.numberStyle;
       tk.show(numberSelect);
+      tk.enable(numberSelect);
 
 
     } else if (dataSet.currencyCode) {
@@ -402,7 +415,9 @@
 
     } else { //set defaults
       valueSelect.node().value = 'Text';
-      tk.show('#number-format');
+      tk.show('#number-format'); //number format is present but disabled in text mode
+      tk.disable('#number-format');
+
 
     }
 
@@ -470,6 +485,7 @@
       d3.select('select#value-format').call(tk.disable);
       d3.select('select#align-format').call(tk.disable);
       d3.select('button#btn-del-field').call(tk.disable);
+      d3.select('button#btn-add-field').call(tk.enable); //always enable add if 0 fields
     }
 
   }
@@ -518,8 +534,9 @@
 
     tk.show(valueText, labelText, gElem);
 
-
-    if (editGroup.svgType == "primary" && fieldData[editGroup.dataType].length >= 2) { //2 max for primary
+    if (editGroup.svgType == "header") { //disable the add button for header. (only 1 field allowed)
+      d3.select('button#btn-add-field').call(tk.disable);
+    } else if (editGroup.svgType == "primary" && fieldData[editGroup.dataType].length >= 2) { //2 max for primary
       d3.select('button#btn-add-field').call(tk.disable);
     } else if (fieldData[editGroup.dataType].length >= 4) { //disable the add button if there are 4 fields
       d3.select('button#btn-add-field').call(tk.disable);
@@ -601,8 +618,8 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function clearStyle() {
 
@@ -696,7 +713,7 @@
   ***********************************************************/
   function onTimeSubmit(e) {
 
-    //make js date object to make sure format is always the same. 
+    //make js date object to make sure format is always the same.
     var time = new Date(e._i);
     console.log(time.toISOString());
     editGroup.data.value = time.toISOString(); //set time value. eg: 2006-01-02T15:04:05.000Z
@@ -772,7 +789,11 @@
  ***********************************************************/
   function onNumberStyle(value) {
 
-    editGroup.data.numberStyle = value;
+    if (value === 'None') { //There is no PKNumberStyleNone
+      delete editGroup.data.numberStyle;
+    } else {
+      editGroup.data.numberStyle = value;
+    }
     editGroup.data.value = Number(d3.select('input#popValue').node().value);
 
     onTextSubmit(true);
@@ -837,8 +858,8 @@
   }
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function onFieldsSave() {
 

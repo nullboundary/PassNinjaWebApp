@@ -8,17 +8,17 @@
 
 .splash-container {
   /*background: url('/assets/img/bgmain.svg') no-repeat center center fixed;*/
-  
+
   background-size: cover;
   /*background: transparent url('/assets/img/bgmain.svg') 0 0 no-repeat fixed;*/
-  
+
   background: transparent url('/assets/img/bgmain_beta.svg') 0 0 no-repeat fixed;
   /*BETA*/
-  
+
   z-index: 1;
   overflow: hidden;
   /* The following styles are required for the "scroll-over" effect */
-  
+
   width: 100%;
   height: 100%;
   top: 0;
@@ -27,7 +27,7 @@
 }
 .splash {
   /* absolute center .splash within .splash-container */
-  
+
   height: 50%;
   margin: 0 auto;
   text-align: center;
@@ -40,10 +40,10 @@
   color: white;
   background: rgb(0, 0, 0);
   /* fallback */
-  
+
   background: rgba(0, 0, 0, 0.80);
   /*border: 3px solid white;*/
-  
+
   padding: 1em 1.6em;
   font-weight: 100;
   border-radius: 5px;
@@ -65,7 +65,7 @@
 
 .content-wrapper {
   /* These styles are required for the "scroll-over" effect */
-  
+
   position: absolute;
   top: 87%;
   width: 100%;
@@ -125,7 +125,7 @@
   padding: 2em;
   border-bottom: 1px solid rgb(0, 0, 0);
   /* fallback color */
-  
+
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 .is-center {
@@ -189,7 +189,7 @@
 .button-start {
   padding: 2em 2.5em;
   border-radius: 10px;
-  margin-top: 2em;
+  margin-top: 1em;
   margin-bottom: 4em;
   color: #fff;
   background-color: rgb(0, 0, 0);
@@ -203,6 +203,44 @@
   -ms-transform: translate(-50%);
   transform: translate(-50%);
 }
+
+/********************************************
+  Styles for beta changes
+*********************************************/
+.beta-hide{
+    position: absolute;
+    padding-top: 4em;
+    color: rgb(255, 255, 255);
+    font-size: 2em;
+    background-color: rgba(0, 0, 0, 0.61);
+    display: block;
+    height: 221px;
+    width: 327px;
+}
+
+.beta-table{
+    padding: 0.8em 0;
+    color: #ffffff;
+    border-bottom: 1px solid #e7e7e7;
+    margin-bottom: 2em;
+}
+
+.beta-table td{
+  color: gray;
+}
+
+td.beta-ready{
+  color: rgb(0,255,0);
+}
+
+td.beta-test{
+  color: rgb(221,239,22);
+}
+
+td.beta-notready{
+    color: rgb(240, 30, 0);
+}
+
 /********************************************
   Footer
 
@@ -268,13 +306,13 @@ textarea#terms-text {
   .splash-container {
     /*background: url('/assets/img/bgmain.svg') no-repeat center center fixed;*/
     /*BETA*/
-    
+
     background: url('/assets/img/bgmain_beta.svg') no-repeat center center fixed;
     background-size: cover;
   }
   .splash {
     /* absolute center .splash within .splash-container */
-    
+
     width: 40%;
     height: 50%;
     margin: auto;
@@ -287,16 +325,16 @@ textarea#terms-text {
     /* text-transform: uppercase; */
   }
   /* This is the main heading that appears on the ninja red tools image section */
-  
+
   .splash-head {
     font-size: 2.5em;
     color: white;
     background: rgb(0, 0, 0);
     /* fallback */
-    
+
     background: rgba(0, 0, 0, 0.80);
     /*border: 3px solid white;*/
-    
+
     padding: 1em 1.6em;
     font-weight: 100;
     border-radius: 5px;

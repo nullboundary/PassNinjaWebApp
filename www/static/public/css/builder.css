@@ -1,6 +1,7 @@
 dialog#feedback-modal {
   height: 300px;
   width: 300px;
+  padding: 1em;
 }
 dialog#feedback-modal h1 {
   margin-top: 0.20em;
@@ -31,6 +32,7 @@ a {
 }
 div.title {
   position: relative;
+  height: 10em;
   top: 0;
 }
 div.title h1, div.title h2 {
@@ -76,6 +78,11 @@ h2#emptyGridHeading {
 .main {
   margin: 0;
 }
+/*fix extra scrollbar in grid page */
+.disabled-onepage-scroll, .disabled-onepage-scroll .wrapper{
+  overflow: inherit;
+}
+
 body {
   /*background-color: rgb(50,45,45);*/
 }
@@ -332,7 +339,7 @@ body /deep/ .text-btn-group text {
   padding: 0 0;
   z-index: 102;
 }
-.viewing-page-2 .h-pagination, .viewing-page-3 .h-pagination, .viewing-page-4 .h-pagination, .viewing-page-5 .h-pagination {
+.viewing-page-1 .h-pagination, .viewing-page-2 .h-pagination, .viewing-page-3 .h-pagination, .viewing-page-4 .h-pagination, .viewing-page-5 .h-pagination {
   display: none;
 }
 .h-page1 {
@@ -620,6 +627,7 @@ input[name=share-tabs]:checked + label.tab-label {
   z-index: 3;
 }
 /*input[id^=tab]:checked ~ div[id^=tab-content] {*/
+
 input[name=loc-tabs]:checked ~ div.tab-content {
   display: block;
 }
@@ -640,7 +648,6 @@ input[name=share-tabs]:checked ~ div.tab-content {
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
 }
-
 .share-badge {
   vertical-align: middle;
 }
@@ -660,7 +667,7 @@ input[name=share-tabs]:checked ~ div.tab-content {
   display: inline-block;
   vertical-align: middle;
 }
-#pass-qr canvas{
+#pass-qr canvas {
   display: none;
 }
 .qr-format {
@@ -951,6 +958,7 @@ input[name=share-tabs]:checked ~ div.tab-content {
   outline: none;
   display: block;
   position: relative;
+  cursor: pointer;
 }
 .og-grid li > a /deep/ svg, button#new-pass {
   width: 157px;
@@ -961,6 +969,7 @@ input[name=share-tabs]:checked ~ div.tab-content {
   height: 100%;
   position: relative;
   overflow: scroll;
+
   overflow-x: hidden;
 }
 .expander {
@@ -992,7 +1001,7 @@ input[name=share-tabs]:checked ~ div.tab-content {
   margin: -20px 0 0 -15px;
 }
 .expand-inner {
-  padding: 50px 30px;
+  padding: 30px 30px;
   height: 100%;
   opacity: 0;
   filter: alpha(opacity=0);
@@ -1016,26 +1025,42 @@ input[name=share-tabs]:checked ~ div.tab-content {
   clear: both;
   font-weight: bold;
 }
-.dl-inline dt:after {
+/*.dl-inline dt:after {
   content: ':';
-}
+}*/
+
 .dl-inline dd {
   margin-left: 1ex;
 }
+.expand-share-form {
+  display: none;
+}
+h2.expand-title {
+  font-size: 2.5em;
+  text-align: left;
+  margin-bottom: 0;
+}
+h3.expand-desc {
+  font-size: 1.5em;
+  margin-top: 0;
+  margin-bottom: 1.5em;
+}
 .expand-close-btn {
-  position: relative;
-  left: 90%;
-  top: -30px;
+  position: absolute;
+  left: 85%;
+  top: 10px;
 }
 .expand-edit-btn {
-  position: absolute;
   left: 28px;
   bottom: 10%;
+  margin-top: 1em;
+  margin-bottom: 2em;
 }
 .expand-del-btn {
-  position: absolute;
   left: 110px;
   bottom: 10%;
+  margin-top: 1em;
+  margin-bottom: 2em;
 }
 div#expand-qr {
   position: absolute;
@@ -1043,7 +1068,7 @@ div#expand-qr {
   left: 60%;
 }
 .grid-pass {
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 /********************************************
  loading spinner
@@ -1173,6 +1198,11 @@ div#expand-qr {
   div.title h1 {
     font-size: 40px;
   }
+
+  .color-select {
+    margin-right: 1em;
+  }
+
   /* hide horizontal pagination */
 
   .h-pagination {
@@ -1184,7 +1214,7 @@ div#expand-qr {
     display: block;
     position: absolute;
     top: 0;
-    left: 20%;
+    left: 15%;
     /* left margin for medium screens */
 
     width: 100%;
@@ -1262,7 +1292,7 @@ div#expand-qr {
   div#settings-content {
     top: auto;
     left: auto;
-    right: 40%;
+    right: 54.5%;
     -webkit-transform: scale(1.0);
     -ms-transform: scale(1.0);
     transform: scale(1.0);
@@ -1332,6 +1362,12 @@ div#expand-qr {
   }
   .og-grid li.expanded > a:after {
     top: 272px;
+  }
+
+  .expand-close-btn {
+    position: absolute;
+    left: 95%;
+    top: 10px;
   }
   /*
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="250%" width="100%"><text x="-0" y="95%" fill="rgb(26, 24, 24)" textLength="105%" font-size="1200">1/12</text></svg>

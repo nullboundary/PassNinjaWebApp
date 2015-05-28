@@ -1,4 +1,4 @@
-(function(app, $, undefined) {
+(function (app, $, undefined) {
 
   'use strict';
 
@@ -41,14 +41,13 @@
       var activeID = activeItem.attr('id');
       var expHeight = expanderHeight; //height of expander info <div>
       var passHeight = activeItem.select('a').node().offsetHeight;
-      var itemHeight = expHeight + passHeight; //the height of <li>
 
 
       //set new <li> height
       activeItem
         .classed("expanded", true)
         .style('height', passHeight + 'px')
-        .each(function(d, i) {
+        .each(function (d, i) {
           var rule = styles.cssRules.item(afterRuleIndex); // get css rule from sheet for <a::after> using index
           rule.style['border-bottom-color'] = d.keyDoc.backgroundColor; //change <a::after>
         });
@@ -58,23 +57,32 @@
         .attr('class', 'expander')
         .attr('id', activeID + '-exp')
         .style('height', 0 + 'px')
-        .style('background-color', function(d, i) {
+        .style('background-color', function (d, i) {
           return d.keyDoc.backgroundColor;
         })
         .each(buildExpander);
 
+      var innerHeight = expand.select('.expand-inner div').node().offsetHeight;
+      if (innerHeight > expHeight) { //300 is minium expander height
+        expHeight = innerHeight + 60;
+      }
+
       //scroll grid
       var menuTopMargin = d3.select('.nav-menu').node().offsetHeight + 15; //menu bottom + extra
-      scrollGrid(activeItem, menuTopMargin);
+      scrollGrid(activeItem, expHeight, menuTopMargin);
+
+      console.log(innerHeight);
+      var itemHeight = expHeight + passHeight; //the height of <li>
 
       //transistion the height of both <li.expanded> and <div.expander> simultaniously
       activeItem //uses css transistion
-        .style('height', function(d, i) {
+        .style('height', function (d, i) {
         return itemHeight + 'px';
       });
 
+
       expand //uses css transistion
-        .style('height', function(d, i) {
+        .style('height', function (d, i) {
         return expHeight + 'px';
       });
 
@@ -90,13 +98,16 @@
       var activeID = activeItem.attr('id');
       var bgColor;
       var expHeight = expanderHeight; //height of expander info <div>
-      var itemHeight = expHeight + activeItem.select('a').node().offsetHeight; //the height of <li>
+      var passHeight = activeItem.select('a').node().offsetHeight;
+      var itemHeight = expHeight + passHeight; //the height of <li>
+
+      var prevHeight = previousItem.node().offsetHeight;
 
       //set expanded class to new <li>
       //set new <li> height
       activeItem.classed('expanded', true)
-        .style('height', itemHeight + 'px')
-        .each(function(d, i) {
+        .style('height', prevHeight + 'px')
+        .each(function (d, i) {
           bgColor = d.keyDoc.backgroundColor;
           var rule = styles.cssRules.item(afterRuleIndex); // get css rule from sheet for <a::after> using index
           rule.style['border-bottom-color'] = bgColor; //change <a::after>
@@ -106,39 +117,62 @@
       previousItem.classed('expanded', false)
         .style('height', null);
 
-      d3.transition()
-        .duration(transSpeed / 2)
-        .each(function() {
 
-          //add back expander div to place content into
-          var expand = activeItem.append('div')
-            .attr('class', 'expander')
-            .attr('id', activeID + '-exp')
-            .style('opacity', 0) //add it with 0
-            .transition()
-            .style('opacity', 1) //slow transistion to opacity 1 and new color
-            .style('background-color', function(d, i) {
-              return d.keyDoc.backgroundColor;
-            })
-            .each("end", buildExpander); //when fade in finishes add text info
+      //add back expander div to place content into
+      var expand = activeItem.append('div')
+        .attr('class', 'expander')
+        .attr('id', activeID + '-exp')
+        .style('opacity', 0) //add it with 0
+        .transition()
+        .style('opacity', 1) //slow transistion to opacity 1 and new color
+        .style('background-color', function (d, i) {
+          return d.keyDoc.backgroundColor;
+        })
+        .each(buildExpander)
+        .each(function () {
+          var expandElem = d3.select(this);
+          var innerHeight = expandElem.select('.expand-inner div').node().offsetHeight;
+          if (innerHeight > expHeight) { //300 is minium expander height
+            expHeight = innerHeight + 60;
+          }
 
-          previousItem.select('.expander') //fade the previous background
-            .transition()
-            .style('opacity', 0);
+          console.log(innerHeight);
+          var itemHeight = expHeight + passHeight; //the height of <li>
 
-          previousItem.select('.expand-inner') //fade the text
-            .transition()
-            .style('opacity', 0)
-            .each("end", function() { //when fade out finishes
-
-              previousItem.select('.expander')
-                .remove();
+          //transistion the height of both <li.expanded> and <div.expander> simultaniously
+          activeItem //uses css transistion
+            .style('transition', 'none')
+            .style('height', function (d, i) {
+              return itemHeight + 'px';
             });
+
+
+          expandElem //uses css transistion
+            .style('transition', 'none')
+            .style('height', function (d, i) {
+              return expHeight + 'px';
+            });
+        }); //when fade in finishes add text info
+
+      previousItem.select('.expander') //fade the previous background
+        .transition()
+        .style('opacity', 0);
+
+      previousItem.select('.expand-inner') //fade the text
+        .transition()
+        .style('opacity', 0)
+        .each("end", function () { //when fade out finishes
+
+          previousItem.select('.expander')
+            .remove();
+
         });
 
-      //scroll grid
+
       var menuTopMargin = d3.select('.nav-menu').node().offsetHeight + 15; //menu bottom + extra
-      scrollGrid(activeItem, menuTopMargin);
+      //scroll grid
+      scrollGrid(activeItem, expHeight, menuTopMargin);
+
 
     }
     /***********************************************************
@@ -154,16 +188,18 @@
 
       //1. remove old <li> expanded class
       previousItem.classed('expanded', false)
+        .style('transition', null) //remove inline transistion none if set previously
         .style('height', passHeight + 'px'); //uses css transistion
 
       //2. remove old <li> height
       prevExpander
+        .style('transition', null) //remove inline transistion none if set previously
         .style('height', 0 + 'px'); //uses css transistion
 
       //2. remove old <li> height
       d3.transition()
         .duration(transSpeed)
-        .each("end", function() {
+        .each("end", function () {
 
           prevExpander
             .remove(); //remove expander when complete
@@ -188,10 +224,10 @@
     //add expander template
     app.toolkit.stampTemplate('template#expand-template', 'div#' + expID);
 
-    expander.select('.expand-title').text(function(d, i) {
+    expander.select('.expand-title').text(function (d, i) {
       return d.name;
     });
-    expander.select('.expand-desc').text(function(d, i) {
+    expander.select('.expand-desc').text(function (d, i) {
       return d.keyDoc.description;
     });
 
@@ -199,41 +235,16 @@
     expander.select('.expand-passtype').text(passNinja.getPassModel().passtype);
 
     //set status color and value
-    if (passNinja.getPassModel().status == "ready") {
-      //expander.select('.expand-status').style('color', 'green');
+    if (passNinja.getPassModel().status == "ready" || passNinja.getPassModel().status == "api") {
+
+      console.log(passNinja.getPassModel().status);
       expander.select('.expand-status').text(passNinja.getPassModel().status);
 
       var url = window.location.protocol + '//' + window.location.host + '/pass/1/passes/' + passNinja.getPassModel().filename;
-
-      var link = '<a href="' + url + '">' + passNinja.getPassModel().filename + '</a>';
-      expander.select('.expand-link').html(link);
-
-      expander
-        .each(function(d) {
-
-          //find the darkest color on the pass
-          var colorDark;
-          var color1 = tinycolor(d.keyDoc.labelColor);
-          var color2 = tinycolor(d.keyDoc.foregroundColor);
-
-          if (color1.getBrightness() > color2.getBrightness()) {
-            colorDark = d.keyDoc.foregroundColor;
-          } else {
-            colorDark = d.keyDoc.labelColor;
-          }
-
-          var qrcode = new QRCode(expander.select('#expand-qr').node(), {
-            text: url,
-            colorDark: colorDark,
-            colorLight: 'rgb(255,255,255)',
-            correctLevel: QRCode.CorrectLevel.Q
-          });
-        });
+      sharePass(expander, url, passNinja.getPassModel().name);
 
     } else {
-      //expander.select('.expand-status').style('color', 'red');
       expander.select('.expand-status').text('incomplete');
-      expander.select('#expand-qr').call(app.toolkit.hide);
     }
 
     //format & set time/date
@@ -243,28 +254,44 @@
 
     //TODO: this changes ALL <dt> styles in the page. Only want to change the current expander panel.
     expander
-      .each(function(d) {
+      .each(function (d) {
         var rule = styles.cssRules.item(dtRuleIndex); // get css rule from sheet for <a::after> using index
         rule.style['color'] = d.keyDoc.labelColor; //change <a::after>
       });
 
+    expander.select('.expand-title').style('color', function (d, i) {
+      return d.keyDoc.labelColor;
+    });
+
     //fade in <div.expand-inner> text - /2 for crossfade speed
-    expander.select('.expand-inner').transition()
-      .duration(transSpeed / 2)
+    expander.select('.expand-inner') //.transition()
+      //  .duration(transSpeed / 3)
       .style('opacity', 1)
-      .style('color', function(d, i) {
+      .style('color', function (d, i) {
         return d.keyDoc.foregroundColor;
       });
 
     //add load editor event to edit pass button
-    d3.select('.expand-edit-btn')
-      .on('click', function() {
+    expander.select('.expand-edit-btn')
+      .on('click', function () {
         app.setEditorPage(false); //false = not new pass, editing old pass.
       });
 
+    expander.select('.expand-share-btn')
+      .on('click', function () {
+        app.setEditorPage(false, app.passEditor.share.index()); //false = not new pass, editing old pass.
+        app.passEditor.share.handler();
+      });
+
+    //close expander button event
+    expander.select('.expand-close-btn')
+      .on('click', function () {
+        expandInfo(); //close info panel about pass if clicked.
+      });
+
     //add event handler for delete button
-    d3.select('.expand-del-btn')
-      .on('click', function() {
+    expander.select('.expand-del-btn')
+      .on('click', function () {
         app.delPassModel();
         expander //TODO: transistion this
           .remove(); //remove expander
@@ -280,39 +307,76 @@
   open panel are in view.
 
   ***********************************************************/
-  function scrollGrid(item, menuTopMargin) {
+  function scrollGrid(item, expHeight, menuTopMargin) {
 
     var position = item.node().offsetTop;
 
     //if prev open panel is higher then next opening panel, need to subtract prev panel height.
     if (isLowerRow(position)) {
-      position = position - expanderHeight;
+      position = position - expHeight;
     }
     var passHeight = item.select('a').node().offsetHeight;
+    console.log(passHeight);
     var expanderTop = position + passHeight;
     var scrollVal;
 
-    // case 1 : expander height + pass height fits in window´s height
-    if ((expanderHeight + passHeight + menuTopMargin) <= window.innerHeight) {
-      console.log(position);
+    // case 1 : expander height + pass height greater than window´s height
+    if ((expHeight + passHeight + menuTopMargin) >= window.innerHeight) {
       scrollVal = position - menuTopMargin;
-
       console.log("1:" + scrollVal);
 
-      // case 2 : expander height + pass height does not fit in window´s height and expander height is smaller than window´s height
-    } else if (expanderHeight < window.innerHeight) {
-      scrollVal = expanderTop - (window.innerHeight - expanderHeight);
+    } else { //expander + pass less then window height
+      scrollVal = expanderTop - (window.innerHeight - expHeight);
       console.log("2:" + scrollVal);
-
-      // case 3 : expander height + pass height does not fit in window´s height and expander height is bigger than window´s height
-    } else {
-      scrollVal = expanderTop;
-      console.log("3:" + scrollVal);
 
     }
     //create a tween to scrollTop to the scrollVal
     d3.select('.container').transition().duration(transSpeed)
       .tween("scrollContainerTween", scrollTopTween(scrollVal));
+  }
+
+  /***********************************************************
+
+
+   ***********************************************************/
+  function sharePass(expander, passUrl, passName) {
+
+    expander.select('.expand-share-form')
+      .style('display', 'block');
+
+    expander.select('#expand-pass-copy')
+      .property('value', passUrl)
+      .on('click', function () {
+        this.focus();
+        this.select();
+      });
+
+    //setup share buttons
+    var facebook = expander.select('.facebook');
+    var href = facebook.property('href');
+    facebook.property('href', href + encodeURIComponent(passUrl));
+
+    var google = expander.select('.google');
+    href = google.property('href');
+    google.property('href', href + encodeURIComponent(passUrl));
+
+    var twitter = expander.select('.twitter');
+    href = twitter.property('href');
+    //text=&url=&via=
+    twitter.property('href', href + 'text=' + passName + '&url=' + encodeURIComponent(passUrl) + '&via=https://pass.ninja');
+
+    var linkedin = expander.select('.linkedin');
+    href = linkedin.property('href');
+    //&url=&title=&summary=&source=
+    linkedin.property('href', href + '&url=' + encodeURIComponent(passUrl) + '&title=' + passName + '&source=https://pass.ninja');
+
+    var reddit = expander.select('.reddit');
+    href = reddit.property('href');
+    reddit.property('href', href + encodeURIComponent(passUrl));
+
+    expander.select('#expand-pass-link')
+      .property('href', passUrl);
+
   }
 
   /***********************************************************
@@ -338,9 +402,9 @@
 
   ***********************************************************/
   function scrollTopTween(scrollTop) {
-    return function() {
+    return function () {
       var i = d3.interpolateNumber(this.scrollTop, scrollTop);
-      return function(t) {
+      return function (t) {
         this.scrollTop = i(t);
       };
     };
@@ -378,14 +442,10 @@
     var passListItems = gridList.selectAll('li.grid-pass').data(app.getPassModelList());
 
     //add <li>
-    passListItems.enter().append('li')
+    var passItem = passListItems.enter().append('li')
       .attr('class', 'grid-pass')
-      .attr('id', function(d, i) {
+      .attr('id', function (d, i) {
         return 'pass-' + i;
-      })
-      .on('click', function(d, i) {
-        app.setPassActive('#pass-' + i + ' a', i); //grid passes are in an <a> so add extra ' a'
-        expandInfo(); //expand info panel about pass if clicked.
       });
 
     passListItems.exit().remove();
@@ -396,11 +456,15 @@
     //add <a>
     var passAnchor = passListItems.append('a')
       //	.attr('href', '#')
-      .attr('data-title', function(d) {
+      .attr('data-title', function (d) {
         return d.name
       })
-      .attr('data-description', function(d) {
+      .attr('data-description', function (d) {
         return d.keyDoc.description
+      }).on('click', function (d, i) {
+        console.log(this);
+        app.setPassActive('#pass-' + i + ' a', i); //grid passes are in an <a> so add extra ' a'
+        expandInfo(); //expand info panel about pass if clicked.
       });
 
     // get last stylesheet (probably builder.css)
@@ -411,9 +475,9 @@
     dtRuleIndex = styles.insertRule(".dl-inline dt {}", styles.cssRules.length);
 
     //add <svg> for each pass listed in the data array.
-    passAnchor.each(function(d, i) {
+    passAnchor.each(function (d, i) {
       var shadowRootElm = this.createShadowRoot();
-      app.toolkit.loadSVG(d.passtype, function() { //svg load callback
+      app.toolkit.loadSVG(d.passtype, function () { //svg load callback
 
         if (this.status >= 200 && this.status < 400) {
 
@@ -474,7 +538,7 @@
 
   app.grid = {
 
-    init: function() {
+    init: function () {
 
       //load grid template
       var gridElem = app.toolkit.stampTemplate('template#pass-grid', 'body');
@@ -490,7 +554,7 @@
 
       //add event to new pass button.
       d3.select('button#new-pass')
-        .on('click', function() {
+        .on('click', function () {
           app.setEditorPage(true);
         });
 

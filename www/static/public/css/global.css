@@ -6,6 +6,7 @@
 body {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
+  -webkit-font-smoothing: subpixel-antialiased; /*make safari look like chrome&firefox*/
   background-color: rgb(50, 45, 45);
   padding: 0;
   margin: 0;
@@ -51,7 +52,7 @@ html, button, input, select, textarea, .pure-g [class * "pure-u"] {
 .button-light {
   background-color: #E6E6E6;
   /*fallback*/
-  
+
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid rgb(0, 0, 0);
   color: rgb(16, 16, 16);
@@ -65,7 +66,7 @@ html, button, input, select, textarea, .pure-g [class * "pure-u"] {
 .button-secondary {
   background-color: #000;
   /*fallback*/
-  
+
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid rgb(240, 30, 0);
   color: rgb(240, 30, 0);
@@ -198,7 +199,7 @@ html, button, input, select, textarea, .pure-g [class * "pure-u"] {
 
 .nav-menu {
   background: rgb(24, 24, 24);
-  border-bottom: 1px solid rgb(240, 30, 0);
+  border-bottom: 1px solid #777;
   z-index: 4;
   position: relative;
   height: 3.1em;
@@ -279,7 +280,7 @@ dialog.modal {
   margin: auto;
   border: 1px solid rgb(0, 0, 0);
   /*fallback black */
-  
+
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 6px;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
@@ -308,6 +309,7 @@ dialog[open].modal {
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.9);
 }
+
 /********************************************
   On tablets and other medium+-sized devices
 *********************************************/

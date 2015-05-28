@@ -1,4 +1,4 @@
-var login = (function(ninjaSignIn, undefined) {
+var login = (function (ninjaSignIn, undefined) {
 
   'use strict';
 
@@ -43,7 +43,7 @@ var login = (function(ninjaSignIn, undefined) {
       console.log("init page");
 
       //on click oauth signin buttons
-      [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+      [].forEach.call(document.querySelectorAll('.signin'), function (el) {
         el.addEventListener('click', signIn, false);
       });
 
@@ -58,7 +58,7 @@ var login = (function(ninjaSignIn, undefined) {
         setMenuItems();
 
         //on click pass list button
-        document.getElementById('pass-btn').addEventListener('click', function(e) {
+        document.getElementById('pass-btn').addEventListener('click', function (e) {
           e.preventDefault();
           if (isAuthenticated()) {
             loadAccount();
@@ -66,8 +66,8 @@ var login = (function(ninjaSignIn, undefined) {
         });
 
         //on click login nav button
-        [].forEach.call(document.querySelectorAll('.login-btn'), function(el) {
-          el.addEventListener('click', function(e) {
+        [].forEach.call(document.querySelectorAll('.login-btn'), function (el) {
+          el.addEventListener('click', function (e) {
             e.preventDefault();
             dialog.showModal();
           }, false);
@@ -76,33 +76,33 @@ var login = (function(ninjaSignIn, undefined) {
         document.getElementById('logout-btn').addEventListener('click', logOut);
 
         //on click term checkbox
-        document.getElementById('terms').addEventListener('click', function(e) {
+        document.getElementById('terms').addEventListener('click', function (e) {
           if (this.checked == false) {
-            [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+            [].forEach.call(document.querySelectorAll('.signin'), function (el) {
               el.disabled = true;
             });
           } else {
-            [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+            [].forEach.call(document.querySelectorAll('.signin'), function (el) {
               el.disabled = false;
             });
           }
         });
 
         //on click terms and conditions
-        document.getElementById('show-terms').addEventListener('click', function(e) {
+        document.getElementById('show-terms').addEventListener('click', function (e) {
           e.preventDefault();
           loadTerms();
           document.getElementById('read-terms').style.display = 'inline';
         });
 
         //on click dialog close button
-        document.getElementById('login-close').addEventListener('click', function(e) {
+        document.getElementById('login-close').addEventListener('click', function (e) {
           dialog.close();
           resetDialog();
         });
 
         //click outside modal box
-        document.querySelector('dialog#login-modal').addEventListener('click', function(e) {
+        document.querySelector('dialog#login-modal').addEventListener('click', function (e) {
           if (!dialog.open) { //don't close if not open...
             return;
           }
@@ -122,7 +122,7 @@ var login = (function(ninjaSignIn, undefined) {
 
     if (isAuthenticated()) { //show logout
       //hide login buttons
-      [].forEach.call(document.querySelectorAll('.login-btn'), function(el) {
+      [].forEach.call(document.querySelectorAll('.login-btn'), function (el) {
         el.style.display = 'none';
       });
       //show logout button
@@ -134,7 +134,7 @@ var login = (function(ninjaSignIn, undefined) {
     } else { //show login
 
       //show login buttons
-      [].forEach.call(document.querySelectorAll('.login-btn'), function(el) {
+      [].forEach.call(document.querySelectorAll('.login-btn'), function (el) {
         el.style.display = 'inline';
       });
       //hide logout btn
@@ -165,7 +165,7 @@ var login = (function(ninjaSignIn, undefined) {
       //show spinner
       document.getElementById('login-spin').style.display = 'inline';
       //disable sigin buttons
-      [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+      [].forEach.call(document.querySelectorAll('.signin'), function (el) {
         el.disabled = true;
       });
 
@@ -227,7 +227,7 @@ var login = (function(ninjaSignIn, undefined) {
         popupWindow.focus();
       }
 
-      var polling = window.setInterval(function() {
+      var polling = window.setInterval(function () {
         try {
           if (popupWindow.document.domain === document.domain && (popupWindow.location.search || popupWindow.location.hash)) {
 
@@ -278,7 +278,7 @@ var login = (function(ninjaSignIn, undefined) {
       var req = new XMLHttpRequest();
       req.open('POST', provider + query, true);
       req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-      req.onload = function() {
+      req.onload = function () {
         if (req.status >= 200 && req.status < 400) {
           var data = JSON.parse(req.responseText);
           createCookie("token", data.token);
@@ -302,7 +302,7 @@ var login = (function(ninjaSignIn, undefined) {
 
       var req = new XMLHttpRequest();
       req.open('GET', '/assets/terms.txt', true);
-      req.onload = function() {
+      req.onload = function () {
         if (req.status >= 200 && req.status < 400) {
           document.getElementById('terms-text').innerHTML = req.responseText;
         } else {
@@ -324,7 +324,7 @@ var login = (function(ninjaSignIn, undefined) {
     //recheck terms check
     document.getElementById('terms').checked = true;
     //enable sigin buttons
-    [].forEach.call(document.querySelectorAll('.signin'), function(el) {
+    [].forEach.call(document.querySelectorAll('.signin'), function (el) {
       el.disabled = false;
     });
   }
@@ -388,7 +388,7 @@ var login = (function(ninjaSignIn, undefined) {
     return str.join("&");
   }
 
-  ninjaSignIn.init = function() {
+  ninjaSignIn.init = function () {
     init();
   };
 
@@ -401,7 +401,7 @@ var login = (function(ninjaSignIn, undefined) {
   Init js on page load
 
 ***********************************************************/
-(function(window, document) {
+(function (window, document) {
 
   ninjaSignIn.init(); //start ninja signin
 
@@ -414,7 +414,7 @@ var login = (function(ninjaSignIn, undefined) {
     function toggleHorizontal() {
       [].forEach.call(
         document.getElementById('menu').querySelectorAll('.custom-can-transform'),
-        function(el) {
+        function (el) {
           el.classList.toggle('pure-menu-horizontal');
         }
       );
@@ -438,7 +438,7 @@ var login = (function(ninjaSignIn, undefined) {
       }
     }
 
-    document.getElementById('toggle').addEventListener('click', function(e) {
+    document.getElementById('toggle').addEventListener('click', function (e) {
       e.preventDefault();
       toggleMenu();
     });
@@ -446,3 +446,22 @@ var login = (function(ninjaSignIn, undefined) {
     window.addEventListener(WINDOW_CHANGE_EVENT, closeMenu);
   }
 })(this, this.document);
+
+/***********************************************************
+
+
+***********************************************************/
+(function (i, s, o, g, r, a, m) {
+  i['GoogleAnalyticsObject'] = r;
+  i[r] = i[r] || function () {
+    (i[r].q = i[r].q || []).push(arguments)
+  }, i[r].l = 1 * new Date();
+  a = s.createElement(o),
+    m = s.getElementsByTagName(o)[0];
+  a.async = 1;
+  a.src = g;
+  m.parentNode.insertBefore(a, m)
+})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+ga('create', 'UA-2856856-5', 'auto');
+ga('send', 'pageview');

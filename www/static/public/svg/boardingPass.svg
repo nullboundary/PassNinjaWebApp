@@ -98,7 +98,7 @@
 <g class="img-btn-group" id="transit-group">
 	<image id="transit" style="overflow:visible;" width="41.344" height="41.344" x="138.332" y="83.998" xlink:href="/assets/svg/img/boardingPass/airplane_arrow.png">
 	</image>
-	<rect data-target="transit" width="41.344" height="41.344" x="138.332" y="83.998" class="img-btn-rect"/>
+	<!--<rect data-target="transit" width="41.344" height="41.344" x="138.332" y="83.998" class="img-btn-rect"/>-->
 </g>
 <!-- barcode -->
 <g class="barcode-btn-group" id="barcode-group">

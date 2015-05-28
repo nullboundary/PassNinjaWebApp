@@ -1,4 +1,4 @@
-(function(app, $, undefined) {
+(function (app, $, undefined) {
 
   'use strict';
 
@@ -16,8 +16,8 @@
 
 
 
-		***********************************************************/
-    swipeEvents: function(el) {
+     ***********************************************************/
+    swipeEvents: function (el) {
       var startX,
         startY;
 
@@ -69,8 +69,8 @@
 
 
 
-		***********************************************************/
-    alertDisplay: function(alertType, alertMessage) {
+     ***********************************************************/
+    alertDisplay: function (alertType, alertMessage) {
       //how long an alert is displayed
       var alertTimeout = 4500;
       var outHtml = '';
@@ -88,7 +88,7 @@
         .html(outHtml + alertMessage)
         .style('display', 'inline');
 
-      setTimeout(function() {
+      setTimeout(function () {
         d3.select('.alert').style('display', 'none');
       }, alertTimeout);
     },
@@ -98,7 +98,7 @@
 		sets it to '' or to a default.
 
 		***********************************************************/
-    valueOrDefault: function(val, def) {
+    valueOrDefault: function (val, def) {
       if (def == undefined) def = '';
       return val == undefined ? def : val;
     },
@@ -107,56 +107,64 @@
 
 
 
-		***********************************************************/
-    show: function() {
+     ***********************************************************/
+    show: function () {
       for (var i = 0; i < arguments.length; i++) {
         var el = arguments[i];
         if (typeof el === "string") {
-          el = d3.select(el);
+          el = document.querySelector(el);
+        } else if (el instanceof d3.selection) {
+          el = el.node();
         }
-        el.style('display', 'inline');
+        el.style.display = '';
       }
     },
     /***********************************************************
 
 
 
-		***********************************************************/
-    hide: function() {
+     ***********************************************************/
+    hide: function () {
       for (var i = 0; i < arguments.length; i++) {
         var el = arguments[i];
         if (typeof el === "string") {
-          el = d3.select(el);
+          el = document.querySelector(el);
+        } else if (el instanceof d3.selection) {
+          el = el.node();
         }
-        el.style('display', 'none');
+        el.style.display = 'none';
       }
     },
     /***********************************************************
 
 
 
-		***********************************************************/
-    enable: function() {
+     ***********************************************************/
+    enable: function () {
       for (var i = 0; i < arguments.length; i++) {
         var el = arguments[i];
         if (typeof el === "string") {
-          el = d3.select(el);
+          el = document.querySelector(el);
+        } else if (el instanceof d3.selection) {
+          el = el.node();
         }
-        el.attr('disabled', null);
+        el.disabled = false;
       }
     },
     /***********************************************************
 
 
 
-		***********************************************************/
-    disable: function() {
+     ***********************************************************/
+    disable: function () {
       for (var i = 0; i < arguments.length; i++) {
         var el = arguments[i];
         if (typeof el === "string") {
-          el = d3.select(el);
+          el = document.querySelector(el);
+        } else if (el instanceof d3.selection) {
+          el = el.node();
         }
-        el.attr('disabled', true);
+        el.disabled = true;
       }
     },
 
@@ -165,7 +173,7 @@
 		check value input and set value property of selected input elem
 
 		***********************************************************/
-    setValue: function(selector, value) {
+    setValue: function (selector, value) {
       if (value) {
         d3.select(selector)
           .property('value', value);
@@ -175,8 +183,8 @@
 
 
 
-		***********************************************************/
-    getToken: function() {
+     ***********************************************************/
+    getToken: function () {
       var token = app.toolkit.readCookie('token');
       console.log(token);
       if (token == undefined) {
@@ -187,8 +195,8 @@
     /***********************************************************
 
 
-		***********************************************************/
-    createCookie: function(name, value, days) {
+     ***********************************************************/
+    createCookie: function (name, value, days) {
       if (days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -199,8 +207,8 @@
     /***********************************************************
 
 
-		***********************************************************/
-    readCookie: function(name) {
+     ***********************************************************/
+    readCookie: function (name) {
       var nameEQ = name + "=";
       var ca = document.cookie.split(';');
       for (var i = 0; i < ca.length; i++) {
@@ -213,16 +221,16 @@
     /***********************************************************
 
 
-		***********************************************************/
-    eraseCookie: function(name) {
+     ***********************************************************/
+    eraseCookie: function (name) {
       app.toolkit.createCookie(name, "", -1);
     },
     /***********************************************************
 
 
 
-		***********************************************************/
-    gUID: function() {
+     ***********************************************************/
+    gUID: function () {
       return ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
     },
     /***********************************************************
@@ -230,12 +238,12 @@
 		childNodeNum uses insertBefore to add the template before another element.
 
 		***********************************************************/
-    stampTemplate: function(templateSelector, containerSelector, childNodeNum) {
+    stampTemplate: function (templateSelector, containerSelector, childNodeNum) {
       var template = document.querySelector(templateSelector).content;
       var clone = document.importNode(template, true)
       var host = document.querySelector(containerSelector);
 
-      if (arguments.length == 3) {
+      if (childNodeNum != undefined) {
         host.insertBefore(clone, host.childNodes[childNodeNum]);
       } else {
         host.appendChild(clone);
@@ -246,8 +254,8 @@
     /***********************************************************
 
 
-		***********************************************************/
-    loadSVG: function(passType, callback) {
+     ***********************************************************/
+    loadSVG: function (passType, callback) {
       console.log('loadSVG');
 
       var url = '/assets/svg/' + passType + '.svg';
@@ -257,7 +265,7 @@
       var req = new XMLHttpRequest();
       req.open('GET', uri, true);
       req.overrideMimeType('image/svg+xml');
-      req.setRequestHeader('Accept','image/svg+xml');
+      req.setRequestHeader('Accept', 'image/svg+xml');
       req.onload = callback;
       req.send();
 
@@ -268,11 +276,15 @@
     /***********************************************************
 
 
-		***********************************************************/
-    checkLoadError: function(error) {
+     ***********************************************************/
+    checkLoadError: function (error) {
 
       if (error) {
         console.warn(error);
+
+        if (error.status === 304) {
+          return true;
+        }
 
         if (error.status === 0) { //timeout or connection refused
           app.toolkit.alertDisplay('error', "Connection refused, server or network unavailable.");
@@ -285,7 +297,7 @@
           window.sessionStorage.removeItem('active');
           document.cookie = "";
           window.location = "/";
-
+          return true;
         }
 
         var errorObj = JSON.parse(error.responseText);
@@ -296,18 +308,36 @@
     },
 
     /***********************************************************
+     * The HTML5 spec was changed in 2011 to state popstate should not
+     * fired on page load. Chrome(34) & Firefox(4) has fixed the bug but
+     * some browsers (e.g. Safari) are still fire the popstate on
+     * the page load. This object created from the Pjax Library to handle
+     * this issue.
+     ***********************************************************/
+    popstatePageloadFix: {
+      popped: ('state' in window.history && window.history.state !== null),
+      initialUrl: location.href,
+      initialPop: false,
+      init: function () {
+        this.initialPop = !this.popped && location.href == this.initialUrl;
+        this.popped = true;
+        return this.initialPop;
+      }
+    },
+
+    /***********************************************************
 
 		check browser locale support
 		***********************************************************/
-    toLocaleStringSupportsLocales: function() {
+    toLocaleStringSupportsLocales: function () {
       if (window.Intl && typeof window.Intl === 'object') {
         return true;
       } else {
         $.getScript('/assets/js/Intl.min.js')
-          .done(function(script, textStatus) {
+          .done(function (script, textStatus) {
             console.log(textStatus);
           })
-          .fail(function(jqxhr, settings, exception) {
+          .fail(function (jqxhr, settings, exception) {
             alertDisplay('error', 'problem loading Intl.min.js');
           });
         return false;

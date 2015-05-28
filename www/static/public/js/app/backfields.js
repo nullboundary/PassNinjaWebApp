@@ -14,7 +14,7 @@
   /***********************************************************
 
 
-	***********************************************************/
+   ***********************************************************/
   function init() {
 
     backSVG = d3.select('svg#passBack');
@@ -53,7 +53,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
   function addHandlers() {
 
       //setup scrolling for the backfields
@@ -80,7 +80,7 @@
     /***********************************************************
 
 
-		 ***********************************************************/
+     ***********************************************************/
   function limitScroll(lineScale, yLoc, yExtent, barLength, passHeight) {
 
     if (barLength < passHeight) {
@@ -103,7 +103,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
   function updateScrollBar(yLoc, gHeight) {
 
       var scale = svgHeight / gHeight;
@@ -139,7 +139,7 @@
     /***********************************************************
 
 
-		 ***********************************************************/
+     ***********************************************************/
   function drawScrollBar(y1, y2) {
     console.log("y1:" + y1 + " y2:" + y2);
     d3.select('line#scroll-bar')
@@ -158,7 +158,7 @@
   /***********************************************************
 
 
-	***********************************************************/
+   ***********************************************************/
   function onScroll() {
 
       var scrollPassMargin = 10; //distance from pass edge to start of scrollbar
@@ -203,7 +203,7 @@
     /***********************************************************
 
 
-		***********************************************************/
+     ***********************************************************/
   function onScrollEnd(zoom) {
 
     var backBBox = d3.select('g#back-fields').node().getBBox();
@@ -242,7 +242,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
   function addText(backFields) {
 
     var margin = 16;
@@ -274,7 +274,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
   function wrap(text, width) {
 
     text.each(function() {
@@ -315,7 +315,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
   function onSelectBackField() {
     console.log(this);
     var group = d3.select(this.parentNode);
@@ -330,10 +330,13 @@
     group.each(function(d) {
       //set input to label
       d3.select('input#back-label')
-        .property('value', d.label);
+        .property('value', d.label)
+        .call(tk.enable);
+
       //set textarea to value
       d3.select('textarea#back-text')
-        .property('value', d.value);
+        .property('value', d.value)
+        .call(tk.enable);
 
       //update the selected edit group data
       var index = this.id.slice(4);
@@ -354,7 +357,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
 
   function onDelField() {
 
@@ -365,7 +368,18 @@
     if (backFields.length <= 0) { //disable delete button if no fields to delete.
       delete pb.template().keyDoc[pb.passType()].backFields;
       d3.select(this).call(tk.disable);
+
+      //clear and disable input/textarea
+      document.querySelector('input#back-label').value = 'Field Label';
+      document.querySelector('textarea#back-text').value = 'Field Value';
+      tk.disable('input#back-label','textarea#back-text');
+
+    } else {
+
+      //select and highlight the new rect.
+      d3.select('#' + editGroup.groupId).select('rect').each(onSelectBackField);
     }
+
 
     setBackFields2();
 
@@ -374,7 +388,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
 
   function onUpdateField() {
     d3.event.preventDefault();
@@ -396,7 +410,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
   function onAddField() {
 
     d3.event.preventDefault();
@@ -413,7 +427,7 @@
 
     var nextIndex = backFields.length;
     var groupId = 'back' + nextIndex;
-    var keyValue = groupId + "-" + tk.gUID();
+    var keyValue = groupId + tk.gUID();
 
     var fieldData = {
       'key': keyValue,
@@ -433,6 +447,7 @@
 
     if (backFields.length > 0) {
       d3.select('#btn-del-back-field').call(tk.enable);
+      tk.enable('input#back-label','textarea#back-text');
     }
 
     //select and highlight the new rect.
@@ -443,7 +458,7 @@
   /***********************************************************
 
 
-	 ***********************************************************/
+   ***********************************************************/
   function setBackFields2() {
 
     var backDataSet = pb.template().keyDoc[pb.passType()].backFields;
@@ -471,7 +486,7 @@
           return 'back' + i;
         });
 
-      addText(backFields);
+      addText(backFields); //add and wrap/format text
 
       //add the line between groups
       backFields.append('line')
@@ -534,7 +549,7 @@
   /***********************************************************
 
 
-	***********************************************************/
+   ***********************************************************/
   function onBackFieldsSave() {
 
     console.log(pb.template().keyDoc[pb.passType()].backFields);

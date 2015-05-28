@@ -3,8 +3,8 @@
   'use strict';
 
   /***********************************************************
-   
-   
+
+
    ***********************************************************/
   function handler() {
 
@@ -41,8 +41,8 @@
       }
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function printMutateList() {
 
@@ -67,8 +67,8 @@
 
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function sharePass(passUrl, passName) {
 
@@ -108,13 +108,13 @@
 
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function printEmbedCode(passUrl) {
 
       d3.select('#share-embed').property('href', passUrl);
-      var imgText = '<a href="' + passUrl + '"<img src=https://cdn.rawgit.com/nullboundary/passninja-badge/v0.1/Passbook_Badge.svg></a>';
+      var imgText = '<a href="' + passUrl + '"<img src=https://cdn.rawgit.com/passninja/passninja-badge/v0.1/Passbook_Badge.svg></a>';
 
       d3.select('#pass-badge')
         .text(imgText)
@@ -126,8 +126,8 @@
 
     }
     /***********************************************************
-     
-     
+
+
      ***********************************************************/
   function generateQR(passUrl, passName) {
 

@@ -20,22 +20,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/global.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/landing.css" rel="stylesheet" type="text/css">
-  <script>
-    (function(i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r;
-      i[r] = i[r] || function() {
-        (i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-      a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-2856856-5', 'auto');
-    ga('send', 'pageview');
-  </script>
 </head>
 
 <body>
@@ -82,13 +66,13 @@
   <div class="content-wrapper">
 
     <div class="content">
-      <h2 class="content-head is-center">We provide the fastest and easiest way to create a pass. Sign up today!</h2>
+      <h2 class="content-head is-center">We provide the fastest and easiest way to create Apple passbook passes. Sign up today!</h2>
       <div class="pure-g">
 
         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
           <h3 class="content-subhead"><i class="fa fa-magic fa-2x"></i>Easy Pass Builder and Accurate Preview</h3>
           <p>
-            We provide the fastest and easiest way to create beautiful Passbook passes. Sign up and try our Pass builder tool.
+            We provide the most accurate pass preview and easy editor to create beautiful Passbook passes. Sign up and try our Pass builder tool.
           </p>
         </div>
         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
@@ -113,7 +97,7 @@
       <div class="pure-u-1 pure-u-md-1-3">
         <div class="pricing-table pricing-table-free">
           <div class="pricing-table-header">
-            <h2>Preview</h2>
+            <h2>Beta Preview</h2>
 
             <span class="pricing-table-price">
               Free
@@ -124,7 +108,7 @@
             <li>Instant Access</li>
             <li>Design 2 Pass Templates</li>
             <li>Limited API Access</li>
-            <li>3 Pass downloads per template</li>
+            <li>5 Pass downloads per template</li>
           </ul>
 
           <!--<button class="button-choose pure-button">Choose</button>-->
@@ -132,12 +116,13 @@
       </div>
 
       <div class="pure-u-1 pure-u-md-1-3">
+        <div class="beta-hide">Not available during beta</div>
         <div class="pricing-table pricing-table-biz pricing-table-selected">
           <div class="pricing-table-header">
             <h2>Small Business</h2>
 
             <span class="pricing-table-price">
-              $15
+              $25
               <span>per month</span>
             </span>
           </div>
@@ -154,12 +139,13 @@
       </div>
 
       <div class="pure-u-1 pure-u-md-1-3">
+        <div class="beta-hide">Not available during beta</div>
         <div class="pricing-table pricing-table-enterprise">
           <div class="pricing-table-header">
             <h2>Enterprise</h2>
 
             <span class="pricing-table-price">
-              $45
+              $95
               <span>per month</span>
             </span>
           </div>
@@ -175,6 +161,46 @@
         </div>
       </div>
     </div>
+    <h1>Beta status report</h1>
+    <table class="pure-table pure-table-bordered beta-table horz-center">
+    <thead>
+        <tr>
+            <th>Feature</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+          <td>Pass Editor</td>
+          <td class="beta-ready">Ready</td>
+        </tr>
+        <tr>
+          <td>Pull Updates</td>
+          <td class="beta-ready">Ready</td>
+        </tr>
+        <tr>
+            <td>Restful API</td>
+            <td class="beta-test">Testing</td>
+        </tr>
+        <tr>
+          <td>Push Updates</td>
+          <td class="beta-notready">Not Ready</td>
+        </tr>
+        <tr>
+            <td>Documentation</td>
+            <td class="beta-notready">Not Ready</td>
+        </tr>
+        <tr>
+            <td>Analytics</td>
+            <td class="beta-notready">Not Ready</td>
+        </tr>
+         <tr>
+            <td>Paid Accounts</td>
+            <td class="beta-notready">Not Ready</td>
+        </tr>
+    </tbody>
+</table>
     <button class="button-start pure-button horz-center login-btn">Get Started!</button>
     <div class="footer l-box pure-g">
       <div class="pure-u-1 pure-u-md-1-3">
