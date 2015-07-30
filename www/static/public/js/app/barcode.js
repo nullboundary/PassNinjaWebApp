@@ -124,7 +124,7 @@
 
     if (pb.template().keyDoc.barcode) {
 
-      if (pb.template().keyDoc.barcode.message == "") {
+    /*  if (pb.template().keyDoc.barcode.message == "") {
         onePageScroll.moveBlock(true);
         tk.alertDisplay("error", "Please fill out the required field");
         $('#bar-message').focus();
@@ -136,7 +136,7 @@
 
       } else {
         onePageScroll.moveBlock(false);
-
+    */
         var passData = {
           'name': pb.template().name,
           'status': pb.status(pb.barcode.index()),
@@ -145,7 +145,7 @@
           }
         };
         pb.update(pb.template().id, passData);
-      }
+      //}
     }
 
 

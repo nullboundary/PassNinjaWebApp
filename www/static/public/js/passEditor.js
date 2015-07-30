@@ -48,11 +48,12 @@
 
         //clear pass if its incomplete before returning
         var passModel = app.getPassModel();
-        console.log(passModel.name);
+        console.log(passModel);
         if (passModel.name === '' || passModel.name == undefined) {
           app.getPassModelList().splice(app.getPassActive().index, 1);
+        } else {
+          update(passModel.id, passModel); //sync with Db
         }
-
         app.savePassModelList();
         app.setHomePage();
       });
@@ -234,8 +235,22 @@
     d3.xhr('/api/v1/passes/' + passId)
       .header("Content-Type", "application/json")
       .header("Authorization", "Bearer " + app.toolkit.getToken())
-      .send('PATCH', JSON.stringify(jsonData), requestHandler);
+      .send('PATCH', JSON.stringify(jsonData, removeMarker), requestHandler);
 
+  }
+
+  /***********************************************************
+  removeMarker removes the marker object from the passModelList
+  data being saved in storage. The marker object is created by
+  the location map. This data is rebuild on editor load anyway.
+
+  ***********************************************************/
+  function removeMarker(key, value) {
+
+    if (key === 'marker') {
+      return undefined;
+    }
+    return value;
   }
 
   /***********************************************************
@@ -281,7 +296,7 @@
     if (!svgObj.empty()) {
       console.log('clear pass');
       //passTemplate = null; //clear data
-      app.delPassModel(app.getNumPassModel()); //FIXME: sometimes not last?
+      //app.delPassModel(app.getNumPassModel()); //FIXME: sometimes not last?
       d3.select('svg.front').remove();
     }
 
@@ -304,8 +319,10 @@
         console.log(data);
         data.id = ""; //should already be clear
         app.addPassModel(data); //passTemplate = data; //store json pass template object
-        app.setPassActive('#front-content', app.getNumPassModel() - 1)
+        app.setPassActive('#front-content', app.getNumPassModel() - 1);
         app.toolkit.loadSVG(passType, onFrontSVGLoad);
+  
+        //configEditor(); TODO: Need to reset all fields for new pass!
 
         $('div.spinner').hide(); //show spinner
         $('#next-button').show(); //show next arrow

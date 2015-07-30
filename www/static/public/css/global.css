@@ -7,6 +7,8 @@ body {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   font-weight: 300;
   -webkit-font-smoothing: subpixel-antialiased; /*make safari look like chrome&firefox*/
+  text-rendering: optimizeLegibility;
+
   background-color: rgb(50, 45, 45);
   padding: 0;
   margin: 0;
@@ -19,6 +21,8 @@ h1 {
   font-size: 30px;
   font-weight: 100;
   text-align: center;
+  letter-spacing: -.018em;
+
 }
 h2 {
   color: #ffffff;
@@ -27,6 +31,7 @@ h2 {
   font-size: 14px;
   font-weight: 100;
   text-align: center;
+  letter-spacing: -.01em;
 }
 h3 {
   font-weight: 100;
@@ -35,6 +40,8 @@ h3 {
 
 html, button, input, select, textarea, .pure-g [class * "pure-u"] {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: subpixel-antialiased; /*make safari look like chrome&firefox*/
+  text-rendering: optimizeLegibility;
   font-weight: 100;
 }
 .center-header {
@@ -70,6 +77,22 @@ html, button, input, select, textarea, .pure-g [class * "pure-u"] {
   background-color: rgba(0, 0, 0, 0);
   border: 2px solid rgb(240, 30, 0);
   color: rgb(240, 30, 0);
+}
+
+.button-nav {
+  background-color: rgb(24, 24, 24);
+  /*fallback*/
+  background-color: rgba(0, 0, 0, 0);
+  border: 2px solid rgba(0, 0, 0,0);
+  color: #fff;
+}
+
+.button-nav:hover {
+  background-color: rgb(24, 24, 24);
+  /*fallback*/
+  background-color: rgba(0, 0, 0, 0);
+  border: 2px solid rgb(240, 30, 0);
+  color: #fff;
 }
 /********************************************
   Share Buttons
@@ -218,7 +241,7 @@ html, button, input, select, textarea, .pure-g [class * "pure-u"] {
   height: 35px;
 }
 .nav-menu ul {
-  padding-top: 0.9em;
+  padding-top: 1.8em;
 }
 .custom-menu-right {
   text-align: left;

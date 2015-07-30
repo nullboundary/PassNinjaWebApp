@@ -171,7 +171,7 @@
       var bottomYLoc = topYLoc + backBBox.height; //the bottom edge of the back-fields group
       var scale = svgHeight / backBBox.height;
       var length = svgHeight * scale; //length of scroll bar
-
+      
       if (topYLoc > -30) { //limit pull down.
 
         //create linear scale range to adjust scrollbar length

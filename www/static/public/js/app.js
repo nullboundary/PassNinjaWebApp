@@ -61,22 +61,34 @@
 
 
       console.warn(window.location.hash);
+      console.log(window.location.pathname);
       console.log(window.history.state);
 
-      if (window.location.pathname === "/accounts/editor") {
+      switch (window.location.pathname) {
 
+      case "/accounts/editor": //========================
+
+        //load the editor if not loaded. (popstate forward button)
+        var next = document.querySelector("section[data-index='" + (window.history.state.index) + "']");
+        if (next === null) {
+          app.setEditorPage(false,window.history.state.index);
+        }
+        //if back button on first page, go to homepage
         if (!window.location.hash || window.location.hash === '#1' || !Object.keys(window.history.state).length) {
-
           app.setHomePage();
-
         } else {
-
           var hash = window.location.hash.substring(1);
           console.warn(hash);
           onePageScroll.moveBack('.main', window.history.state);
-
         }
+
+        break;
+
+      case "/accounts/home": //========================
+      console.log(window.history.state);
+        break;
       }
+
 
     });
   }
@@ -268,6 +280,8 @@
   //======================================================
   app.setEditorPage = function (isNewPass, pageNum) {
 
+    var pageHash = 2;
+
     //create a fade transistion for page change
     d3.select('body div.container').transition()
       .style('opacity', 0)
@@ -282,18 +296,25 @@
           console.log(passStatus);
 
           if (parseInt(passStatus) >= 2) {
-            onePageScroll.moveTo('.main', parseInt(passStatus));
+            pageHash = parseInt(passStatus);
+            onePageScroll.moveTo('.main', pageHash);
+            history.pushState({}, "Editor", "editor#"+pageHash); //update url
           } else { //ready, api, or 0, 1 ""
             if (pageNum != undefined) {
-              onePageScroll.moveTo('.main', pageNum);
+              pageHash = pageNum;
+              onePageScroll.moveTo('.main', pageHash);
+              history.pushState({}, "Editor", "editor#"+pageHash); //update url
             } else { //default to 2 if second argument is not set
               onePageScroll.moveTo('.main', 2);
+              history.pushState({}, "Editor", "editor#"+pageHash); //update url
+
             }
           }
+        } else {
+          history.pushState({}, "Editor", "editor");
         }
       });
 
-    history.pushState({}, "Editor", "editor"); //update url
 
   }
 
@@ -342,13 +363,17 @@
   app.delPassModel = function () {
 
       var passModel = app.getPassModel();
-      app.getPassModelList().splice(app.getPassActive().index, 1);
+      if (app.getNumPassModel() > 0) {
+        passModelList.splice(app.getPassActive().index, 1); //remove from list
+        app.savePassModelList(); //save the state of the list to storage
+        console.warn(passModelList);
+        console.warn(JSON.parse(window.sessionStorage.getItem('models')));
+      }
 
       d3.xhr('/api/v1/passes/' + passModel.id)
         .header("Authorization", "Bearer " + app.toolkit.getToken())
         .send('DELETE', function (error, data) {
           if (app.toolkit.checkLoadError(error)) return;
-          app.savePassModelList(); //save the state of the list to storage
           app.toolkit.alertDisplay('saved', 'Pass successfully deleted.');
         });
     }
@@ -363,7 +388,7 @@
     //======================================================
   app.setPassModelList = function (list) {
       passModelList = list;
-      window.sessionStorage.setItem('models', JSON.stringify(passModelList));
+      window.sessionStorage.setItem('models', JSON.stringify(passModelList, removeMarker));
     }
     //======================================================
     //
@@ -387,7 +412,7 @@
     //
     //======================================================
   app.getNumPassModel = function () {
-    return passModelList.length;
+    return app.getPassModelList().length;
   }
 
   return app; //return the app object
@@ -447,7 +472,7 @@
 //======================================================
 (function () {
 
-  var debug = true;
+  var debug = false;
 
   if (debug === false) {
     if (typeof (window.console) === 'undefined') {

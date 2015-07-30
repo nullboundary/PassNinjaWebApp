@@ -11,7 +11,30 @@
   <meta name="description" content="Passbook Builder">
   <meta name="keywords" content="passbook, pass, pass ninja, wallet, ibeacon, mobile pass, coupon">
   <meta name="author" content="Pass Ninja">
-  <link rel="shortcut icon" href="/assets/img/favicon_ticket.ico">
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/img/favicon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/img/favicon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/img/favicon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/img/favicon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/img/favicon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/img/favicon/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/assets/img/favicon/manifest.json">
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico">
+  <meta name="apple-mobile-web-app-title" content="Pass Ninja">
+  <meta name="application-name" content="Pass Ninja">
+  <meta name="msapplication-TileColor" content="#f01e00">
+  <meta name="msapplication-TileImage" content="/assets/img/favicon/mstile-144x144.png">
+  <meta name="msapplication-config" content="/assets/img/favicon/browserconfig.xml">
+  <meta name="theme-color" content="#f01e00">
+
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
   <!--[if lte IE 8]>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
@@ -28,61 +51,61 @@
   <link href="/assets/css/plugin/jquery.datetimepicker.css" rel="stylesheet" type="text/css">
   <link href="/assets/css/builder.css" rel="stylesheet" type="text/css" shim-shadowdom>
   <link href="/assets/css/plugin/jquery.colorpickersliders.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.6.1/webcomponents.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.7/webcomponents.min.js"></script>
 
   <template id="pass-builder">
 
     <!--<div class="wrapper">-->
     <div class="main">
       <!-- Page 1 ================== -->
-     <!--  <template id="page1-builder"> -->
-        <section class="page-1">
+      <!--  <template id="page1-builder"> -->
+      <section class="page-1">
 
-          <div class="pure-g">
-            <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
-            <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
-              <div class="title">
-                <h1>Pass Type</h1>
-                <h2>Select the type of pass you want to create! </h2>
-              </div>
+        <div class="pure-g">
+          <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3"></div>
+          <div class="pure-u-11-12 pure-u-md-3-5 pure-u-lg-1-3">
+            <div class="title">
+              <h1>Pass Type</h1>
+              <h2>Select the type of pass you want to create! </h2>
             </div>
-            <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3 "></div>
           </div>
-          <!-- Thumbnail Grid of Pass Type Selection -->
-          <div class="passtype-grid pure-g">
-            <div class="pure-u-1-2 pure-u-md-1-4">
-              <figure>
-                <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/assets/img/boarding_01_thumb.svg" alt="Boarding Pass" width="226" height="290">
-                <figcaption class="passtype-label">
-                  Boarding Pass
-                </figcaption>
-              </figure>
-            </div>
-            <div class="pure-u-1-2 pure-u-md-1-4">
-              <figure>
-                <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/assets/img/coupon_03_thumb.svg" alt="Coupon" width="226" height="290">
-                <figcaption class="passtype-label">
-                  Coupon
-                </figcaption>
-              </figure>
-            </div>
-            <div class="pure-u-1-2 pure-u-md-1-4">
-              <figure>
-                <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_strip_thumb.svg" alt="Event Ticket" width="226" height="290">
-                <figcaption class="passtype-label">
-                  Event Ticket
-                </figcaption>
-              </figure>
-            </div>
-            <div class="pure-u-1-2 pure-u-md-1-4">
-              <figure>
-                <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/assets/img/store_01_thumb.svg" alt="Store Card" width="226" height="290">
-                <figcaption class="passtype-label">
-                  Store Card
-                </figcaption>
-              </figure>
-            </div>
-            <!--<div class="pure-u-1-3 pure-u-md-1-5">
+          <div class="pure-u-1-24 pure-u-md-1-5 pure-u-lg-1-3 "></div>
+        </div>
+        <!-- Thumbnail Grid of Pass Type Selection -->
+        <div class="passtype-grid pure-g">
+          <div class="pure-u-1-2 pure-u-md-1-4">
+            <figure>
+              <img id="boardingPass" class="pure-img-responsive pass-thumb-select" src="/assets/img/boarding_01_thumb.svg" alt="Boarding Pass" width="226" height="290">
+              <figcaption class="passtype-label">
+                Boarding Pass
+              </figcaption>
+            </figure>
+          </div>
+          <div class="pure-u-1-2 pure-u-md-1-4">
+            <figure>
+              <img id="coupon" class="pure-img-responsive pass-thumb-select" src="/assets/img/coupon_03_thumb.svg" alt="Coupon" width="226" height="290">
+              <figcaption class="passtype-label">
+                Coupon
+              </figcaption>
+            </figure>
+          </div>
+          <div class="pure-u-1-2 pure-u-md-1-4">
+            <figure>
+              <img id="eventTicket" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_strip_thumb.svg" alt="Event Ticket" width="226" height="290">
+              <figcaption class="passtype-label">
+                Event Ticket
+              </figcaption>
+            </figure>
+          </div>
+          <div class="pure-u-1-2 pure-u-md-1-4">
+            <figure>
+              <img id="storeCard" class="pure-img-responsive pass-thumb-select" src="/assets/img/store_01_thumb.svg" alt="Store Card" width="226" height="290">
+              <figcaption class="passtype-label">
+                Store Card
+              </figcaption>
+            </figure>
+          </div>
+          <!--<div class="pure-u-1-3 pure-u-md-1-5">
               <figure>
                 <img id="generic" class="pure-img-responsive pass-thumb-select" src="/assets/img/event_01_fullbg_thumb.png" alt="Generic" width="226" height="290">
                 <figcaption class="passtype-label">
@@ -90,9 +113,9 @@
                 </figcaption>
               </figure>
             </div>-->
-          </div>
+        </div>
 
-        </section>
+      </section>
       <!--</template>-->
       <!-- Page 2 ================== -->
       <section class="page-2">
@@ -753,10 +776,10 @@
               </a>
             </div>
             <div class="pure-control-group">
-            <label for="more-share">More Share Options</label>
-            <button type="button" class="pure-button button-light expand-share-btn">Share</button>
+              <label for="more-share">More Share Options</label>
+              <button type="button" class="pure-button button-light expand-share-btn">Share</button>
             </div>
-            </form>
+          </form>
         </div>
         <div class="pure-u-1 pure-u-md-1-5 pure-u-lg-1-3">
           <button type="button" class="pure-button button-light expand-close-btn">X</button>
@@ -822,14 +845,14 @@
   </dialog>
   <!-- JavaScript
   ================================================== -->
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/dialog-polyfill.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/onepagescroll.js"></script>
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.0.0/tinycolor.min.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/jquery.colorpickersliders.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/jquery.datetimepicker.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
   <script type="text/javascript" src="/assets/js/plugin/l.control.geosearch.js"></script>

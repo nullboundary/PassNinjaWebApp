@@ -11,7 +11,6 @@ import (
 	"html/template"
 	"image/png"
 	"io/ioutil"
-	"log"
 	"mime"
 	"net/http"
 	"os"
@@ -20,8 +19,8 @@ import (
 	"time"
 
 	"bitbucket.org/cicadaDev/utils"
+	log "github.com/Sirupsen/logrus"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/hashicorp/logutils"
 	"github.com/lidashuang/goji_gzip"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/gplus"
@@ -43,6 +42,7 @@ var (
 	notFoundTemplate *template.Template
 	indexTemplate    *template.Template
 	accountTemplate  *template.Template
+	docsTemplate     *template.Template
 	emailFeedBack    = NewEmailer()
 	secretKeyRing    = "/etc/ninja/tls/.secring.gpg" //crypt set -keyring .pubring.gpg -endpoint http://10.1.42.1:4001 /email/feedback emailvar.json
 	bindUrl          string                          //flag var for binding to a specific port
@@ -60,22 +60,19 @@ func init() {
 	//add custom validator functions
 	addValidators()
 
-	//setup logutils log levels
-	filter := &logutils.LevelFilter{
-		Levels:   []logutils.LogLevel{"DEBUG", "WARN", "ERROR"},
-		MinLevel: "DEBUG",
-		Writer:   os.Stderr,
-	}
-	log.SetOutput(filter)
+	//set the logging level
+	log.SetLevel(log.DebugLevel)
 
 	//load etcd service url from env variables
 	etcdAddr := utils.SetEtcdURL()
-	log.Printf("[DEBUG] etcd: %s", etcdAddr)
+	log.WithField("etcdAddr", etcdAddr).Debugln("set etcd from env variable")
 
 	emailFeedBack.Init()
 
 	//load html files as templates into memory for speed increase
 	preLoadTemplates()
+
+	log.Infoln("Pass Ninja Webserver Initialized")
 
 }
 
@@ -90,10 +87,11 @@ func main() {
 	cspSrc := buildCSPolicy()
 
 	secureMiddleware := secure.New(secure.Options{
-		AllowedHosts:          []string{"pass.ninja"},
-		SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
-		STSSeconds:            315360000,
-		STSIncludeSubdomains:  true,
+		AllowedHosts:         []string{"pass.ninja"},
+		SSLProxyHeaders:      map[string]string{"X-Forwarded-Proto": "https"},
+		STSSeconds:           315360000,
+		STSIncludeSubdomains: true,
+		//STSPreload:            true,
 		FrameDeny:             true,
 		ContentTypeNosniff:    true,
 		BrowserXssFilter:      true,
@@ -117,6 +115,7 @@ func main() {
 	//home page
 	root.Get("/index.html", handleIndex)
 	root.Get("/", handleIndex)
+	root.Get("/apidocs.html", handleDocs)
 	root.Get("/assets/*", handleStatic)
 
 	//web app login pages
@@ -138,7 +137,8 @@ func main() {
 	api.Get("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleGetPassLink))             //get a public link to a pass - or update pass variables.
 	api.Post("/api/v1/passes", cji.Use(passReadVerify).On(handleCreatePass))                    //creates a new pass
 	api.Delete("/api/v1/passes/:id", cji.Use(passIDVerify).On(handleDeletePass))                //remove a pass from the DB
-	api.Patch("/api/v1/passes/:id/link", cji.Use(passIDVerify).On(handleMutatePass))            //update pass variables.
+	api.Get("/api/v1/passes/:id/mutate", cji.Use(passIDVerify).On(handleGetMutateList))         //update pass variables.
+	api.Patch("/api/v1/passes/:id/mutate", cji.Use(passIDVerify).On(handleMutatePass))          //update pass variables.
 	api.Patch("/api/v1/passes/:id", cji.Use(passIDVerify, passReadVerify).On(handleUpdatePass)) //partial update of pass data
 
 	root.NotFound(handleNotFound)
@@ -153,8 +153,6 @@ func main() {
 	customCAServer.TLSConfig = addRootCA("/etc/ninja/tls/myCA.cer")
 	customCAServer.ListenAndServeTLS("/etc/ninja/tls/mycert1.cer", "/etc/ninja/tls/mycert1.key")
 
-	//graceful.ListenAndServe(":8080", root) //no tls
-	//graceful.ListenAndServeTLS(":10443", "/etc/ninja/tls/mycert1.cer", "/etc/ninja/tls/mycert1.key", root) //official certificate
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -166,7 +164,9 @@ func main() {
 func addRootCA(filepath string) *tls.Config {
 
 	severCert, err := ioutil.ReadFile(filepath)
-	utils.Check(err)
+	if err != nil {
+		log.WithField("filepath", filepath).Fatalf("error loading Root CA file %v", err)
+	}
 
 	cAPool := x509.NewCertPool()
 	cAPool.AppendCertsFromPEM(severCert)
@@ -188,12 +188,13 @@ func addRootCA(filepath string) *tls.Config {
 //////////////////////////////////////////////////////////////////////////
 func announceEtcd() {
 
-	log.Printf("[DEBUG] %s", bindUrl)
 	sz := len(bindUrl)
 	servernum := "01"
 	if sz > 2 {
 		servernum = bindUrl[sz-2:]
 	}
+	log.WithFields(log.Fields{"addr": bindUrl, "server": servernum}).Debugln("announce service on etcd")
+
 	///vulcand/backends/b1/servers/srv2 '{"URL": "http://localhost:5001"}'
 	utils.HeartBeatEtcd("vulcand/backends/passninja/servers/svr"+servernum, `{"URL": "`+bindUrl+`"}`, 5)
 }
@@ -211,7 +212,7 @@ func generateFileName(passName string) string {
 	idHash := utils.GenerateFnvHashID(passName, time.Now().String()) //generate a hash using pass orgname + color + time
 	passFileName := strings.Replace(passName, " ", "-", -1)          //remove spaces from organization name
 	fileName := fmt.Sprintf("%s-%d", passFileName, idHash)
-	log.Printf("[DEBUG] %s", fileName)
+	log.WithField("name", fileName).Debugln("generating file name")
 
 	return govalidator.SafeFileName(fileName)
 
@@ -280,12 +281,12 @@ func addValidators() {
 	//general text plus a few special characters
 	govalidator.TagMap["msg"] = govalidator.Validator(func(str string) bool {
 
-		log.Printf("[DEBUG] %s", str)
+		log.WithField("string", str).Debugln("msg validator input")
 		//use as whitelist. Strip these chars example: 달기&Co.;
 		pattern := "[" + `&. ~()':/?"!--+_%@#,\s` + "]+"
 		str = govalidator.ReplacePattern(str, pattern, "")
 
-		log.Printf("[DEBUG] %s", str)
+		log.WithField("string", str).Debugln("msg validator after character strip")
 		//then test UTFLetterNum becomes: 달기Co;, which returns false
 		if !govalidator.IsUTFLetterNumeric(str) {
 			return false
@@ -314,11 +315,14 @@ func addValidators() {
 
 		//decode the data and see if its truely a png, by getting the color space and width/height
 		data, err := base64.StdEncoding.DecodeString(dataStr[1]) // [] byte
-		utils.Check(err)
+		if err != nil {
+			log.Errorf("png base64 decode error: %s", err.Error())
+			return false
+		}
 		r := bytes.NewReader(data)
 		_, err = png.DecodeConfig(r)
 		if err != nil {
-			log.Printf("[ERROR] png decodeConfig error:%s", err.Error())
+			log.Errorf("png decode config error: %s", err.Error())
 			return false
 		}
 
@@ -359,7 +363,8 @@ func createSessionID() (*http.Cookie, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("[DEBUG] %s", sidValue["sid"])
+	log.WithField("sid", sidValue["sid"]).Debugln("create session id")
+
 	return &http.Cookie{Name: "sid", Value: sidValue["sid"]}, nil
 
 }
@@ -414,7 +419,7 @@ func verifyState(req *http.Request) bool {
 
 	param := req.URL.Query()
 	stateStr := param.Get("state")
-	log.Printf("[DEBUG] %s", stateStr)
+	log.WithField("state", stateStr).Debugln("verify request state")
 
 	if stateStr == "" {
 		return false
@@ -467,7 +472,7 @@ func updatePassVariables(newPass *pass, customVars map[string]value) error {
 	case "storeCard":
 		passDoc = newPass.KeyDoc.StoreCard
 	default:
-		log.Printf("[WARN] Pass type %s not found", newPass.PassType)
+		log.WithField("type", newPass.PassType).Warnln("Pass type not found")
 		return fmt.Errorf("the submitted data is malformed")
 	}
 
@@ -476,7 +481,7 @@ mutateLoop:
 	for _, key := range newPass.MutateList {
 		val, ok := customVars[key]
 		if !ok {
-			log.Printf("[WARN] mutate key not found:%s", key)
+			log.WithField("key", key).Warnln("mutate key not found")
 			return fmt.Errorf("mutate field key not found:%s", key)
 		}
 
@@ -537,11 +542,12 @@ func verifyPassIDToken(token string, seeds ...string) error {
 	//id is a token, verify it
 	ok, err := utils.VerifyToken(passTokenKey, token, seeds...)
 	if err != nil {
-		log.Printf("[ERROR] verify token failed: %s", err.Error()) //base64 decode failed
+		//base64 decode failed
+		log.WithField("token", token).Errorf("verify pass id token failed: %s", err.Error())
 		return fmt.Errorf("pass not found")
 	}
 	if !ok {
-		log.Println("[WARN] token Failed to verify!")
+		log.WithField("token", token).Warnln("token failed to verify")
 		return fmt.Errorf("pass not found")
 	}
 
@@ -557,7 +563,7 @@ func verifyPassIDToken(token string, seeds ...string) error {
 func createJWToken(tokenName string, signKey []byte, subClaim string) (map[string]string, error) {
 
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
-	log.Println(subClaim)
+	log.WithField("sub", subClaim).Debugln("create JWT")
 	// Set some claims
 	token.Claims["sub"] = subClaim
 	token.Claims["iat"] = time.Now().Unix()
@@ -583,11 +589,10 @@ func noDirListing(prefix string, h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		safePath := govalidator.SafeFileName(r.URL.Path)
-
-		log.Println(path.Join(prefix, safePath))
+		log.WithField("path", path.Join(prefix, safePath)).Debugln("join preix and safepath")
 		fileInfo, err := os.Stat(path.Join(prefix, r.URL.Path))
 		if err != nil {
-			log.Printf("[ERROR] os.Stat error: %s", err)
+			log.Errorf("os.Stat error: %s", err)
 			handleNotFound(w, r)
 			return
 		}
@@ -639,9 +644,13 @@ func setAuthProviders() {
 	authP := &providers{}
 
 	providerVar, err := utils.GetCryptKey(secretKeyRing, "/oauth/providers")
-	utils.Check(err)
+	if err != nil {
+		log.Errorf("error getting oauth provider etcd info: %s", err)
+	}
 	err = json.Unmarshal(providerVar, &authP)
-	utils.Check(err)
+	if err != nil {
+		log.Errorf("error unmarshalling oauth provider info: %s", err)
+	}
 
 	goth.UseProviders(
 		gplus.New(authP.Google.ClientID, authP.Google.ClientSecret, authP.Google.RedirectURI),
@@ -694,25 +703,31 @@ func preLoadTemplates() {
 	var err error
 	loginTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/login.html")
 	if err != nil {
-		log.Fatalf("[ERROR] %s", err)
+		log.WithField("template", "login").Fatalln(err)
 	}
 
 	//load notfound.html as template
 	notFoundTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/notfound.html")
 	if err != nil {
-		log.Fatalf("[ERROR] %s", err)
+		log.WithField("template", "notfound").Fatalln(err)
 	}
 
 	//load index.html as template
 	indexTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/index.html")
 	if err != nil {
-		log.Fatalf("[ERROR] %s", err)
+		log.WithField("template", "index").Fatalln(err)
 	}
 
 	//load account.html as template
 	accountTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/auth/accounts.html")
 	if err != nil {
-		log.Fatalf("[ERROR] %s", err)
+		log.WithField("template", "accounts").Fatalln(err)
+	}
+
+	//load docs.html as template
+	docsTemplate, err = template.ParseFiles("/usr/share/ninja/www/static/public/apidocs.html")
+	if err != nil {
+		log.WithField("template", "docs").Fatalln(err)
 	}
 
 }

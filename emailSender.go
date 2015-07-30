@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/cicadaDev/utils"
 	"bytes"
 	"encoding/json"
+	log "github.com/Sirupsen/logrus"
 	"net/smtp"
 	"text/template"
 	"time"
@@ -20,7 +21,7 @@ type emailServer struct {
 	Username string
 	Password string
 	Address  string
-	Url      string
+	URL      string
 	Port     string
 }
 
@@ -51,7 +52,7 @@ Time sent: {{.SendTime}}
 
 //////////////////////////////////////////////////////////////////////////
 //
-//
+// NewEmailer returns the emailer struct used for sending feedback email
 //
 //
 //////////////////////////////////////////////////////////////////////////
@@ -70,9 +71,13 @@ func (mail *emailer) Init() {
 	//load crypt pass key from json file
 	var emailMap map[string]interface{}
 	emailVar, err := utils.GetCryptKey(secretKeyRing, "/email/feedback")
-	utils.Check(err)
+	if err != nil {
+		log.Errorf("error accessing etcd email crypt %s", err.Error())
+	}
 	err = json.Unmarshal(emailVar, &emailMap)
-	utils.Check(err)
+	if err != nil {
+		log.Errorf("error unmarshalling email key info: %s", err)
+	}
 
 	username := emailMap["username"].(string)
 	pw := emailMap["pass"].(string)
@@ -107,7 +112,7 @@ func (mail *emailer) Send(feedBackType string, userName string, userEmail string
 //////////////////////////////////////////////////////////////////////////
 func (mail *emailer) connect() {
 
-	mail.Auth = smtp.PlainAuth("", mail.Server.Username, mail.Server.Password, mail.Server.Url)
+	mail.Auth = smtp.PlainAuth("", mail.Server.Username, mail.Server.Password, mail.Server.URL)
 
 }
 
@@ -136,10 +141,14 @@ func (mail *emailer) create(feedBackType string, userName string, userEmail stri
 
 	//parse the template
 	t, err := t.Parse(emailTemplate)
-	utils.Check(err)
+	if err != nil {
+		log.Errorf("%s", err.Error())
+	}
 
 	err = t.Execute(&mail.EmailDoc, context)
-	utils.Check(err)
+	if err != nil {
+		log.Errorf("%s", err.Error())
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -150,8 +159,10 @@ func (mail *emailer) create(feedBackType string, userName string, userEmail stri
 //////////////////////////////////////////////////////////////////////////
 func (mail *emailer) deliver(userEmail string) {
 
-	addressPort := mail.Server.Url + ":" + mail.Server.Port // in our case, "smtp.google.com:587"
+	addressPort := mail.Server.URL + ":" + mail.Server.Port // in our case, "smtp.google.com:587"
 
 	err := smtp.SendMail(addressPort, mail.Auth, mail.Server.Username, []string{userEmail}, mail.EmailDoc.Bytes())
-	utils.Check(err)
+	if err != nil {
+		log.Errorf("%s", err.Error())
+	}
 }

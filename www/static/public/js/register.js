@@ -40,84 +40,129 @@ var login = (function (ninjaSignIn, undefined) {
   ***********************************************************/
   function init() {
 
-      console.log("init page");
+    console.log("init page");
 
-      //on click oauth signin buttons
-      [].forEach.call(document.querySelectorAll('.signin'), function (el) {
-        el.addEventListener('click', signIn, false);
+    //on click oauth signin buttons
+    [].forEach.call(document.querySelectorAll('.signin'), function (el) {
+      el.addEventListener('click', signIn, false);
+    });
+
+    //setup login modal handlers
+    var dialogLogin = document.querySelector('dialog#login-modal');
+    var dialogImg = document.querySelector('dialog#img-view');
+
+
+    if (dialogLogin && dialogImg) { //make sure the page has a dialog
+
+      dialogPolyfill.registerDialog(dialogLogin); //register with polyfill
+      dialogPolyfill.registerDialog(dialogImg); //register with polyfill
+
+
+      //set to correct login status
+      setMenuItems();
+
+      //on click pass list button
+      document.getElementById('pass-btn').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (isAuthenticated()) {
+          loadAccount();
+        }
       });
 
-      //setup login modal handlers
-      var dialog = document.querySelector('dialog#login-modal');
-
-      if (dialog) { //make sure the page has a dialog
-
-        dialogPolyfill.registerDialog(dialog); //register with polyfill
-
-        //set to correct login status
-        setMenuItems();
-
-        //on click pass list button
-        document.getElementById('pass-btn').addEventListener('click', function (e) {
+      //on click login nav button
+      [].forEach.call(document.querySelectorAll('.login-btn'), function (el) {
+        el.addEventListener('click', function (e) {
           e.preventDefault();
-          if (isAuthenticated()) {
-            loadAccount();
+          dialogLogin.showModal();
+        }, false);
+      });
+      //on click log out button
+      document.getElementById('logout-btn').addEventListener('click', logOut);
+
+      //on click term checkbox
+      document.getElementById('terms').addEventListener('click', function (e) {
+        if (this.checked == false) {
+          [].forEach.call(document.querySelectorAll('.signin'), function (el) {
+            el.disabled = true;
+          });
+        } else {
+          [].forEach.call(document.querySelectorAll('.signin'), function (el) {
+            el.disabled = false;
+          });
+        }
+      });
+
+      //on click terms and conditions
+      document.getElementById('show-terms').addEventListener('click', function (e) {
+        e.preventDefault();
+        loadTerms();
+        document.getElementById('read-terms').style.display = 'inline';
+      });
+
+      //on click dialog close button
+      document.getElementById('login-close').addEventListener('click', function (e) {
+        dialogLogin.close();
+        resetDialog();
+      });
+
+      //click outside modal box
+      [].forEach.call(document.querySelectorAll('dialog'), function (el) {
+        el.addEventListener('click', function (e) {
+          if (!this.open) { //don't close if not open...
+            return;
           }
-        });
+          if (clickedInDialog(this, e)) { //don't close if clicked inside modal
+            return;
+          }
+          this.close();
+          resetDialog();
+        }, false);
+      });
 
-        //on click login nav button
-        [].forEach.call(document.querySelectorAll('.login-btn'), function (el) {
-          el.addEventListener('click', function (e) {
-            e.preventDefault();
-            dialog.showModal();
-          }, false);
-        });
-        //on click log out button
-        document.getElementById('logout-btn').addEventListener('click', logOut);
+      //on click img thumbnail
+      [].forEach.call(document.querySelectorAll('.thumbnail-img'), function (el) {
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
 
-        //on click term checkbox
-        document.getElementById('terms').addEventListener('click', function (e) {
-          if (this.checked == false) {
-            [].forEach.call(document.querySelectorAll('.signin'), function (el) {
-              el.disabled = true;
-            });
+          var img = dialogImg.querySelector('img');
+          var spinner = dialogImg.querySelector('i#img-spin');
+
+          //display spinner not image
+          img.style.display = 'none';
+          spinner.style.display = 'inline';
+
+          //display image after its loaded
+          img.addEventListener("load", function imgLoaded(e) {
+            spinner.style.display = 'none';
+            img.style.display = 'inline';
+            e.target.removeEventListener(e.type, imgLoaded); //only execute event once
+          })
+          var imgHref = this.getAttribute('href');
+
+          //image already loaded
+          if (img.getAttribute('src') == imgHref) {
+            spinner.style.display = 'none';
+            img.style.display = 'inline';
           } else {
-            [].forEach.call(document.querySelectorAll('.signin'), function (el) {
-              el.disabled = false;
-            });
+            img.setAttribute('src', imgHref)
           }
-        });
 
-        //on click terms and conditions
-        document.getElementById('show-terms').addEventListener('click', function (e) {
-          e.preventDefault();
-          loadTerms();
-          document.getElementById('read-terms').style.display = 'inline';
-        });
+          dialogImg.showModal();
 
-        //on click dialog close button
-        document.getElementById('login-close').addEventListener('click', function (e) {
-          dialog.close();
-          resetDialog();
-        });
+        }, false);
+      });
 
-        //click outside modal box
-        document.querySelector('dialog#login-modal').addEventListener('click', function (e) {
-          if (!dialog.open) { //don't close if not open...
-            return;
-          }
-          if (clickedInDialog(dialog, e)) { //don't close if clicked inside modal
-            return;
-          }
-          dialog.close();
-          resetDialog();
-        });
-      }
+      //on click img dialog close button
+      /*    document.getElementById('img-close').addEventListener('click', function (e) {
+            dialogImg.close();
+          }); */
+
     }
-    /***********************************************************
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function setMenuItems() {
 
     if (isAuthenticated()) { //show logout
@@ -160,51 +205,51 @@ var login = (function (ninjaSignIn, undefined) {
 
   ***********************************************************/
   function signIn(e) {
-      e.preventDefault();
+    e.preventDefault();
 
-      //show spinner
-      document.getElementById('login-spin').style.display = 'inline';
-      //disable sigin buttons
-      [].forEach.call(document.querySelectorAll('.signin'), function (el) {
-        el.disabled = true;
-      });
+    //show spinner
+    document.getElementById('login-spin').style.display = 'inline';
+    //disable sigin buttons
+    [].forEach.call(document.querySelectorAll('.signin'), function (el) {
+      el.disabled = true;
+    });
 
-      var authProvider = this.getAttribute('id');
+    var authProvider = this.getAttribute('id');
 
-      if (isAuthenticated()) { //already logged in
-        loadAccount();
-      } else { //initiate oauth sign in
-        if (setState(provider[authProvider])) {
-          var url = getAuthUrl(provider[authProvider]); //get the provider url
-          //Set Oauth Popup
-          oAuthPopup(provider[authProvider], url);
-        }
+    if (isAuthenticated()) { //already logged in
+      loadAccount();
+    } else { //initiate oauth sign in
+      if (setState(provider[authProvider])) {
+        var url = getAuthUrl(provider[authProvider]); //get the provider url
+        //Set Oauth Popup
+        oAuthPopup(provider[authProvider], url);
       }
-
     }
-    /***********************************************************
+
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function isAuthenticated() {
 
-      var token = readCookie('token');
-      if (token) { //a simple check if the token expired.
-        if (token.split('.').length === 3) {
-          var base64Url = token.split('.')[1];
-          var base64 = base64Url.replace('-', '+').replace('_', '/');
-          var exp = JSON.parse(window.atob(base64)).exp;
-          return Math.round(new Date().getTime() / 1000) <= exp;
-        } else {
-          return true;
-        }
+    var token = readCookie('token');
+    if (token) { //a simple check if the token expired.
+      if (token.split('.').length === 3) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace('-', '+').replace('_', '/');
+        var exp = JSON.parse(window.atob(base64)).exp;
+        return Math.round(new Date().getTime() / 1000) <= exp;
+      } else {
+        return true;
       }
-      return false;
     }
-    /***********************************************************
+    return false;
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function logOut(e) {
     e.preventDefault();
     window.sessionStorage.clear(); //clear it all
@@ -218,45 +263,45 @@ var login = (function (ninjaSignIn, undefined) {
    ***********************************************************/
   function oAuthPopup(auth, url) {
 
-      //open the oauth window
-      var options = auth.popupOptions;
-      var popupWindow = window.open(url, '_blank', 'width=' + options.width + ',height=' + options.height);
+    //open the oauth window
+    var options = auth.popupOptions;
+    var popupWindow = window.open(url, '_blank', 'width=' + options.width + ',height=' + options.height);
 
-      //focus the oauth window
-      if (popupWindow && popupWindow.focus) {
-        popupWindow.focus();
-      }
-
-      var polling = window.setInterval(function () {
-        try {
-          if (popupWindow.document.domain === document.domain && (popupWindow.location.search || popupWindow.location.hash)) {
-
-            popupWindow.close();
-            window.clearInterval(polling);
-            post(auth.loginURL, popupWindow.location.search);
-
-          }
-        } catch (error) {}
-
-        if (popupWindow.closed) {
-          window.clearInterval(polling);
-        }
-      }, 35);
+    //focus the oauth window
+    if (popupWindow && popupWindow.focus) {
+      popupWindow.focus();
     }
-    /***********************************************************
+
+    var polling = window.setInterval(function () {
+      try {
+        if (popupWindow.document.domain === document.domain && (popupWindow.location.search || popupWindow.location.hash)) {
+
+          popupWindow.close();
+          window.clearInterval(polling);
+          post(auth.loginURL, popupWindow.location.search);
+
+        }
+      } catch (error) {}
+
+      if (popupWindow.closed) {
+        window.clearInterval(polling);
+      }
+    }, 35);
+  }
+  /***********************************************************
 
 
-     ***********************************************************/
+   ***********************************************************/
   function getAuthUrl(authProvider) {
 
-      var param = serialize(authProvider.queryParams);
-      //console.log(authProvider.authURL + "?" + param);
-      return authProvider.authURL + "?" + param;
-    }
-    /***********************************************************
+    var param = serialize(authProvider.queryParams);
+    //console.log(authProvider.authURL + "?" + param);
+    return authProvider.authURL + "?" + param;
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function setState(authProvider) {
     var sid = readCookie("sid");
     if (!sid) {
@@ -272,52 +317,52 @@ var login = (function (ninjaSignIn, undefined) {
   ***********************************************************/
   function post(provider, query) {
 
-      console.log(provider);
-      console.log(query);
+    console.log(provider);
+    console.log(query);
 
-      var req = new XMLHttpRequest();
-      req.open('POST', provider + query, true);
-      req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-      req.onload = function () {
-        if (req.status >= 200 && req.status < 400) {
-          var data = JSON.parse(req.responseText);
-          createCookie("token", data.token);
-          loadAccount();
-        } else {
-          console.warn(req.responseText);
-          if (req.status === 401 || req.status === 403) {
-            logOut();
-          }
+    var req = new XMLHttpRequest();
+    req.open('POST', provider + query, true);
+    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    req.onload = function () {
+      if (req.status >= 200 && req.status < 400) {
+        var data = JSON.parse(req.responseText);
+        createCookie("token", data.token);
+        loadAccount();
+      } else {
+        console.warn(req.responseText);
+        if (req.status === 401 || req.status === 403) {
+          logOut();
         }
-      };
-      req.send();
+      }
+    };
+    req.send();
 
-    }
-    /***********************************************************
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function loadTerms() {
-      console.log("loadTerms");
+    console.log("loadTerms");
 
-      var req = new XMLHttpRequest();
-      req.open('GET', '/assets/terms.txt', true);
-      req.onload = function () {
-        if (req.status >= 200 && req.status < 400) {
-          document.getElementById('terms-text').innerHTML = req.responseText;
-        } else {
-          console.warn(req.responseText);
-          var error = JSON.parse(req.responseText);
-          document.getElementById('terms-text').innerHTML = error.error();
-        }
-      };
-      req.send();
+    var req = new XMLHttpRequest();
+    req.open('GET', '/assets/terms.txt', true);
+    req.onload = function () {
+      if (req.status >= 200 && req.status < 400) {
+        document.getElementById('terms-text').innerHTML = req.responseText;
+      } else {
+        console.warn(req.responseText);
+        var error = JSON.parse(req.responseText);
+        document.getElementById('terms-text').innerHTML = error.error();
+      }
+    };
+    req.send();
 
-    }
-    /***********************************************************
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function resetDialog() {
     //hide spinner
     document.getElementById('login-spin').style.display = 'none';
@@ -347,38 +392,38 @@ var login = (function (ninjaSignIn, undefined) {
 
   ***********************************************************/
   function createCookie(name, value, days) {
-      if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        var expires = "; expires=" + date.toGMTString();
-      } else var expires = "";
-      document.cookie = name + "=" + value + expires + "; path=/";
-    }
-    /***********************************************************
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      var expires = "; expires=" + date.toGMTString();
+    } else var expires = "";
+    document.cookie = name + "=" + value + expires + "; path=/";
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function readCookie(name) {
-      var nameEQ = name + "=";
-      var ca = document.cookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-      }
-      return null;
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
-    /***********************************************************
+    return null;
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function eraseCookie(name) {
-      createCookie(name, "", -1);
-    }
-    /***********************************************************
+    createCookie(name, "", -1);
+  }
+  /***********************************************************
 
 
-    ***********************************************************/
+  ***********************************************************/
   function serialize(obj) {
     var str = [];
     for (var p in obj)

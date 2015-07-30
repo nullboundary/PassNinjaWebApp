@@ -179,7 +179,7 @@
     closeExpander closes an open expander info panel.
 
     ***********************************************************/
-  function closeExpander(previousItem) {
+  function closeExpander(previousItem,refreshGrid) {
 
     if (!previousItem.empty()) {
 
@@ -206,6 +206,11 @@
 
           previousItem
             .style('height', null); //remove height style
+
+          if (refreshGrid){ //rebuild pass grid from storage data
+            buildPassGrid();
+          }
+
 
         });
 
@@ -293,9 +298,8 @@
     expander.select('.expand-del-btn')
       .on('click', function () {
         app.delPassModel();
-        expander //TODO: transistion this
-          .remove(); //remove expander
-        buildPassGrid();
+        var previousItem = d3.select('.expanded');
+        closeExpander(previousItem,true);
 
       });
 
@@ -548,7 +552,7 @@
         d3.json("/api/v1/passes")
           .header("Authorization", "Bearer " + app.toolkit.getToken())
           .get(bindPassData);
-      } else {
+      } else { //build from localstorage
         buildPassGrid();
       }
 

@@ -56,7 +56,7 @@
           console.log(pb.template().mutatelist[i]);
           apiData[pb.template().mutatelist[i]] = "foobar"; //add each entry onto list
         }
-        curlText = "curl -X PATCH -d '" + JSON.stringify(apiData) + "'\\ https://pass.ninja/api/v1/passes/" + pb.template().id + "/link";
+        curlText = "curl -X PATCH -d '" + JSON.stringify(apiData) + "'\\ https://pass.ninja/api/v1/passes/" + pb.template().id + "/mutate";
       }
 
       d3.select('#pass-api').text(curlText) //write json variable list into code block

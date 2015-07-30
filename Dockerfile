@@ -14,6 +14,7 @@ go get github.com/hashicorp/logutils && \
 go get github.com/dgrijalva/jwt-go && \
 go get github.com/pressly/cji && \
 go get golang.org/x/oauth2 && \
+go get github.com/emicklei/forest \
 go get github.com/markbates/goth
 
 #install crypt for setting up encrypted etcd key/value
@@ -30,7 +31,7 @@ EXPOSE 80 443
 #docker build -t passninja/build-web .
 
 #access and run bash in build container
-#docker run --rm -it -v "$PWD":/go/src/bitbucket.org/passNinja passninja/build-web /bin/bash -i
+#docker run -it -v "$PWD":/go/src/bitbucket.org/passNinja passninja/build-web /bin/bash -i
 
 #to compile app in container
 #docker run --rm -v "$PWD":/go/src/bitbucket.org/passNinja passninja/build-web go build -v

@@ -1,5 +1,7 @@
 .pure-g [class *="pure-u"] {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: subpixel-antialiased; /*make safari look like chrome&firefox*/
+  text-rendering: optimizeLegibility;
 }
 /*********************************************
 	General Splash Image styles
@@ -54,8 +56,6 @@
 .splash-subhead {
   color: white;
   letter-spacing: 0.05em;
-  opacity: 0.8;
-  filter: alpha(opacity=80);
 }
 /*********************************************
 	This represents the content area
@@ -110,8 +110,7 @@
 /* This is the class used for the dark-background areas. */
 
 .ribbon {
-  background: #2d3e50;
-  color: #aaa;
+  background: #000000;
 }
 /* This is the class used for the footer */
 
@@ -122,15 +121,35 @@
   padding: 2.5em;
 }
 .l-box-lrg {
-  padding: 2em;
-  border-bottom: 1px solid rgb(0, 0, 0);
-  /* fallback color */
-
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 4em;
+  /*border-bottom: 1px solid rgb(240, 30, 0);*/
 }
 .is-center {
   text-align: center;
 }
+
+.pure-img {
+  max-width: 80%;
+  margin: 10px auto 30px auto;
+  border-radius: 2px;
+}
+
+a.thumbnail-img {
+  text-decoration: none;
+  color: #777;
+}
+
+figcaption {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300;
+  font-size: 1.2em;
+  color: #B6B6B6;
+}
+
+
+
 /********************************************
  Pricing Tables
 
@@ -144,6 +163,7 @@
   max-width: 980px;
   margin: 0 auto;
   margin-bottom: 2em;
+  margin-top: 5em;
 }
 .pricing-table-free .pricing-table-header {
   background: #517992;
@@ -214,7 +234,7 @@
     font-size: 2em;
     background-color: rgba(0, 0, 0, 0.61);
     display: block;
-    height: 221px;
+    height: 223px;
     width: 327px;
 }
 
@@ -263,13 +283,31 @@ td.beta-notready{
   text-decoration: none;
 }
 /********************************************
+  Image Dialog
+
+**********************************************/
+
+dialog#img-view {
+  max-width: 70%;
+  padding: 1em;
+  background: rgba(0, 0, 0,0);
+  height: 110%;
+}
+
+dialog img.pure-img {
+  max-width: 95%;
+  margin: auto;
+  margin-top: 2.5em;
+}
+
+/********************************************
   Login Modal Dialog
 
 **********************************************/
 
 dialog#login-modal {
   min-height: 205px;
-  width: 300px;
+  max-width: 300px;
   padding: 1em;
 }
 dialog#login-modal h1 {
@@ -341,7 +379,7 @@ textarea#terms-text {
     line-height: 1em;
   }
   .button-start {
-    padding: 2em 8em;
+    padding: 2em 4em;
     background-color: rgb(240, 30, 0);
     border: 1px solid rgba(0, 0, 0, 0);
   }

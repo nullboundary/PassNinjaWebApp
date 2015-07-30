@@ -1,0 +1,1032 @@
+
+/* -- Generated Styles from markdown -------------------------------------*/
+.method, .method[data-use-github-style] {
+  font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow: scroll;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: rgb(255, 255, 255);
+}
+.method >:first-child, .method[data-use-github-style] >:first-child {
+  margin-top: 0px !important;
+}
+.method >:last-child, .method[data-use-github-style] >:last-child {
+  margin-bottom: 0px !important;
+}
+.method a:not([href]), .method[data-use-github-style] a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+.method .absent, .method[data-use-github-style] .absent {
+  color: rgb(204, 0, 0);
+}
+.method .anchor, .method[data-use-github-style] .anchor {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: block;
+  padding-right: 6px;
+  padding-left: 30px;
+  margin-left: -30px;
+}
+.method .anchor:focus, .method[data-use-github-style] .anchor:focus {
+  outline: none;
+}
+.method h1, .method[data-use-github-style] h1, .method h2, .method[data-use-github-style] h2, .method h3, .method[data-use-github-style] h3, .method h4, .method[data-use-github-style] h4, .method h5, .method[data-use-github-style] h5, .method h6, .method[data-use-github-style] h6 {
+  position: relative;
+  margin-top: 1em;
+  margin-bottom: 16px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+.method h1 .octicon-link, .method[data-use-github-style] h1 .octicon-link, .method h2 .octicon-link, .method[data-use-github-style] h2 .octicon-link, .method h3 .octicon-link, .method[data-use-github-style] h3 .octicon-link, .method h4 .octicon-link, .method[data-use-github-style] h4 .octicon-link, .method h5 .octicon-link, .method[data-use-github-style] h5 .octicon-link, .method h6 .octicon-link, .method[data-use-github-style] h6 .octicon-link {
+  display: none;
+  color: rgb(0, 0, 0);
+  vertical-align: middle;
+}
+.method h1:hover .anchor, .method[data-use-github-style] h1:hover .anchor, .method h2:hover .anchor, .method[data-use-github-style] h2:hover .anchor, .method h3:hover .anchor, .method[data-use-github-style] h3:hover .anchor, .method h4:hover .anchor, .method[data-use-github-style] h4:hover .anchor, .method h5:hover .anchor, .method[data-use-github-style] h5:hover .anchor, .method h6:hover .anchor, .method[data-use-github-style] h6:hover .anchor {
+  padding-left: 8px;
+  margin-left: -30px;
+  text-decoration: none;
+}
+.method h1:hover .anchor .octicon-link, .method[data-use-github-style] h1:hover .anchor .octicon-link, .method h2:hover .anchor .octicon-link, .method[data-use-github-style] h2:hover .anchor .octicon-link, .method h3:hover .anchor .octicon-link, .method[data-use-github-style] h3:hover .anchor .octicon-link, .method h4:hover .anchor .octicon-link, .method[data-use-github-style] h4:hover .anchor .octicon-link, .method h5:hover .anchor .octicon-link, .method[data-use-github-style] h5:hover .anchor .octicon-link, .method h6:hover .anchor .octicon-link, .method[data-use-github-style] h6:hover .anchor .octicon-link {
+  display: inline-block;
+}
+.method h1 tt, .method[data-use-github-style] h1 tt, .method h2 tt, .method[data-use-github-style] h2 tt, .method h3 tt, .method[data-use-github-style] h3 tt, .method h4 tt, .method[data-use-github-style] h4 tt, .method h5 tt, .method[data-use-github-style] h5 tt, .method h6 tt, .method[data-use-github-style] h6 tt, .method h1 code, .method[data-use-github-style] h1 code, .method h2 code, .method[data-use-github-style] h2 code, .method h3 code, .method[data-use-github-style] h3 code, .method h4 code, .method[data-use-github-style] h4 code, .method h5 code, .method[data-use-github-style] h5 code, .method h6 code, .method[data-use-github-style] h6 code {
+  font-size: inherit;
+}
+.method h1, .method[data-use-github-style] h1 {
+  padding-bottom: 0.3em;
+  font-size: 2.25em;
+  line-height: 1.2;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgb(238, 238, 238);
+}
+.method h1 .anchor, .method[data-use-github-style] h1 .anchor {
+  line-height: 1;
+}
+.method h2, .method[data-use-github-style] h2 {
+  padding-bottom: 0.3em;
+  font-size: 1.75em;
+  line-height: 1.225;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgb(238, 238, 238);
+}
+.method h2 .anchor, .method[data-use-github-style] h2 .anchor {
+  line-height: 1;
+}
+.method h3, .method[data-use-github-style] h3 {
+  font-size: 1.5em;
+  line-height: 1.43;
+}
+.method h3 .anchor, .method[data-use-github-style] h3 .anchor {
+  line-height: 1.2;
+}
+.method h4, .method[data-use-github-style] h4 {
+  font-size: 1.25em;
+}
+.method h4 .anchor, .method[data-use-github-style] h4 .anchor {
+  line-height: 1.2;
+}
+.method h5, .method[data-use-github-style] h5 {
+  font-size: 1em;
+}
+.method h5 .anchor, .method[data-use-github-style] h5 .anchor {
+  line-height: 1.1;
+}
+.method h6, .method[data-use-github-style] h6 {
+  font-size: 1em;
+  color: rgb(119, 119, 119);
+}
+.method h6 .anchor, .method[data-use-github-style] h6 .anchor {
+  line-height: 1.1;
+}
+.method p, .method[data-use-github-style] p, .method blockquote, .method[data-use-github-style] blockquote, .method ul, .method[data-use-github-style] ul, .method ol, .method[data-use-github-style] ol, .method dl, .method[data-use-github-style] dl, .method table, .method[data-use-github-style] table, .method pre, .method[data-use-github-style] pre {
+  margin-top: 0px;
+  margin-bottom: 16px;
+}
+.method hr, .method[data-use-github-style] hr {
+  height: 4px;
+  padding: 0px;
+  margin: 16px 0px;
+  border: 0px none;
+  background-color: rgb(231, 231, 231);
+}
+.method ul, .method[data-use-github-style] ul, .method ol, .method[data-use-github-style] ol {
+  padding-left: 2em;
+}
+.method ul.no-list, .method[data-use-github-style] ul.no-list, .method ol.no-list, .method[data-use-github-style] ol.no-list {
+  padding: 0px;
+  list-style-type: none;
+}
+.method ul ul, .method[data-use-github-style] ul ul, .method ul ol, .method[data-use-github-style] ul ol, .method ol ol, .method[data-use-github-style] ol ol, .method ol ul, .method[data-use-github-style] ol ul {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.method li > p, .method[data-use-github-style] li > p {
+  margin-top: 16px;
+}
+.method dl, .method[data-use-github-style] dl {
+  padding: 0px;
+}
+.method dl dt, .method[data-use-github-style] dl dt {
+  padding: 0px;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: bold;
+}
+.method dl dd, .method[data-use-github-style] dl dd {
+  padding: 0px 16px;
+  margin-bottom: 16px;
+}
+.method blockquote, .method[data-use-github-style] blockquote {
+  padding: 0px 15px;
+  color: rgb(119, 119, 119);
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-left-color: rgb(221, 221, 221);
+}
+.method blockquote >:first-child, .method[data-use-github-style] blockquote >:first-child {
+  margin-top: 0px;
+}
+.method blockquote >:last-child, .method[data-use-github-style] blockquote >:last-child {
+  margin-bottom: 0px;
+}
+.method table, .method[data-use-github-style] table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+}
+.method table th, .method[data-use-github-style] table th {
+  font-weight: bold;
+}
+.method table th, .method[data-use-github-style] table th, .method table td, .method[data-use-github-style] table td {
+  padding: 6px 13px;
+  border: 1px solid rgb(221, 221, 221);
+}
+.method table tr, .method[data-use-github-style] table tr {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: rgb(204, 204, 204);
+  background-color: rgb(255, 255, 255);
+}
+.method table tr:nth-child(2n), .method[data-use-github-style] table tr:nth-child(2n) {
+  background-color: rgb(248, 248, 248);
+}
+.method img, .method[data-use-github-style] img {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.method .emoji, .method[data-use-github-style] .emoji {
+  max-width: none;
+}
+.method span.frame, .method[data-use-github-style] span.frame {
+  display: block;
+  overflow: hidden;
+}
+.method span.frame > span, .method[data-use-github-style] span.frame > span {
+  display: block;
+  float: left;
+  width: auto;
+  padding: 7px;
+  margin: 13px 0px 0px;
+  overflow: hidden;
+  border: 1px solid rgb(221, 221, 221);
+}
+.method span.frame span img, .method[data-use-github-style] span.frame span img {
+  display: block;
+  float: left;
+}
+.method span.frame span span, .method[data-use-github-style] span.frame span span {
+  display: block;
+  padding: 5px 0px 0px;
+  clear: both;
+  color: rgb(51, 51, 51);
+}
+.method span.align-center, .method[data-use-github-style] span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+.method span.align-center > span, .method[data-use-github-style] span.align-center > span {
+  display: block;
+  margin: 13px auto 0px;
+  overflow: hidden;
+  text-align: center;
+}
+.method span.align-center span img, .method[data-use-github-style] span.align-center span img {
+  margin: 0px auto;
+  text-align: center;
+}
+.method span.align-right, .method[data-use-github-style] span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+.method span.align-right > span, .method[data-use-github-style] span.align-right > span {
+  display: block;
+  margin: 13px 0px 0px;
+  overflow: hidden;
+  text-align: right;
+}
+.method span.align-right span img, .method[data-use-github-style] span.align-right span img {
+  margin: 0px;
+  text-align: right;
+}
+.method span.float-left, .method[data-use-github-style] span.float-left {
+  display: block;
+  float: left;
+  margin-right: 13px;
+  overflow: hidden;
+}
+.method span.float-left span, .method[data-use-github-style] span.float-left span {
+  margin: 13px 0px 0px;
+}
+.method span.float-right, .method[data-use-github-style] span.float-right {
+  display: block;
+  float: right;
+  margin-left: 13px;
+  overflow: hidden;
+}
+.method span.float-right > span, .method[data-use-github-style] span.float-right > span {
+  display: block;
+  margin: 13px auto 0px;
+  overflow: hidden;
+  text-align: right;
+}
+.method code, .method[data-use-github-style] code, .method tt, .method[data-use-github-style] tt {
+  padding: 0.2em 0px;
+  margin: 0px;
+  font-size: 85%;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.0392157);
+}
+.method code::before, .method[data-use-github-style] code::before, .method tt::before, .method[data-use-github-style] tt::before, .method code::after, .method[data-use-github-style] code::after, .method tt::after, .method[data-use-github-style] tt::after {
+  letter-spacing: -0.2em;
+  content: ' ';
+}
+.method code br, .method[data-use-github-style] code br, .method tt br, .method[data-use-github-style] tt br {
+  display: none;
+}
+.method del code, .method[data-use-github-style] del code {
+  text-decoration: inherit;
+}
+.method pre > code, .method[data-use-github-style] pre > code {
+  padding: 0px;
+  margin: 0px;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  border: 0px;
+  background: transparent;
+}
+.method .highlight, .method[data-use-github-style] .highlight {
+  margin-bottom: 16px;
+}
+.method .highlight pre, .method[data-use-github-style] .highlight pre, .method pre, .method[data-use-github-style] pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  border-radius: 3px;
+  background-color: rgb(247, 247, 247);
+}
+.method .highlight pre, .method[data-use-github-style] .highlight pre {
+  margin-bottom: 0px;
+  word-break: normal;
+}
+.method pre, .method[data-use-github-style] pre {
+  word-wrap: normal;
+}
+.method pre code, .method[data-use-github-style] pre code, .method pre tt, .method[data-use-github-style] pre tt {
+  display: inline;
+  max-width: initial;
+  padding: 0px;
+  margin: 0px;
+  overflow: initial;
+  line-height: inherit;
+  word-wrap: normal;
+  border: 0px;
+  background-color: transparent;
+}
+.method pre code::before, .method[data-use-github-style] pre code::before, .method pre tt::before, .method[data-use-github-style] pre tt::before, .method pre code::after, .method[data-use-github-style] pre code::after, .method pre tt::after, .method[data-use-github-style] pre tt::after {
+  content: normal;
+}
+.method kbd, .method[data-use-github-style] kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: rgb(85, 85, 85);
+  vertical-align: middle;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187);
+  border-radius: 3px;
+  box-shadow: rgb(187, 187, 187) 0px -1px 0px inset;
+  background-color: rgb(252, 252, 252);
+}
+.method, .method[data-use-github-style], .method code, .method[data-use-github-style] code {
+  color: rgb(51, 51, 51);
+}
+.method h1, .method[data-use-github-style] h1, .method h2, .method[data-use-github-style] h2, .method h3, .method[data-use-github-style] h3, .method h4, .method[data-use-github-style] h4, .method h5, .method[data-use-github-style] h5, .method h6, .method[data-use-github-style] h6 {
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+}
+.method > h1:first-child, .method[data-use-github-style] > h1:first-child, .method > h1:first-child + h2, .method[data-use-github-style] > h1:first-child + h2, .method > h2:first-child, .method[data-use-github-style] > h2:first-child, .method > h3:first-child, .method[data-use-github-style] > h3:first-child, .method > h4:first-child, .method[data-use-github-style] > h4:first-child, .method > h5:first-child, .method[data-use-github-style] > h5:first-child, .method > h6:first-child, .method[data-use-github-style] > h6:first-child {
+  margin-top: 0px;
+  padding-top: 0px;
+}
+.method a, .method[data-use-github-style] a, .method a code, .method[data-use-github-style] a code {
+  color: rgb(65, 131, 196);
+}
+.method a:first-child h1, .method[data-use-github-style] a:first-child h1, .method a:first-child h2, .method[data-use-github-style] a:first-child h2, .method a:first-child h3, .method[data-use-github-style] a:first-child h3, .method a:first-child h4, .method[data-use-github-style] a:first-child h4, .method a:first-child h5, .method[data-use-github-style] a:first-child h5, .method a:first-child h6, .method[data-use-github-style] a:first-child h6 {
+  margin-top: 0px;
+  padding-top: 0px;
+}
+.method h1 + p, .method[data-use-github-style] h1 + p, .method h2 + p, .method[data-use-github-style] h2 + p, .method h3 + p, .method[data-use-github-style] h3 + p, .method h4 + p, .method[data-use-github-style] h4 + p, .method h5 + p, .method[data-use-github-style] h5 + p, .method h6 + p, .method[data-use-github-style] h6 + p {
+  margin-top: 0px;
+}
+.method li p.first, .method[data-use-github-style] li p.first {
+  display: inline-block;
+}
+.method ul li >:first-child, .method[data-use-github-style] ul li >:first-child, .method ol li >:first-child, .method[data-use-github-style] ol li >:first-child, .method ul li ul:first-of-type, .method[data-use-github-style] ul li ul:first-of-type, .method ol li ul:first-of-type, .method[data-use-github-style] ol li ul:first-of-type {
+  margin-top: 0px;
+}
+.method ol > li, .method[data-use-github-style] ol > li {
+  list-style-type: decimal;
+}
+.method ul > li, .method[data-use-github-style] ul > li {
+  list-style-type: disc;
+}
+.method dl dt:first-child, .method[data-use-github-style] dl dt:first-child {
+  padding: 0px;
+}
+.method dl dt >:first-child, .method[data-use-github-style] dl dt >:first-child {
+  margin-top: 0px;
+}
+.method dl dt >:last-child, .method[data-use-github-style] dl dt >:last-child {
+  margin-bottom: 0px;
+}
+.method dl dd >:first-child, .method[data-use-github-style] dl dd >:first-child {
+  margin-top: 0px;
+}
+.method dl dd >:last-child, .method[data-use-github-style] dl dd >:last-child {
+  margin-bottom: 0px;
+}
+.method blockquote p, .method[data-use-github-style] blockquote p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+.method pre.editor-colors, .method[data-use-github-style] pre.editor-colors {
+  padding: 16px;
+  overflow: auto;
+  font-size: 84%;
+  line-height: 1.45;
+  border-radius: 3px;
+  background-color: rgb(40, 44, 52);
+}
+.method pre.editor-colors, .method[data-use-github-style] pre.editor-colors {
+  margin-bottom: 16px;
+  word-break: normal;
+}
+.method code, .method[data-use-github-style] code, .method tt, .method[data-use-github-style] tt, .method pre.editor-colors, .method[data-use-github-style] pre.editor-colors {
+  font-family: Consolas, 'Liberation Mono', Courier, monospace;
+}
+.method .emoji, .method[data-use-github-style] .emoji {
+  height: 20px;
+  width: 20px;
+}
+.method {
+  font-size: 1.25em;
+  color: rgb(200, 204, 213);
+  background-color: rgb(47, 51, 61);
+}
+.method h1, .method h2 {
+  color: inherit;
+  border-color: rgb(24, 26, 31);
+}
+.method a {
+  color: rgb(100, 148, 237);
+}
+.method hr {
+  background-color: rgb(47, 51, 61);
+}
+.method blockquote {
+  color: rgb(157, 165, 180);
+  border-left-color: rgba(157, 165, 180, 0.6);
+}
+.method table th, .method table td {
+  border-color: rgb(24, 26, 31);
+}
+.method table th {
+  background-color: rgb(53, 59, 69);
+}
+.method table tr {
+  background-color: rgb(47, 51, 61);
+}
+.method table tr:nth-child(2n) {
+  background-color: rgb(40, 44, 52);
+}
+.method code {
+  color: rgb(243, 244, 246);
+  border-color: rgb(24, 26, 31);
+  background-color: rgb(62, 68, 81);
+  background-clip: padding-box;
+}
+.method pre.editor-colors::shadow .line.cursor-line {
+  background-color: transparent;
+}
+.pre.editor-colors .gutter .go-plus-error {
+  color: #ff6347;
+}
+.pre.editor-colors .gutter .git-line-added.go-plus-error {
+  color: #ff6347;
+}
+.pre.editor-colors .gutter .git-line-modified.go-plus-error {
+  color: #ff6347;
+}
+.pre.editor-colors .gutter .git-line-removed.go-plus-error {
+  color: #ff6347;
+}
+.goplus-error {
+  background-color: #ec9393;
+  color: #fa2500;
+}
+.goplus-warning {
+  background-color: #dba970;
+  color: #d39f50;
+}
+.highlight.uncovered .region {
+  background-color: #d92626;
+  opacity: 0.2;
+}
+.highlight.covered .region {
+  background-color: #20b684;
+  opacity: 0.2;
+}
+.highlight.definition .region {
+  background-color: #31363f;
+}
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+.spell-check-misspelling .region {
+  border-bottom: 1px dashed rgba(250, 128, 114, 0.5);
+}
+pre.editor-colors, .host {
+  background-color: #282c34;
+  color: #abb2bf;
+}
+pre.editor-colors .line.cursor-line, .host .line.cursor-line {
+  background-color: rgba(153, 187, 255, 0.04);
+}
+pre.editor-colors .invisible, .host .invisible {
+  color: #abb2bf;
+}
+pre.editor-colors .cursor, .host .cursor {
+  border-left: 2px solid #528bff;
+}
+pre.editor-colors .selection .region, .host .selection .region {
+  background-color: #3e4451;
+}
+pre.editor-colors .bracket-matcher .region, .host .bracket-matcher .region {
+  border-bottom: 1px solid #528bff;
+  box-sizing: border-box;
+  background-color: #353b45;
+}
+pre.editor-colors .invisible-character, .host .invisible-character {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .indent-guide, .host .indent-guide {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .wrap-guide, .host .wrap-guide {
+  background-color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .gutter .line-number, .host .gutter .line-number {
+  color: #636d83;
+  -webkit-font-smoothing: antialiased;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:before, .host .gutter .line-number.git-line-removed:before {
+  bottom: -3px;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:after, .host .gutter .line-number.git-line-removed:after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 25px;
+  border-bottom: 1px dotted rgba(224, 82, 82, 0.5);
+  pointer-events: none;
+}
+pre.editor-colors .gutter .line-number.cursor-line, .host .gutter .line-number.cursor-line {
+  color: #abb2bf;
+  background-color: #2c313a;
+}
+pre.editor-colors .gutter .line-number.cursor-line-no-selection, .host .gutter .line-number.cursor-line-no-selection {
+  background-color: transparent;
+}
+pre.editor-colors .gutter .line-number .icon-right, .host .gutter .line-number .icon-right {
+  color: #abb2bf;
+}
+pre.editor-colors .gutter .line-number .icon-right, .host .gutter .line-number .icon-right {
+  color: #abb2bf;
+}
+pre.editor-colors .gutter .line-number.folded, .host .gutter .line-number.folded, pre.editor-colors .gutter .line-number:after, .host .gutter .line-number:after, pre.editor-colors .fold-marker:after, .host .fold-marker:after {
+  color: #abb2bf;
+}
+.comment {
+  color: #5c6370;
+  font-style: italic;
+}
+.entity.name.type {
+  color: #e5c07b;
+}
+.entity.other.inherited-class {
+  color: #98c379;
+}
+.keyword {
+  color: #c678dd;
+}
+.keyword.control {
+  color: #c678dd;
+}
+.keyword.operator {
+  color: #abb2bf;
+}
+.keyword.other.special-method {
+  color: #61afef;
+}
+.keyword.other.unit {
+  color: #d19a66;
+}
+.storage {
+  color: #c678dd;
+}
+.storage.type.annotation, .storage.type.primitive {
+  color: #c678dd;
+}
+.storage.modifier.package, .storage.modifier.import {
+  color: #abb2bf;
+}
+.constant {
+  color: #d19a66;
+}
+.constant.variable {
+  color: #d19a66;
+}
+.constant.character.escape {
+  color: #56b6c2;
+}
+.constant.numeric {
+  color: #d19a66;
+}
+.constant.other.color {
+  color: #56b6c2;
+}
+.constant.other.symbol {
+  color: #56b6c2;
+}
+.variable {
+  color: #e06c75;
+}
+.variable.interpolation {
+  color: #be5046;
+}
+.variable.parameter {
+  color: #abb2bf;
+}
+.invalid.illegal {
+  background-color: #e06c75;
+  color: #282c34;
+}
+.string {
+  color: #98c379;
+}
+.string.regexp {
+  color: #56b6c2;
+}
+.string.regexp .source.ruby.embedded {
+  color: #e5c07b;
+}
+.string.other.link {
+  color: #e06c75;
+}
+.punctuation.definition.comment {
+  color: #5c6370;
+}
+.punctuation.definition.method-parameters, .punctuation.definition.function-parameters, .punctuation.definition.parameters, .punctuation.definition.separator, .punctuation.definition.seperator, .punctuation.definition.array {
+  color: #abb2bf;
+}
+.punctuation.definition.heading, .punctuation.definition.identity {
+  color: #61afef;
+}
+.punctuation.definition.bold {
+  color: #e5c07b;
+  font-weight: bold;
+}
+.punctuation.definition.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.punctuation.section.embedded {
+  color: #be5046;
+}
+.punctuation.section.method, .punctuation.section.class, .punctuation.section.inner-class {
+  color: #abb2bf;
+}
+.support.class {
+  color: #e5c07b;
+}
+.support.function {
+  color: #56b6c2;
+}
+.support.function.any-method {
+  color: #61afef;
+}
+.entity.name.function {
+  color: #61afef;
+}
+.entity.name.class, .entity.name.type.class {
+  color: #e5c07b;
+}
+.entity.name.section {
+  color: #61afef;
+}
+.entity.name.tag {
+  color: #e06c75;
+}
+.entity.other.attribute-name {
+  color: #d19a66;
+}
+.entity.other.attribute-name.id {
+  color: #61afef;
+}
+.meta.class {
+  color: #e5c07b;
+}
+.meta.class.body {
+  color: #abb2bf;
+}
+.meta.method-call, .meta.method {
+  color: #abb2bf;
+}
+.meta.definition.variable {
+  color: #e06c75;
+}
+.meta.link {
+  color: #d19a66;
+}
+.meta.require {
+  color: #61afef;
+}
+.meta.selector {
+  color: #c678dd;
+}
+.meta.separator {
+  background-color: #373b41;
+  color: #abb2bf;
+}
+.meta.tag {
+  color: #abb2bf;
+}
+.none {
+  color: #abb2bf;
+}
+.markup.bold {
+  color: #d19a66;
+  font-weight: bold;
+}
+.markup.changed {
+  color: #c678dd;
+}
+.markup.deleted {
+  color: #e06c75;
+}
+.markup.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.markup.heading .punctuation.definition.heading {
+  color: #61afef;
+}
+.markup.inserted {
+  color: #98c379;
+}
+.markup.list {
+  color: #e06c75;
+}
+.markup.quote {
+  color: #d19a66;
+}
+.markup.raw.inline {
+  color: #98c379;
+}
+.source.cs .keyword.operator {
+  color: #c678dd;
+}
+.source.css .property-name, .source.css .property-value {
+  color: #828997;
+}
+.source.css .property-name.support, .source.css .property-value.support {
+  color: #abb2bf;
+}
+.source.gfm .markup {
+  -webkit-font-smoothing: auto;
+}
+.source.gfm .markup.heading {
+  color: #e06c75;
+}
+.source.gfm .markup.link {
+  color: #c678dd;
+}
+.source.gfm .link .entity {
+  color: #61afef;
+}
+.source.ini .keyword.other.definition.ini {
+  color: #e06c75;
+}
+.source.java .storage.modifier.import {
+  color: #e5c07b;
+}
+.source.java .storage.type {
+  color: #e5c07b;
+}
+.source.java-properties .meta.key-pair {
+  color: #e06c75;
+}
+.source.java-properties .meta.key-pair > .punctuation {
+  color: #abb2bf;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json > .punctuation.string {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json, .source.json .meta.structure.array.json > .value.json > .string.quoted.json, .source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json > .punctuation, .source.json .meta.structure.array.json > .value.json > .string.quoted.json > .punctuation {
+  color: #98c379;
+}
+.source.json .meta.structure.dictionary.json > .constant.language.json, .source.json .meta.structure.array.json > .constant.language.json {
+  color: #56b6c2;
+}
+.source.ruby .constant.other.symbol > .punctuation {
+  color: inherit;
+}
+.source.python .keyword.operator.logical.python {
+  color: #c678dd;
+}
+.source.python .variable.parameter {
+  color: #d19a66;
+}
+
+/* -- Menu and Content Styles  -------------------------------------*/
+html {
+  background-color: rgb(47, 51, 61);
+}
+
+/*
+Add transition to containers so they can push in and out.
+*/
+
+#layout, #menu, .menu-link {
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -ms-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+/*
+This is the parent `<div>` that contains the menu and the content area.
+*/
+
+#layout {
+  position: relative;
+  padding-left: 0;
+  left: 0;
+}
+
+#layout.active {
+  left: 150px;
+}
+
+#layout.active #menu {
+  left: 150px;
+  width: 150px;
+}
+#layout.active .menu-link {
+  left: 150px;
+}
+
+/*
+The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
+appears on the left side of the page.
+*/
+
+#menu {
+  margin-left: -150px;
+  /* "#menu" width */
+  width: 150px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  /* so the menu or its navicon stays above all content */
+  background: #191818;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/*
+  All anchors inside the menu should be styled like this.
+  */
+
+#menu a {
+  color: #999;
+  border: none;
+  padding: 0.6em 0 0.6em 0.6em;
+}
+
+/*
+  Remove all background/borders, since we are applying them to #menu.
+  */
+
+#menu .pure-menu, #menu .pure-menu ul {
+  border: none;
+  background: transparent;
+}
+
+/*
+  Add that light border to separate items into groups.
+  */
+
+#menu .pure-menu ul, #menu .pure-menu .menu-item-divided {
+  border-top: 1px solid #333;
+}
+
+/*
+      Change color of the anchor links on hover/focus.
+*/
+
+#menu .pure-menu li a:hover, #menu .pure-menu li a:focus {
+  background-color: #2F333D;
+
+  color: #fff;
+}
+
+/*
+  This styles the selected menu item `<li>`.
+  */
+
+#menu .pure-menu-selected, #menu .pure-menu li a:active {
+  background-color: #2F333D;
+}
+
+/*
+      This styles a link within a selected menu item `<li>`.
+      */
+
+#menu .pure-menu-selected a {
+  color: #fff;
+}
+
+/*
+  This styles the menu heading.
+  */
+
+#menu .pure-menu-heading {
+  /*background: rgb(240, 30, 0);*/
+  font-size: 120%;
+  color: #000;
+  margin: 0;
+}
+
+#menu .pure-menu-heading img {
+  width: 90%;
+}
+
+#menu li.pure-menu-heading {
+  background: #191818;
+  font-size: 100%;
+  color: #fff;
+}
+
+/* -- Dynamic Button For Responsive Menu -------------------------------------*/
+
+
+/*
+The button to open/close the Menu is custom-made and not part of Pure. Here's
+how it works:
+*/
+
+
+/*
+`.menu-link` represents the responsive menu toggle that shows/hides on
+small screens.
+*/
+
+.menu-link {
+  position: fixed;
+  display: block;
+  /* show this only on small screens */
+  top: 0;
+  left: 0;
+  /* "#menu width" */
+  background: #000;
+  background: rgba(0, 0, 0, 0.7);
+  font-size: 10px;
+  /* change this value to increase/decrease button size */
+  z-index: 10;
+  width: 2em;
+  height: auto;
+  padding: 2.1em 1.6em;
+}
+.menu-link:hover, .menu-link:focus {
+  background: #000;
+}
+.menu-link span {
+  position: relative;
+  display: block;
+}
+.menu-link span, .menu-link span:before, .menu-link span:after {
+  background-color: #fff;
+  width: 100%;
+  height: 0.2em;
+}
+.menu-link span:before, .menu-link span:after {
+  position: absolute;
+  margin-top: -0.6em;
+  content: " ";
+}
+.menu-link span:after {
+  margin-top: 0.6em;
+}
+
+.content {
+  margin: 0 auto;
+  margin-top: 2em;
+  margin-left: 0;
+  margin-bottom: 50px;
+  line-height: 1.6em;
+}
+.method {
+  overflow: auto;
+}
+
+/* -- Responsive Styles (Media Queries) ------------------------------------- */
+
+
+/*
+Hides the menu at `48em`, but modify this based on your app's needs.
+*/
+
+@media (min-width: 48em) {
+  .header, .content {
+    /*padding-left: 2em;
+      padding-right: 2em;*/
+  }
+  #layout {
+  /*padding-left: 150px;*/
+    /* left col width "#menu" */
+    left: 0;
+  }
+  #menu {
+    left: 150px;
+  }
+  .menu-link {
+    position: fixed;
+    left: 150px;
+    display: none;
+  }
+  #layout.active .menu-link {
+    left: 150px;
+  }
+  .content {
+    /*margin: 0 auto;*/
+    margin-left: 9em;
+  }
+}
+@media (max-width: 47em) {
+  /* Only apply this when the window is small. Otherwise, the following
+  case results in extra padding on the left:
+      * Make the window small.
+      * Tap the menu to trigger the active state.
+      * Make the window large again.
+  */
+/*
+  .content {
+    margin-left: 0;
+    margin-top: 2em;
+  } */
+}
